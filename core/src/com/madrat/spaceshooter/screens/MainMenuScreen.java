@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ExitDialog;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -45,6 +47,7 @@ public class MainMenuScreen implements Screen {
     private Sprite background;
 
     private ExitDialog exitDialog;
+    private DialogAlert exit;
 
     public MainMenuScreen(MainGame newgame) {
         this.game = newgame;
@@ -76,13 +79,28 @@ public class MainMenuScreen implements Screen {
         settButton.getLabel().setFontScale(1.2f);
 
         // Exit Confirm Dialog
-        exitDialog = new ExitDialog(skin);
+        // exitDialog = new ExitDialog(skin);
+
+        exit = new DialogAlert("", skin);
+        exit.text("Do you really\nwant to exit?");
+        exit.yesButton("YES", new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.exit();
+                return true;
+            }
+        }).noButton("NO", new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                exit.hide();
+                return true;
+            }
+        });
 
         // Exit Button Listener
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                exitDialog.show(stage);
+                // exitDialog.show(stage);
+                exit.show(stage);
             }
         });
 
@@ -98,8 +116,10 @@ public class MainMenuScreen implements Screen {
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);
+
         // Create Sprite batch
         batch = new SpriteBatch();
+
         // Create base background for scrolling background
         background = new Sprite(new Texture(Gdx.files.internal(Assets.backgroundSpace)));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
