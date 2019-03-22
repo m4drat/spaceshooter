@@ -9,6 +9,6 @@ public class Assets {
     public static final String star1 = "objects/star1.png", star2 = "objects/star2.png", star3 = "objects/star3.png", nebula1 = "objects/nebula1.png";
     public static final String emulogicfnt = "font/emulogic.fnt", emulogicpng = "font/emulogic.png";
     public static final String uiskin = "ui/uiskin.json";
-    public static final String ship1 = "ships/spaceship1.png", ship1Animation = "ships/spaceship_animation.png";
+    public static final String ship1 = "ships/spaceship1.png", ship1Animation = "ships/spaceship_animation.png", bullet1 = "ships/bullet1.png";
 
 }
