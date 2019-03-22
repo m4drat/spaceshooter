@@ -1,7 +1,6 @@
 package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,18 +9,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
-import com.madrat.spaceshooter.utils.ExitDialog;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -46,7 +42,6 @@ public class MainMenuScreen implements Screen {
     private SpriteBatch batch;
     private Sprite background;
 
-    private ExitDialog exitDialog;
     private DialogAlert exit;
 
     public MainMenuScreen(MainGame newgame) {
@@ -79,8 +74,6 @@ public class MainMenuScreen implements Screen {
         settButton.getLabel().setFontScale(1.2f);
 
         // Exit Confirm Dialog
-        // exitDialog = new ExitDialog(skin);
-
         exit = new DialogAlert("", skin);
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
