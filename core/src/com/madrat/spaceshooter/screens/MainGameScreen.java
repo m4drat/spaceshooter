@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.gameobjects.SpaceShip;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -17,11 +18,8 @@ import java.util.ArrayList;
 
 public class MainGameScreen implements Screen {
 
-    private static final float SPEED = 260;
-
     MainGame game;
-    Texture ship;
-    float x = 0, y = 0;
+    SpaceShip ship;
 
     private Stage stage;
     private Sprite background;
@@ -30,7 +28,7 @@ public class MainGameScreen implements Screen {
     private ArrayList<ObjectHandler> sprites;
 
     public MainGameScreen(MainGame newgame) {
-        ship = new Texture(Assets.ship1);
+        ship = new SpaceShip(new Texture(Assets.ship1), 3, 5, 1, 10f, 260f, "Zapper");
 
         batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
@@ -40,9 +38,6 @@ public class MainGameScreen implements Screen {
 
         sprites = ScrollingBackground.initStarBackground();
         scrollingBackground = new ScrollingBackground(background, sprites);
-
-        x = Gdx.graphics.getWidth() / 2 - 60 / 2;
-        y = 25;
     }
 
     @Override
@@ -52,20 +47,26 @@ public class MainGameScreen implements Screen {
     @Override
     public void render(float delta) { // gets called at every new frame
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            y += SPEED * Gdx.graphics.getDeltaTime();
+            ship.setY(ship.getY() + ship.getSpeed() * Gdx.graphics.getDeltaTime());
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            y -= SPEED * Gdx.graphics.getDeltaTime();
+            ship.setY(ship.getY() - ship.getSpeed() * Gdx.graphics.getDeltaTime());
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            x -= SPEED * Gdx.graphics.getDeltaTime();
+            ship.setX(ship.getX() - ship.getSpeed() * Gdx.graphics.getDeltaTime());
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            x += SPEED * Gdx.graphics.getDeltaTime();
+            ship.setX(ship.getX() + ship.getSpeed() * Gdx.graphics.getDeltaTime());
 
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
         scrollingBackground.draw(batch);
-        batch.draw(ship, x, y, 60, 50);
+        ship.incStateTime(delta);
+
+        // Draw ship with animations
+        batch.draw(ship.getEngines()[ship.getFrame()].getKeyFrame(ship.getStateTime(), true), ship.getX(), ship.getY(), ship.preffered_SHIP_WIDTH, ship.preffered_SHIP_HEIGHT);
+
+        // batch.draw(ship.getShipTexture(), ship.getX(), ship.getY(), 60, 50);
         batch.end();
     }
 
@@ -93,5 +94,7 @@ public class MainGameScreen implements Screen {
     public void dispose() { // get rid of the screen
         batch.dispose();
         ship.dispose();
+        background.getTexture().dispose();
+        scrollingBackground.dispose();
     }
 }

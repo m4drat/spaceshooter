@@ -21,4 +21,8 @@ public class ObjectHandler {
         this.preferredHeight = height;
         this.preferredWidth = width;
     }
+
+    public void dispose() {
+        this.sprite.getTexture().dispose();
+    }
 }

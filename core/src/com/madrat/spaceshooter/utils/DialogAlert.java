@@ -9,11 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
-import com.madrat.spaceshooter.MainGame;
 
 public class DialogAlert extends Dialog {
 
-    private float dialog_width = 280f;
     private float dialog_padding = 15f;
     private float button_pad_l = 15f;
     private float button_pad_r = 15f;
@@ -29,15 +27,10 @@ public class DialogAlert extends Dialog {
     }
 
     private void setup() {
-        // getButtonTable().defaults().height(dialog_height);
-        // getContentTable().defaults().width(dialog_width);
-
         setModal(false);
         setMovable(false);
         setResizable(false);
 
-        // getBackground().setMinHeight(130);
-        // getButtonTable().align(Align.center);
         padTop(dialog_padding).padLeft(dialog_padding).padRight(dialog_padding);
     }
 

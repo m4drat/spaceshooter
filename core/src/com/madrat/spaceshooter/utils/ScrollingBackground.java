@@ -26,20 +26,6 @@ public class ScrollingBackground {
         this.baseBackground = background;
     }
 
-    public void draw(SpriteBatch batch) {
-        baseBackground.draw(batch);
-        if (this.miniObjects.size() > 0) {
-            for (ObjectHandler object : this.miniObjects) {
-                batch.draw(object.sprite, object.x, object.y, object.preferredWidth, object.preferredHeight);
-                object.y -= object.speed;
-                if (object.y + object.sprite.getHeight() < 0) {
-                    object.y = ran.nextInt(MainGame.GENERAL_HEIGHT + 2) + MainGame.GENERAL_HEIGHT;
-                    object.x = ran.nextInt(MainGame.GENERAL_WIDTH + 1);
-                }
-            }
-        }
-    }
-
     public static ArrayList<ObjectHandler> initStarBackground() {
         Random ran = new Random();
         ArrayList<ObjectHandler> sprites = new ArrayList<ObjectHandler>();
@@ -47,6 +33,8 @@ public class ScrollingBackground {
 
         size = ran.nextInt(100) + 100;
         sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.nebula1))), size, size, ran.nextInt(2) + 1));
+        size = ran.nextInt(100) + 60;
+        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.nebula2))), size, size, ran.nextInt(2) + 1));
 
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
@@ -61,5 +49,25 @@ public class ScrollingBackground {
             sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star3))), size, size, ran.nextInt(5) + 3));
         }
         return sprites;
+    }
+
+    public void draw(SpriteBatch batch) {
+        baseBackground.draw(batch);
+        if (this.miniObjects.size() > 0) {
+            for (ObjectHandler object : this.miniObjects) {
+                batch.draw(object.sprite, object.x, object.y, object.preferredWidth, object.preferredHeight);
+                object.y -= object.speed;
+                if (object.y + object.sprite.getHeight() < 0) {
+                    object.y = ran.nextInt(MainGame.GENERAL_HEIGHT + 2) + MainGame.GENERAL_HEIGHT;
+                    object.x = ran.nextInt(MainGame.GENERAL_WIDTH + 1);
+                }
+            }
+        }
+    }
+
+    public void dispose() {
+        for (ObjectHandler object : this.miniObjects) {
+            object.dispose();
+        }
     }
 }

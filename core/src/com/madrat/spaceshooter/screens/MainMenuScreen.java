@@ -166,5 +166,7 @@ public class MainMenuScreen implements Screen {
         stage.dispose();
         skin.dispose();
         batch.dispose();
+        background.getTexture().dispose();
+        scrollingBackground.dispose();
     }
 }
