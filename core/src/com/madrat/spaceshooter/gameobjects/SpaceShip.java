@@ -9,13 +9,17 @@ public class SpaceShip {
     public int preferred_SHIP_WIDTH = 60;
     public int preferred_SHIP_HEIGHT = 50;
 
-    protected float x, y, speed, delayBetweenShoots, bulletsSpeed, lastShoot;
+    protected float x;
+    protected float y;
+    protected float speed;
+    protected float delayBetweenShoots;
+    protected float bulletsSpeed;
+
+    protected float lastShoot;
     protected int currentLives, maxLives, damage;
     protected String handle; // aka ship name
 
-    protected boolean needToShow, isAlive;
-
-    protected Rectangle collisionMask;
+    public boolean needToShow, isAlive;
 
     public SpaceShip(int lives, int maxLives, int damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle) {
         this.currentLives = lives;
@@ -77,5 +81,17 @@ public class SpaceShip {
 
     public void setAlive(boolean alive) {
         isAlive = alive;
+    }
+
+    public void setLastShoot(float lastShoot) {
+        this.lastShoot = lastShoot;
+    }
+
+    public void incLastShoot(float dt) {
+        this.lastShoot += dt;
+    }
+
+    public float getLastShoot() {
+        return lastShoot;
     }
 }

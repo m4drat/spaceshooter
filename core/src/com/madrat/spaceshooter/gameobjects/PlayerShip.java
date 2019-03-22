@@ -12,13 +12,13 @@ import java.util.ArrayList;
 public class PlayerShip extends SpaceShip {
 
     private static final float animationSpeed = 0.2f;
-    private static final int animationsCount = 2;// 1 - default; 2 - explosion
+    private static final int animationsCount = 2;// 0 - alive; 1 - died
 
     private Animation<TextureRegion>[] animationsArray;
     private float stateTime;
-    private int currentAnimation;
+    private int currentAnimation, score;
 
-    ArrayList<Bullet> bullets;
+    private ArrayList<Bullet> bullets;
 
     public PlayerShip(Texture shipAnimations, int lives, int maxLives, int damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle) {
         super(lives, maxLives, damage, delayBetweenShoots, bulletsSpeed, speed, handle);
@@ -42,9 +42,12 @@ public class PlayerShip extends SpaceShip {
 
         // Initialize bullets list
         bullets = new ArrayList<Bullet>();
+
+        // Initialize score value
+        this.score = 0;
     }
 
-    public Animation<TextureRegion>[] getEngines() {
+    public Animation<TextureRegion>[] getAnimationsArray() {
         return animationsArray;
     }
 
@@ -80,38 +83,25 @@ public class PlayerShip extends SpaceShip {
 
     public void draw(SpriteBatch batch, float delta) {
         if (needToShow) {
-            // Shooting
-            if (lastShoot > delayBetweenShoots) {
-                shoot();
-                lastShoot = 0;
-            } else {
-                lastShoot += delta;
-            }
-            updateBullets(delta);
-
-            // rendering bullets
-            if (bullets.size() > 0) {
-                for (Bullet bullet : bullets) {
-                    bullet.render(batch);
-                }
-            }
             // rendering ship
-            batch.draw(this.getEngines()[this.getCurrentAnimation()].getKeyFrame(this.getStateTime(), true), this.getX(), this.getY(), this.preferred_SHIP_WIDTH, this.preferred_SHIP_HEIGHT);
+            batch.draw(this.getAnimationsArray()[this.getCurrentAnimation()].getKeyFrame(this.getStateTime(), true), this.getX(), this.getY(), this.preferred_SHIP_WIDTH, this.preferred_SHIP_HEIGHT);
         }
-    }
-
-    public void updateBullets(float delta) {
-        ArrayList<Bullet> bulletsToRemove = new ArrayList<Bullet>();
-        for (Bullet bullet : bullets) {
-            bullet.update(delta);
-            if (bullet.remove)
-                bulletsToRemove.add(bullet);
-        }
-        bullets.removeAll(bulletsToRemove);
     }
 
     public void shoot() {
-        bullets.add(new Bullet(this.bulletsSpeed, this.x + preferred_SHIP_WIDTH - preferred_SHIP_WIDTH / 5, this.y + preferred_SHIP_HEIGHT / 2, true));
-        bullets.add(new Bullet(this.bulletsSpeed, this.x + preferred_SHIP_WIDTH / 5 - 3, this.y + preferred_SHIP_HEIGHT / 2, true));
+        bullets.add(new Bullet(this.bulletsSpeed, this.x + preferred_SHIP_WIDTH - preferred_SHIP_WIDTH / 5, this.y + preferred_SHIP_HEIGHT / 2, "player"));
+        bullets.add(new Bullet(this.bulletsSpeed, this.x + preferred_SHIP_WIDTH / 5 - 3, this.y + preferred_SHIP_HEIGHT / 2, "player"));
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int newScore) {
+        score = newScore;
     }
 }

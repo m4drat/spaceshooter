@@ -7,19 +7,24 @@ import com.madrat.spaceshooter.utils.Assets;
 
 public class Bullet {
 
+    public static final int WIDTH = 4;
+    public static final int HEIGHT = 10;
+
     private float bulletSpeed;
     private static Texture bulletTexture;
 
     float x, y;
 
-    public boolean remove = false, byPlayer = true;
+    CollisionRect rect;
 
-    public Bullet(float bulletSpeed, float x, float y, boolean byPlayer) {
+    public boolean remove = false;
+
+    public Bullet(float bulletSpeed, float x, float y, String colliderTag) {
         this.bulletSpeed = bulletSpeed;
         this.x = x;
         this.y = y;
 
-        this.byPlayer = byPlayer;
+        this.rect = new CollisionRect(x, y, WIDTH, HEIGHT, colliderTag);
 
         if (bulletTexture == null)
             bulletTexture = new Texture(Assets.bullet1);
@@ -27,11 +32,18 @@ public class Bullet {
 
     public void update(float deltaTime) {
         y += bulletSpeed * deltaTime;
+
         if (y > Gdx.graphics.getHeight())
             remove = true;
+
+        rect.move(x, y);
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(bulletTexture, x, y, 4, 10);
+        batch.draw(bulletTexture, x, y, WIDTH, HEIGHT);
+    }
+
+    public CollisionRect getCollisionRect() {
+        return rect;
     }
 }

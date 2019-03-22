@@ -14,7 +14,7 @@ public class ObjectHandler {
 
     public ObjectHandler(Sprite sprite, int height, int width, int speed) {
         Random ran = new Random();
-        this.x = ran.nextInt(MainGame.GENERAL_WIDTH + 1);
+        this.x = ran.nextInt(MainGame.GENERAL_WIDTH - width + 2);
         this.y = ran.nextInt(MainGame.GENERAL_HEIGHT + 2);
         this.speed = speed;
         this.sprite = sprite;

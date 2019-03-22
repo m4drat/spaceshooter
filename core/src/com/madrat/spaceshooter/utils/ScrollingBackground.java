@@ -16,6 +16,8 @@ public class ScrollingBackground {
     private Sprite baseBackground;
     private Random ran;
 
+    private int stopper;
+
     public ScrollingBackground(Sprite background, List<ObjectHandler> objects) {
         ran = new Random();
 
@@ -24,6 +26,8 @@ public class ScrollingBackground {
             this.miniObjects.add(object);
         }
         this.baseBackground = background;
+
+        stopper = 1;
     }
 
     public static ArrayList<ObjectHandler> initStarBackground() {
@@ -35,6 +39,8 @@ public class ScrollingBackground {
         sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.nebula1))), size, size, ran.nextInt(2) + 1));
         size = ran.nextInt(100) + 60;
         sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.nebula2))), size, size, ran.nextInt(2) + 1));
+        size = ran.nextInt(100) + 60;
+        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.mars1))), size, size, ran.nextInt(2) + 1));
 
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
@@ -56,13 +62,21 @@ public class ScrollingBackground {
         if (this.miniObjects.size() > 0) {
             for (ObjectHandler object : this.miniObjects) {
                 batch.draw(object.sprite, object.x, object.y, object.preferredWidth, object.preferredHeight);
-                object.y -= object.speed;
+                object.y -= object.speed * stopper;
                 if (object.y + object.sprite.getHeight() < 0) {
                     object.y = ran.nextInt(MainGame.GENERAL_HEIGHT + 2) + MainGame.GENERAL_HEIGHT;
                     object.x = ran.nextInt(MainGame.GENERAL_WIDTH + 1);
                 }
             }
         }
+    }
+
+    public void pause() {
+        stopper = 0;
+    }
+
+    public void _continue() {
+        stopper = 1;
     }
 
     public void dispose() {
