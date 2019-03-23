@@ -80,6 +80,12 @@ public class MainMenuScreen implements Screen {
 
         shopButton.getLabel().setFontScale(1.4f);
         settButton.getLabel().setFontScale(1.2f);
+        settButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingsScreen(game, batch, scrollingBackground));
+            }
+        });
 
         // Exit Confirm Dialog
         exit = new DialogAlert("", skin);
@@ -163,6 +169,12 @@ public class MainMenuScreen implements Screen {
 
         shopButton.getLabel().setFontScale(1.4f);
         settButton.getLabel().setFontScale(1.2f);
+        settButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingsScreen(game, batch, scrollingBackground));
+            }
+        });
 
         // Exit Confirm Dialog
         exit = new DialogAlert("", skin);

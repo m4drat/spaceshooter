@@ -10,10 +10,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.gameobjects.Asteroid;
@@ -21,6 +28,7 @@ import com.madrat.spaceshooter.gameobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.Explosion;
 import com.madrat.spaceshooter.gameobjects.PlayerShip;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -50,19 +58,131 @@ public class MainGameScreen implements Screen {
     private BitmapFont scoreFont;
     private GlyphLayout scoreLayout;
 
+    private ArrayList<Asteroid> asteroidsToRemove;
+    private ArrayList<Bullet> bulletsToRemove;
+    private ArrayList<Explosion> explosionToRemove;
+
     private Stage stage;
     private Skin skin;
-    private Table menuTable;
+    private Table pauseTable, PauseMenuTable;
+    private ImageButton pauseBtn;
 
-    private TextButton pause;
+    private TextButton continueButton;
+    private TextButton restartButton;
+    private TextButton backButton;
+    private TextButton exitButton;
+
+    private DialogAlert confirm;
 
     public MainGameScreen(MainGame newgame, SpriteBatch oldBatch) {
 
         this.game = newgame;
+        this.batch = oldBatch;
 
         stage = new Stage(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        pauseBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.pauseBtnUp)))), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.pauseBtnDown)))));
 
-        // Explosions
+        // Create Table for pause button
+        pauseTable = new Table();
+        pauseTable.setWidth(stage.getWidth());
+        pauseTable.align(Align.right | Align.top);
+        pauseTable.setPosition(0, MainGame.GENERAL_HEIGHT);
+        pauseTable.padTop(10);
+        pauseTable.padRight(10);
+        pauseTable.add(pauseBtn);
+
+        continueButton = new TextButton("continue", skin);
+        continueButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = false;
+                scrollingBackground._continue();
+                PauseMenuTable.setVisible(false);
+            }
+        });
+        restartButton = new TextButton("restart", skin);
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                confirm = new DialogAlert("", skin);
+                confirm.text("Do you really\nwant to restart?");
+                confirm.yesButton("YES", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        game.setScreen(new MainGameScreen(game, batch));
+                        return true;
+                    }
+                }).noButton("NO", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        confirm.hide();
+                        return true;
+                    }
+                });
+                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.show(stage);
+            }
+        });
+        backButton = new TextButton("back", skin);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                confirm = new DialogAlert("", skin);
+                confirm.text("Do you really\nwant to leave?");
+                confirm.yesButton("YES", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        game.setScreen(new MainMenuScreen(game));
+                        return true;
+                    }
+                }).noButton("NO", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        confirm.hide();
+                        return true;
+                    }
+                });
+                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.show(stage);
+            }
+        });
+        exitButton = new TextButton("exit", skin);
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                confirm = new DialogAlert("", skin);
+                confirm.text("Do you really\nwant to exit?");
+                confirm.yesButton("YES", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        Gdx.app.exit();
+                        return true;
+                    }
+                }).noButton("NO", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        confirm.hide();
+                        return true;
+                    }
+                });
+                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.show(stage);
+            }
+        });
+
+        PauseMenuTable = new Table();
+        PauseMenuTable.setWidth(stage.getWidth());
+        PauseMenuTable.align(Align.center | Align.top);
+        PauseMenuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
+        PauseMenuTable.padTop(120);
+        PauseMenuTable.add(continueButton).padBottom(48);
+        PauseMenuTable.row();
+        PauseMenuTable.add(restartButton).padBottom(48);
+        PauseMenuTable.row();
+        PauseMenuTable.add(backButton).padBottom(48);
+        PauseMenuTable.row();
+        PauseMenuTable.add(exitButton);
+        PauseMenuTable.setVisible(false);
+
+        // Initialize explosions array
         explosions = new ArrayList<Explosion>();
 
         // Score BitmapFont + score GlyphLayout
@@ -79,7 +199,6 @@ public class MainGameScreen implements Screen {
         playerShip = new PlayerShip();
 
         // Create SpriteBatch to draw
-        this.batch = oldBatch;
         Gdx.input.setInputProcessor(stage);
 
         // Create background Sprite
@@ -93,7 +212,17 @@ public class MainGameScreen implements Screen {
         isPaused = false;
         playerShip.setNeedToShow(true);
 
+        pauseBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = true;
+                scrollingBackground.pause();
+                PauseMenuTable.setVisible(true);
+            }
+        });
 
+        stage.addActor(pauseTable);
+        stage.addActor(PauseMenuTable);
     }
 
     @Override
@@ -104,50 +233,52 @@ public class MainGameScreen implements Screen {
     public void render(float delta) {
 
         // Spawn asteroids
-        asteroidSpawnTimer -= delta;
-        if (asteroidSpawnTimer <= 0) {
-            asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME;
-            asteroids.add(new Asteroid(120, random.nextInt(Gdx.graphics.getWidth() - Asteroid.WIDTH)));
+        if (!isPaused) {
+            asteroidSpawnTimer -= delta;
+            if (asteroidSpawnTimer <= 0) {
+                asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME;
+                asteroids.add(new Asteroid(120, random.nextInt(Gdx.graphics.getWidth() - Asteroid.WIDTH)));
+            }
+
+            // Update asteroids (delete old)
+            asteroidsToRemove = new ArrayList<Asteroid>();
+            for (Asteroid asteroid : asteroids) {
+                asteroid.update(delta);
+                if (asteroid.remove)
+                    asteroidsToRemove.add(asteroid);
+            }
+
+            // Update player Bullets (delete old)
+            bulletsToRemove = new ArrayList<Bullet>();
+            for (Bullet bullet : playerShip.getBullets()) {
+                bullet.update(delta);
+                if (bullet.remove)
+                    bulletsToRemove.add(bullet);
+            }
+
+            // Update Explosion (delete old)
+            explosionToRemove = new ArrayList<Explosion>();
+            for (Explosion explosion : explosions) {
+                explosion.update(delta);
+                if (explosion.remove)
+                    explosionToRemove.add(explosion);
+            }
+            // Deleting Explosion
+            explosions.removeAll(explosionToRemove);
+
+            // Player ship moving
+            if (Gdx.input.isKeyPressed(Input.Keys.UP))
+                playerShip.setY(playerShip.getY() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+                playerShip.setY(playerShip.getY() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+                playerShip.setX(playerShip.getX() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+                playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+
+            // Update player collision rect
+            playerShip.getShipCollisionRect().move(playerShip.getX(), playerShip.getY());
         }
-
-        // Update asteroids (delete old)
-        ArrayList<Asteroid> asteroidsToRemove = new ArrayList<Asteroid>();
-        for (Asteroid asteroid : asteroids) {
-            asteroid.update(delta);
-            if (asteroid.remove)
-                asteroidsToRemove.add(asteroid);
-        }
-
-        // Update player Bullets (delete old)
-        ArrayList<Bullet> bulletsToRemove = new ArrayList<Bullet>();
-        for (Bullet bullet : playerShip.getBullets()) {
-            bullet.update(delta);
-            if (bullet.remove)
-                bulletsToRemove.add(bullet);
-        }
-
-        // Update Explosion (delete old)
-        ArrayList<Explosion> explosionToRemove = new ArrayList<Explosion>();
-        for (Explosion explosion : explosions) {
-            explosion.update(delta);
-            if (explosion.remove)
-                explosionToRemove.add(explosion);
-        }
-        // Deleting Explosion
-        explosions.removeAll(explosionToRemove);
-
-        // Player ship moving
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            playerShip.setY(playerShip.getY() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            playerShip.setY(playerShip.getY() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            playerShip.setX(playerShip.getX() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-
-        // Update player collision rect
-        playerShip.getShipCollisionRect().move(playerShip.getX(), playerShip.getY());
 
         // GL important thing
         Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -159,22 +290,23 @@ public class MainGameScreen implements Screen {
         // Draw background
         scrollingBackground.draw(batch);
 
-        // Player Handlers
-            // Shooting
+        // Shooting
+        if (!isPaused)
             playerShip.shoot(delta);
 
-            // Render player bullets
-            if (playerShip.getBullets().size() > 0) {
-                for (Bullet bullet : playerShip.getBullets()) {
-                    bullet.render(batch);
-                }
+        // Render player bullets
+        if (playerShip.getBullets().size() > 0) {
+            for (Bullet bullet : playerShip.getBullets()) {
+                bullet.render(batch);
             }
+        }
 
-            // Render asteroids
-            for (Asteroid asteroid : asteroids) {
-                asteroid.render(batch);
-            }
+        // Render asteroids
+        for (Asteroid asteroid : asteroids) {
+            asteroid.render(batch);
+        }
 
+        if (!isPaused) {
             // Collision detecting (only player bullets - asteroids)
             for (Bullet bullet : playerShip.getBullets()) {
                 for (Asteroid asteroid : asteroids) {
@@ -223,19 +355,26 @@ public class MainGameScreen implements Screen {
 
             // check for bounds
             playerShip.correctBounds();
-            // Draw ship with animations bullets etc
-            playerShip.draw(batch, delta);
+        }
+
+        // Draw ship with animations bullets etc
+        playerShip.draw(batch, delta);
 
         // Render explosions
         for (Explosion explosion : explosions) {
             explosion.render(batch);
         }
 
-        // Draw and update score
-        scoreLayout.setText(scoreFont, "" + playerShip.getScore());
-        scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height - 5);
+        if (!isPaused) {
+            // Draw and update score
+            scoreLayout.setText(scoreFont, "" + playerShip.getScore());
+            scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height - 5);
+        }
 
         batch.end();
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     @Override

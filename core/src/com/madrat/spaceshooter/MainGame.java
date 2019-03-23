@@ -35,6 +35,8 @@ public class MainGame extends Game {
             data.putInteger("realShipHeight", 23);
             data.putInteger("prefferedShipWidth", 60);
             data.putInteger("prefferedShipHeight", 50);
+
+            data.flush();
         }
 
         this.setScreen(new MainMenuScreen(this));

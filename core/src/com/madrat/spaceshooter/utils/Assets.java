@@ -6,7 +6,9 @@ public class Assets {
     public static final String settBtn = "buttons/settBtn.png", settBtnPressed = "buttons/settBtn_pressed.png";
     public static final String exitBtn = "buttons/exitBtn.png", exitBtnPressed = "buttons/exitBtn_pressed.png";
 
-    public static final String blank = "objects/anything/blank.png";
+    public static final String blank = "objects/anything/blank.png", pauseBtnUp = "objects/anything/pauseBtnUp.png";
+    public static final String pauseBtnDown = "objects/anything/pauseBtnDown.png";
+
     public static final String asteroid1Animation = "objects/asteroids/asteroid1.png", asteroid2Animation = "objects/asteroids/asteroid2.png";
 
     public static final String explosion1 = "objects/explosions/explosion1.png", explosion2 = "objects/explosions/explosion2.png";
