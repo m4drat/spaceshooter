@@ -102,5 +102,6 @@ public class ScrollingBackground {
         for (ObjectHandler object : this.miniObjects) {
             object.dispose();
         }
+        baseBackground.getTexture().dispose();
     }
 }

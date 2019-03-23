@@ -30,6 +30,7 @@ public class Assets {
     public static final String uiskin = "ui/uiskin.json";
 
     public static final String ship1Animation = "ships/spaceship_animation.png", ship2Animation = "ships/spaceship2_animation.png";
+    public static final String ship3Animation = "ships/spaceship3_animation.png";
 
     public static final String bullet1 = "ships/bullet1.png", bullet2 = "ships/bullet2.png";
 }

@@ -9,7 +9,7 @@ import com.madrat.spaceshooter.utils.Assets;
 
 public class Asteroid {
     public static final int REWARD = 50;
-    public static final float DAMAGE = 0.1f;
+    public static final float DAMAGE = 0.2f;
     public static final int WIDTH = 64, HEIGHT = 64;
 
     private float asteroidSpeed;

@@ -74,10 +74,13 @@ public class MainGameScreen implements Screen {
 
     private DialogAlert confirm;
 
+    private MainGameScreen gameScreen;
+
     public MainGameScreen(MainGame newgame, SpriteBatch oldBatch) {
 
         this.game = newgame;
         this.batch = oldBatch;
+        this.gameScreen = this;
 
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal(Assets.uiskin));
@@ -109,6 +112,7 @@ public class MainGameScreen implements Screen {
                 confirm.text("Do you really\nwant to restart?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        gameScreen.dispose();
                         game.setScreen(new MainGameScreen(game, batch));
                         return true;
                     }
@@ -216,7 +220,7 @@ public class MainGameScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = true;
-                scrollingBackground.pause();
+                // scrollingBackground.pause();
                 PauseMenuTable.setVisible(true);
             }
         });
@@ -399,9 +403,7 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void dispose() { // get rid of the screen
-        batch.dispose();
-        background.getTexture().dispose();
         scrollingBackground.dispose();
-        playerShip.dispose();
+        // playerShip.dispose();
     }
 }

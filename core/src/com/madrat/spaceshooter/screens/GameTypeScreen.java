@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 public class GameTypeScreen implements Screen {
@@ -73,6 +75,23 @@ public class GameTypeScreen implements Screen {
                 game.setScreen(new MainGameScreen(game, batch));
             }
         });
+
+        multiplayer.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                final DialogAlert confirm = new DialogAlert("", skin);
+                confirm.text("Sorry, not\nimplemented");
+                confirm.yesButton("OK", new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        return true;
+                    }
+                });
+                confirm.buttonYes.align(Align.center);
+                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.show(stage);
+            }
+        });
+
 
         back.addListener(new ClickListener() {
             @Override

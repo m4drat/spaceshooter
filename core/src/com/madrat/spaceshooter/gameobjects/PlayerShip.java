@@ -26,6 +26,7 @@ public class PlayerShip extends SpaceShip {
 
     private Texture healthBar;
 
+    // Constructor to generate player ship using only file data
     public PlayerShip() {
         // playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 0.14f,1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50)
         super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShoots"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("prefferedShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("prefferedShipHeight"));
@@ -138,7 +139,7 @@ public class PlayerShip extends SpaceShip {
                 batch.setColor(Color.ORANGE);
             else if (this.currentHealth <= 0.3f)
                 batch.setColor(Color.RED);
-            batch.draw(healthBar, 0, 0, Gdx.graphics.getWidth() * this.currentHealth, healthBarHeight);
+            batch.draw(healthBar, 0, 0, Gdx.graphics.getWidth() * this.currentHealth / this.maxHealth, healthBarHeight);
             batch.setColor(Color.WHITE);
         }
     }
@@ -178,13 +179,6 @@ public class PlayerShip extends SpaceShip {
 
         // Dispose health bar
         this.healthBar.dispose();
-
-        // Dispose animation
-        for (Animation<TextureRegion> region : this.animationsArray) {
-            for (TextureRegion texture : region.getKeyFrames()) {
-                texture.getTexture().dispose();
-            }
-        }
 
         // Dispose bullets textures
         for (Bullet bullet : this.bullets) {
