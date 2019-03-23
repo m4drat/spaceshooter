@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.gameobjects.Asteroid;
 import com.madrat.spaceshooter.gameobjects.Bullet;
@@ -34,11 +38,10 @@ public class MainGameScreen implements Screen {
 
     private Random random;
 
-    private MainGame game;
+    MainGame game;
     private PlayerShip playerShip;
 
-    private boolean isRunning;
-    private Stage stage;
+    private boolean isPaused;
     private Sprite background;
     private SpriteBatch batch;
     private ScrollingBackground scrollingBackground;
@@ -47,7 +50,17 @@ public class MainGameScreen implements Screen {
     private BitmapFont scoreFont;
     private GlyphLayout scoreLayout;
 
-    public MainGameScreen(MainGame newgame) {
+    private Stage stage;
+    private Skin skin;
+    private Table menuTable;
+
+    private TextButton pause;
+
+    public MainGameScreen(MainGame newgame, SpriteBatch oldBatch) {
+
+        this.game = newgame;
+
+        stage = new Stage(new ScreenViewport());
 
         // Explosions
         explosions = new ArrayList<Explosion>();
@@ -63,10 +76,10 @@ public class MainGameScreen implements Screen {
         asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME;
 
         // Spawn player ship
-        playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50);
+        playerShip = new PlayerShip();
 
         // Create SpriteBatch to draw
-        batch = new SpriteBatch();
+        this.batch = oldBatch;
         Gdx.input.setInputProcessor(stage);
 
         // Create background Sprite
@@ -77,8 +90,10 @@ public class MainGameScreen implements Screen {
         sprites = ScrollingBackground.initStarBackground();
         scrollingBackground = new ScrollingBackground(background, sprites);
 
-        isRunning = true;
+        isPaused = false;
         playerShip.setNeedToShow(true);
+
+
     }
 
     @Override
@@ -121,7 +136,7 @@ public class MainGameScreen implements Screen {
         // Deleting Explosion
         explosions.removeAll(explosionToRemove);
 
-        // Moving
+        // Player ship moving
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             playerShip.setY(playerShip.getY() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
@@ -145,8 +160,6 @@ public class MainGameScreen implements Screen {
         scrollingBackground.draw(batch);
 
         // Player Handlers
-        if (isRunning) {
-
             // Shooting
             playerShip.shoot(delta);
 
@@ -162,11 +175,6 @@ public class MainGameScreen implements Screen {
                 asteroid.render(batch);
             }
 
-            // Render explosions
-            for (Explosion explosion : explosions) {
-                explosion.render(batch);
-            }
-
             // Collision detecting (only player bullets - asteroids)
             for (Bullet bullet : playerShip.getBullets()) {
                 for (Asteroid asteroid : asteroids) {
@@ -178,7 +186,7 @@ public class MainGameScreen implements Screen {
                         asteroidsToRemove.add(asteroid);
 
                         // Spawn explosion
-                        explosions.add(new Explosion(asteroid.getX() - asteroid.WIDTH / 2, asteroid.getY() - asteroid.HEIGHT));
+                        explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.HEIGHT / 2, 0.11f, 96, 0.9f, new Texture(Assets.explosion2)));
 
                         // Increase score value
                         playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
@@ -191,12 +199,22 @@ public class MainGameScreen implements Screen {
             // Check for collisions between player and asteroids
             for (Asteroid asteroid : asteroids) {
                 if (asteroid.getCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
-
                     // delete asteroid
                     asteroidsToRemove.add(asteroid);
 
+                    // Spawn Explosion
+                    explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.HEIGHT / 2, 0.1f, 128, 0.8f, new Texture(Assets.explosion3)));
+
                     // decrease player health
                     playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
+
+                    // Increase score value
+                    playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
+
+                    // Game Over
+                    if (playerShip.getCurrentHealth() <= 0) {
+                        game.setScreen(new GameOverScreen(game, batch, scrollingBackground, playerShip.getScore()));
+                    }
                 }
             }
 
@@ -207,6 +225,10 @@ public class MainGameScreen implements Screen {
             playerShip.correctBounds();
             // Draw ship with animations bullets etc
             playerShip.draw(batch, delta);
+
+        // Render explosions
+        for (Explosion explosion : explosions) {
+            explosion.render(batch);
         }
 
         // Draw and update score

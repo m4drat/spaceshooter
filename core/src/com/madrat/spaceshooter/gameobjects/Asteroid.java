@@ -19,7 +19,7 @@ public class Asteroid {
     private float x, y;
     public boolean remove = false;
 
-    private static final float animationSpeed = 0.2f;
+    private static final float animationSpeed = 0.07f;
     private static final int animationsCount = 2;// 1 - default; 2 - explosion
 
     private Animation<TextureRegion>[] animationsArray;

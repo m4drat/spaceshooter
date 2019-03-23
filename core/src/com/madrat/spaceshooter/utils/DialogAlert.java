@@ -12,13 +12,17 @@ import com.badlogic.gdx.utils.Align;
 
 public class DialogAlert extends Dialog {
 
-    private float dialog_padding = 15f;
+    private float dialog_padding = 20f;
     private float button_pad_l = 15f;
     private float button_pad_r = 15f;
     private float button_pad_b = 15f;
-    private float button_pad_t = 10f;
+    private float button_pad_t = 25f;
 
     private Skin skin;
+
+    public Label label;
+    public TextButton buttonYes;
+    public TextButton buttonNo;
 
     public DialogAlert(String title, Skin skin) {
         super(title, skin);
@@ -37,40 +41,40 @@ public class DialogAlert extends Dialog {
     @Override
     public DialogAlert text(String text) {
         BitmapFont font = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt), Gdx.files.internal(Assets.emulogicpng), false);
-        Label label = new Label(text, new Label.LabelStyle(font, Color.WHITE));
+        label = new Label(text, new Label.LabelStyle(font, Color.WHITE));
 
         label.setAlignment(Align.center);
         label.setWrap(false);
-        label.setFontScale(0.6f);
+        label.setFontScale(0.7f);
 
         text(label);
         return this;
     }
 
     public DialogAlert yesButton(String buttonText, InputListener listener) {
-        TextButton button = new TextButton(buttonText, this.skin);
-        button.addListener(listener);
+        buttonYes = new TextButton(buttonText, this.skin);
+        buttonYes.addListener(listener);
 
-        button.padTop(button_pad_t);
-        button.padLeft(button_pad_l);
-        button.padRight(button_pad_r);
-        button.padBottom(button_pad_b);
+        buttonYes.padTop(button_pad_t);
+        // buttonYes.padLeft(button_pad_l);
+        // buttonYes.padRight(button_pad_r);
+        buttonYes.padBottom(button_pad_b);
 
-        button(button);
+        button(buttonYes);
 
         return this;
     }
 
     public DialogAlert noButton(String buttonText, InputListener listener) {
-        TextButton button = new TextButton(buttonText, this.skin);
-        button.addListener(listener);
+        buttonNo = new TextButton(buttonText, this.skin);
+        buttonNo.addListener(listener);
 
-        button.padTop(button_pad_t);
-        button.padLeft(button_pad_l);
-        button.padRight(button_pad_r);
-        button.padBottom(button_pad_b);
+        buttonNo.padTop(button_pad_t);
+        buttonNo.padLeft(button_pad_l + 40);
+        // buttonNo.padRight(button_pad_r);
+        buttonNo.padBottom(button_pad_b);
 
-        button(button);
+        button(buttonNo);
 
         return this;
     }

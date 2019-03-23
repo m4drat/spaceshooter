@@ -7,8 +7,7 @@ public class SpaceShip {
     protected int prefferedShipWidth;
     protected int prefferedShipHeight;
 
-    protected float x;
-    protected float y;
+    protected float x, y;
     protected float speed;
     protected float delayBetweenShoots;
     protected float bulletsSpeed;
@@ -25,7 +24,7 @@ public class SpaceShip {
 
     public boolean needToShow, isAlive;
 
-    public SpaceShip(float currentHealth, float maxHealth, int damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int prefferedShipWidth, int prefferedShipHeight) {
+    public SpaceShip(float currentHealth, float maxHealth, float damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int prefferedShipWidth, int prefferedShipHeight) {
         this.realShipHeight = realShipHeight;
         this.realShipWidth = realShipWidth;
 
@@ -40,7 +39,7 @@ public class SpaceShip {
         this.damage = damage;
         this.speed = speed;
         this.handle = handle;
-        this.needToShow = false;
+        this.needToShow = true;
         this.isAlive = true;
         // this.collisionMask = new Rectangle();
     }
@@ -87,6 +86,14 @@ public class SpaceShip {
 
     public void setAlive(boolean alive) {
         isAlive = alive;
+    }
+
+    public int getPrefferedShipWidth() {
+        return prefferedShipWidth;
+    }
+
+    public int getPrefferedShipHeight() {
+        return prefferedShipHeight;
     }
 
     public CollisionRect getShipCollisionRect() {
