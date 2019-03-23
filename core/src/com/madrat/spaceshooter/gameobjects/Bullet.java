@@ -46,4 +46,8 @@ public class Bullet {
     public CollisionRect getCollisionRect() {
         return rect;
     }
+
+    public static Texture getBulletTexture() {
+        return bulletTexture;
+    }
 }

@@ -8,9 +8,10 @@ import com.madrat.spaceshooter.utils.Assets;
 
 public class Explosion {
 
-    public static final float FRAME_LENGTH = 0.15f;
+    public static final float SCALE = 0.9f; // 2f for explosion1.png
+    public static final float FRAME_LENGTH = 0.12f;
     public static final int OFFSET = 8;
-    public static final int SIZE = 64;
+    public static final int SIZE = 96; // 96 for explosion2.png and 64 for explosion1.png
 
     private static Animation<TextureRegion> animation;
     private float x, y;
@@ -24,7 +25,7 @@ public class Explosion {
 
         stateTime = 0;
         if (animation == null)
-            animation = new Animation<TextureRegion>(FRAME_LENGTH, TextureRegion.split(new Texture(Assets.explosion1), SIZE, SIZE)[0]);
+            animation = new Animation<TextureRegion>(FRAME_LENGTH, TextureRegion.split(new Texture(Assets.explosion2), SIZE, SIZE)[0]);
     }
 
     public void update(float deltaTime) {
@@ -34,7 +35,7 @@ public class Explosion {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(animation.getKeyFrame(stateTime), x, y, (int) (SIZE * 2), (int) (SIZE * 2));
+        batch.draw(animation.getKeyFrame(stateTime), x, y, (int) (SIZE) * SCALE, (int) (SIZE) * SCALE);
     }
 
 }

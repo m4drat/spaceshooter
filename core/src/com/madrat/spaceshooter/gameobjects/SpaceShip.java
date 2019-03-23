@@ -1,13 +1,11 @@
 package com.madrat.spaceshooter.gameobjects;
 
-import com.badlogic.gdx.math.Rectangle;
-
 public class SpaceShip {
-    public int SHIP_WIDTH = 24;
-    public int SHIP_HEIGHT = 23;
+    protected int realShipWidth;
+    protected int realShipHeight;
 
-    public int preferred_SHIP_WIDTH = 60;
-    public int preferred_SHIP_HEIGHT = 50;
+    protected int prefferedShipWidth;
+    protected int prefferedShipHeight;
 
     protected float x;
     protected float y;
@@ -16,14 +14,26 @@ public class SpaceShip {
     protected float bulletsSpeed;
 
     protected float lastShoot;
-    protected int currentLives, maxLives, damage;
+
+    protected float currentHealth;
+    protected float maxHealth;
+    protected float damage;
+
     protected String handle; // aka ship name
+
+    protected CollisionRect shipCollisionRect;
 
     public boolean needToShow, isAlive;
 
-    public SpaceShip(int lives, int maxLives, int damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle) {
-        this.currentLives = lives;
-        this.maxLives = maxLives;
+    public SpaceShip(float currentHealth, float maxHealth, int damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int prefferedShipWidth, int prefferedShipHeight) {
+        this.realShipHeight = realShipHeight;
+        this.realShipWidth = realShipWidth;
+
+        this.prefferedShipHeight = prefferedShipHeight;
+        this.prefferedShipWidth = prefferedShipWidth;
+
+        this.currentHealth = currentHealth;
+        this.maxHealth = maxHealth;
         this.delayBetweenShoots = delayBetweenShoots;
         this.bulletsSpeed = bulletsSpeed;
         this.lastShoot = 0;
@@ -55,19 +65,15 @@ public class SpaceShip {
         return speed;
     }
 
-    public float getDelayBetweenShoots() {
-        return delayBetweenShoots;
+    public float getCurrentHealth() {
+        return currentHealth;
     }
 
-    public int getCurrentLives() {
-        return currentLives;
+    public float getMaxHealth() {
+        return maxHealth;
     }
 
-    public int getMaxLives() {
-        return maxLives;
-    }
-
-    public int getDamage() {
+    public float getDamage() {
         return damage;
     }
 
@@ -83,15 +89,11 @@ public class SpaceShip {
         isAlive = alive;
     }
 
-    public void setLastShoot(float lastShoot) {
-        this.lastShoot = lastShoot;
+    public CollisionRect getShipCollisionRect() {
+        return shipCollisionRect;
     }
 
-    public void incLastShoot(float dt) {
-        this.lastShoot += dt;
-    }
-
-    public float getLastShoot() {
-        return lastShoot;
+    public void setCurrentHealth(float currentHealth) {
+        this.currentHealth = currentHealth;
     }
 }

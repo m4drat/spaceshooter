@@ -45,14 +45,17 @@ public class MainGameScreen implements Screen {
     private ArrayList<ObjectHandler> sprites;
 
     private BitmapFont scoreFont;
+    private GlyphLayout scoreLayout;
 
     public MainGameScreen(MainGame newgame) {
 
         // Explosions
         explosions = new ArrayList<Explosion>();
 
-        // Score BitmapFont
+        // Score BitmapFont + score GlyphLayout
         scoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
+        scoreFont.setColor(new Color(0x7a9af1));
+        scoreLayout = new GlyphLayout(scoreFont, "0");
 
         // Asteroids
         random = new Random();
@@ -60,7 +63,7 @@ public class MainGameScreen implements Screen {
         asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME;
 
         // Spawn player ship
-        playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 3, 5, 1, 0.3f, 600f, 300f, "Zapper");
+        playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50);
 
         // Create SpriteBatch to draw
         batch = new SpriteBatch();
@@ -100,7 +103,7 @@ public class MainGameScreen implements Screen {
                 asteroidsToRemove.add(asteroid);
         }
 
-        // Update Bullets (from player)
+        // Update player Bullets (delete old)
         ArrayList<Bullet> bulletsToRemove = new ArrayList<Bullet>();
         for (Bullet bullet : playerShip.getBullets()) {
             bullet.update(delta);
@@ -108,7 +111,7 @@ public class MainGameScreen implements Screen {
                 bulletsToRemove.add(bullet);
         }
 
-        // Update Explosion
+        // Update Explosion (delete old)
         ArrayList<Explosion> explosionToRemove = new ArrayList<Explosion>();
         for (Explosion explosion : explosions) {
             explosion.update(delta);
@@ -128,69 +131,86 @@ public class MainGameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
 
+        // Update player collision rect
+        playerShip.getShipCollisionRect().move(playerShip.getX(), playerShip.getY());
+
+        // GL important thing
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Begin SpriteBatch
         batch.begin();
+
         // Draw background
         scrollingBackground.draw(batch);
 
         // Player Handlers
         if (isRunning) {
-            // Shooting
-            if (playerShip.getLastShoot() > playerShip.getDelayBetweenShoots()) {
-                playerShip.shoot();
-                playerShip.setLastShoot(0);
-            } else {
-                playerShip.incLastShoot(delta);
-            }
 
-            // rendering bullets
+            // Shooting
+            playerShip.shoot(delta);
+
+            // Render player bullets
             if (playerShip.getBullets().size() > 0) {
                 for (Bullet bullet : playerShip.getBullets()) {
                     bullet.render(batch);
                 }
             }
 
-            // Render Asteroids
+            // Render asteroids
             for (Asteroid asteroid : asteroids) {
                 asteroid.render(batch);
             }
 
+            // Render explosions
             for (Explosion explosion : explosions) {
                 explosion.render(batch);
             }
 
-            // Collision detecting
+            // Collision detecting (only player bullets - asteroids)
             for (Bullet bullet : playerShip.getBullets()) {
                 for (Asteroid asteroid : asteroids) {
+                    // Collision between asteroid and bullet
                     if (bullet.getCollisionRect().collidesWith(asteroid.getCollisionRect())) {
+
+                        // If bullet collides with asteroid we need to delete them too
                         bulletsToRemove.add(bullet);
                         asteroidsToRemove.add(asteroid);
 
                         // Spawn explosion
-                        explosions.add(new Explosion(asteroid.getX(), asteroid.getY()));
+                        explosions.add(new Explosion(asteroid.getX() - asteroid.WIDTH / 2, asteroid.getY() - asteroid.HEIGHT));
 
                         // Increase score value
-                        playerShip.setScore(playerShip.getScore() + 100);
+                        playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
                     }
                 }
             }
-            // Remove all objects which must be destroyed (collision results, y < 0, ...)
-            asteroids.removeAll(asteroidsToRemove);
+            // Remove all bullets which must be destroyed (collision results, y < 0, ...)
             playerShip.getBullets().removeAll(bulletsToRemove);
 
-            // increase stateTime for animation
-            playerShip.incStateTime(delta);
+            // Check for collisions between player and asteroids
+            for (Asteroid asteroid : asteroids) {
+                if (asteroid.getCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
+
+                    // delete asteroid
+                    asteroidsToRemove.add(asteroid);
+
+                    // decrease player health
+                    playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
+                }
+            }
+
+            // After all possible collisions delete asteroids
+            asteroids.removeAll(asteroidsToRemove);
+
             // check for bounds
             playerShip.correctBounds();
             // Draw ship with animations bullets etc
             playerShip.draw(batch, delta);
         }
 
-        // Draw score
-        scoreFont.setColor(new Color(0x7a9af1));
-        GlyphLayout scoreLayout = new GlyphLayout(scoreFont, "" + playerShip.getScore());
+        // Draw and update score
+        scoreLayout.setText(scoreFont, "" + playerShip.getScore());
         scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height - 5);
 
         batch.end();
@@ -221,5 +241,6 @@ public class MainGameScreen implements Screen {
         batch.dispose();
         background.getTexture().dispose();
         scrollingBackground.dispose();
+        playerShip.dispose();
     }
 }
