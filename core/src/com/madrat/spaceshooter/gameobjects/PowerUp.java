@@ -5,29 +5,25 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 import static com.madrat.spaceshooter.MainGame.SCALE_X;
 import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
-public class Explosion {
+public class PowerUp {
 
     private Animation<TextureRegion> animation;
     private float x, y;
     private float stateTime;
 
-    // private int tileSize; // 96 for explosion2.png and 64 for explosion1.png
-    // private float scale; // 2f for explosion1.png and 0.9f for explosion2.png
+    public boolean remove = false;
 
     private int preferredWidth, preferredHeight;
 
-    public boolean remove = false;
-
-    public Explosion(float x, float y, float frameLength, int tileSize, int preferredWidth, int preferredHeight, Texture explosion) {
+    public PowerUp(float x, float y, float frameLength, int tileSize, int preferredWidth, int preferredHeight, Texture explosion) {
         this.x = x;
         this.y = y;
 
-        this.preferredWidth = (int) (preferredWidth * SCALE_FACTOR);
-        this.preferredHeight = (int) (preferredHeight * SCALE_FACTOR);
+        this.preferredWidth = (int) (preferredWidth * SCALE_X);
+        this.preferredHeight = (int) (preferredHeight * SCALE_Y);
 
         this.stateTime = 0;
 
@@ -41,6 +37,6 @@ public class Explosion {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(animation.getKeyFrame(stateTime), x, y, this.preferredWidth, this.preferredHeight);
+        batch.draw(animation.getKeyFrame(stateTime), x, y, preferredWidth, preferredHeight);
     }
 }

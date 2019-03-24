@@ -35,11 +35,9 @@ import com.madrat.spaceshooter.utils.ScrollingBackground;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MainGameScreen implements Screen {
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
-    public static final float MIN_ASTEROID_SPAWN_TIME = 0.3f;
-    public static final float MAX_ASTEROID_SPAWN_TIME = 0.6f;
-    private float asteroidSpawnTimer;
+public class MainGameScreen implements Screen {
 
     private ArrayList<Asteroid> asteroids;
     private ArrayList<Explosion> explosions;
@@ -48,6 +46,7 @@ public class MainGameScreen implements Screen {
 
     MainGame game;
     private PlayerShip playerShip;
+    private float asteroidSpawnTimer;
 
     private boolean isPaused;
     private Sprite background;
@@ -76,35 +75,41 @@ public class MainGameScreen implements Screen {
 
     private MainGameScreen gameScreen;
 
-    public MainGameScreen(MainGame newgame, SpriteBatch oldBatch) {
+    public MainGameScreen(MainGame newGame, SpriteBatch oldBatch) {
 
-        this.game = newgame;
+        this.game = newGame;
         this.batch = oldBatch;
         this.gameScreen = this;
 
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal(Assets.uiskin));
         pauseBtn = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.pauseBtnUp)))), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.pauseBtnDown)))));
+        pauseBtn.getImage().setScale(SCALE_FACTOR);
 
         // Create Table for pause button
         pauseTable = new Table();
         pauseTable.setWidth(stage.getWidth());
         pauseTable.align(Align.right | Align.top);
         pauseTable.setPosition(0, MainGame.GENERAL_HEIGHT);
-        pauseTable.padTop(10);
-        pauseTable.padRight(10);
+        pauseTable.padTop((15 * SCALE_FACTOR) * SCALE_FACTOR);
+        pauseTable.padRight((15 * SCALE_FACTOR) * SCALE_FACTOR);
         pauseTable.add(pauseBtn);
 
+        // Continue game button
         continueButton = new TextButton("continue", skin);
+        continueButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                scrollingBackground._continue();
+                // scrollingBackground._continue();
                 PauseMenuTable.setVisible(false);
             }
         });
+
+        // Restart game button
         restartButton = new TextButton("restart", skin);
+        restartButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -123,11 +128,16 @@ public class MainGameScreen implements Screen {
                     }
                 });
                 confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setFontScale(1f * SCALE_FACTOR);
                 confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.buttonNo.getLabel().setFontScale(1f * SCALE_FACTOR);
                 confirm.show(stage);
             }
         });
+
+        // Back to main menu button
         backButton = new TextButton("back", skin);
+        backButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -135,6 +145,7 @@ public class MainGameScreen implements Screen {
                 confirm.text("Do you really\nwant to leave?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        gameScreen.dispose();
                         game.setScreen(new MainMenuScreen(game));
                         return true;
                     }
@@ -145,11 +156,17 @@ public class MainGameScreen implements Screen {
                     }
                 });
                 confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setFontScale(1f * SCALE_FACTOR);
                 confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.buttonNo.getLabel().setFontScale(1f * SCALE_FACTOR);
+                // confirm.scaleBy(1f * SCALE_FACTOR);
                 confirm.show(stage);
             }
         });
+
+        // Close game button
         exitButton = new TextButton("exit", skin);
+        exitButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -157,6 +174,7 @@ public class MainGameScreen implements Screen {
                 confirm.text("Do you really\nwant to exit?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        gameScreen.dispose();
                         Gdx.app.exit();
                         return true;
                     }
@@ -167,21 +185,25 @@ public class MainGameScreen implements Screen {
                     }
                 });
                 confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setFontScale(1f * SCALE_FACTOR);
                 confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.buttonNo.getLabel().setFontScale(1f * SCALE_FACTOR);
+                // confirm.scaleBy(1f * SCALE_FACTOR);
                 confirm.show(stage);
             }
         });
 
+        // Pause menu table
         PauseMenuTable = new Table();
         PauseMenuTable.setWidth(stage.getWidth());
         PauseMenuTable.align(Align.center | Align.top);
         PauseMenuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
-        PauseMenuTable.padTop(120);
-        PauseMenuTable.add(continueButton).padBottom(48);
+        PauseMenuTable.padTop(120 * SCALE_FACTOR);
+        PauseMenuTable.add(continueButton).padBottom(48 * SCALE_FACTOR);
         PauseMenuTable.row();
-        PauseMenuTable.add(restartButton).padBottom(48);
+        PauseMenuTable.add(restartButton).padBottom(48 * SCALE_FACTOR);
         PauseMenuTable.row();
-        PauseMenuTable.add(backButton).padBottom(48);
+        PauseMenuTable.add(backButton).padBottom(48 * SCALE_FACTOR);
         PauseMenuTable.row();
         PauseMenuTable.add(exitButton);
         PauseMenuTable.setVisible(false);
@@ -192,12 +214,13 @@ public class MainGameScreen implements Screen {
         // Score BitmapFont + score GlyphLayout
         scoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
         scoreFont.setColor(new Color(0x7a9af1));
+        scoreFont.getData().setScale(SCALE_FACTOR);
         scoreLayout = new GlyphLayout(scoreFont, "0");
 
         // Asteroids
         random = new Random();
         asteroids = new ArrayList<Asteroid>();
-        asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME;
+        asteroidSpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
 
         // Spawn player ship
         playerShip = new PlayerShip();
@@ -240,8 +263,8 @@ public class MainGameScreen implements Screen {
         if (!isPaused) {
             asteroidSpawnTimer -= delta;
             if (asteroidSpawnTimer <= 0) {
-                asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME;
-                asteroids.add(new Asteroid(120, random.nextInt(Gdx.graphics.getWidth() - Asteroid.WIDTH)));
+                asteroidSpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
+                asteroids.add(new Asteroid(120 * SCALE_FACTOR, random.nextInt(Gdx.graphics.getWidth() - (int) (64 * SCALE_FACTOR)), 0.07f, 64, 64, 64, 64));
             }
 
             // Update asteroids (delete old)
@@ -302,12 +325,14 @@ public class MainGameScreen implements Screen {
         if (playerShip.getBullets().size() > 0) {
             for (Bullet bullet : playerShip.getBullets()) {
                 bullet.render(batch);
+                bullet.getCollisionRect().drawCollider(batch);
             }
         }
 
         // Render asteroids
         for (Asteroid asteroid : asteroids) {
             asteroid.render(batch);
+            asteroid.getCollisionRect().drawCollider(batch);
         }
 
         if (!isPaused) {
@@ -322,7 +347,7 @@ public class MainGameScreen implements Screen {
                         asteroidsToRemove.add(asteroid);
 
                         // Spawn explosion
-                        explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.HEIGHT / 2, 0.11f, 96, 0.9f, new Texture(Assets.explosion2)));
+                        explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.getPreferredHeight() / 2, 0.11f, 96, 96, 96, new Texture(Assets.explosion2)));
 
                         // Increase score value
                         playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
@@ -339,7 +364,7 @@ public class MainGameScreen implements Screen {
                     asteroidsToRemove.add(asteroid);
 
                     // Spawn Explosion
-                    explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.HEIGHT / 2, 0.1f, 128, 0.8f, new Texture(Assets.explosion3)));
+                    explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.getPreferredHeight() / 2, 0.1f, 128, 128, 128, new Texture(Assets.explosion3)));
 
                     // decrease player health
                     playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
@@ -363,6 +388,7 @@ public class MainGameScreen implements Screen {
 
         // Draw ship with animations bullets etc
         playerShip.draw(batch, delta);
+        playerShip.getShipCollisionRect().drawCollider(batch);
 
         // Render explosions
         for (Explosion explosion : explosions) {
@@ -404,6 +430,6 @@ public class MainGameScreen implements Screen {
     @Override
     public void dispose() { // get rid of the screen
         scrollingBackground.dispose();
-        // playerShip.dispose();
+        playerShip.dispose();
     }
 }

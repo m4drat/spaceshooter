@@ -3,15 +3,16 @@ package com.madrat.spaceshooter.gameobjects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.madrat.spaceshooter.utils.Assets;
+
+import static com.madrat.spaceshooter.MainGame.SCALE_X;
+import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
 public class Bullet {
-
-    public static final int WIDTH = 4;
-    public static final int HEIGHT = 10;
-
     private float bulletSpeed;
-    private static Texture bulletTexture;
+    private Texture bulletTexture;
+
+    private int preferredWidth;
+    private int preferredHeight;
 
     float x, y;
 
@@ -19,15 +20,16 @@ public class Bullet {
 
     public boolean remove = false;
 
-    public Bullet(float bulletSpeed, float x, float y, String colliderTag) {
+    public Bullet(Texture bulletTexture, float bulletSpeed, float x, float y, int preferredWidth, int preferredHeight, String colliderTag) {
         this.bulletSpeed = bulletSpeed;
         this.x = x;
         this.y = y;
+        this.preferredWidth = (int) (preferredWidth * SCALE_X);
+        this.preferredHeight = (int) (preferredHeight * SCALE_Y);
 
-        this.rect = new CollisionRect(x, y, WIDTH, HEIGHT, colliderTag);
+        this.rect = new CollisionRect(x, y, preferredWidth, preferredHeight, colliderTag);
 
-        if (bulletTexture == null)
-            bulletTexture = new Texture(Assets.bullet1);
+        this.bulletTexture = bulletTexture;
     }
 
     public void update(float deltaTime) {
@@ -40,14 +42,14 @@ public class Bullet {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(bulletTexture, x, y, WIDTH, HEIGHT);
+        batch.draw(bulletTexture, x, y, preferredWidth, preferredHeight);
     }
 
     public CollisionRect getCollisionRect() {
         return rect;
     }
 
-    public static Texture getBulletTexture() {
+    public Texture getBulletTexture() {
         return bulletTexture;
     }
 }

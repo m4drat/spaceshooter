@@ -7,46 +7,41 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.madrat.spaceshooter.utils.Assets;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.MainGame.SCALE_X;
+import static com.madrat.spaceshooter.MainGame.SCALE_Y;
+
 public class Asteroid {
+    public static final float MIN_ASTEROID_SPAWN_TIME = 2f;
+    public static final float MAX_ASTEROID_SPAWN_TIME = 6f;
+
     public static final int REWARD = 50;
     public static final float DAMAGE = 0.2f;
-    public static final int WIDTH = 64, HEIGHT = 64;
 
     private float asteroidSpeed;
+
     private static Texture asteroidTextureAnimations;
     private CollisionRect rect;
 
     private float x, y;
     public boolean remove = false;
 
-    private static final float animationSpeed = 0.07f;
-    private static final int animationsCount = 2;// 1 - default; 2 - explosion
-
-    private Animation<TextureRegion>[] animationsArray;
+    private Animation<TextureRegion> asteroidAnimation;
     private float stateTime;
-    private int currentAnimation;
+    private int preferredWidth, preferredHeight;
 
-    public Asteroid(float asteroidSpeed, float x) {
+    public Asteroid(float asteroidSpeed, float x, float animationSpeed, int preferredWidth, int preferredHeight, int realWidth, int realHeight) {
         this.asteroidSpeed = asteroidSpeed;
         this.x = x;
         this.y = Gdx.graphics.getHeight();
 
-        this.rect = new CollisionRect(x, y, WIDTH - 12, HEIGHT - 12, "enemy");
+        this.preferredWidth = (int) (preferredWidth * SCALE_FACTOR);
+        this.preferredHeight = (int) (preferredHeight * SCALE_FACTOR);
+
+        this.rect = new CollisionRect(x, y, this.preferredWidth, this.preferredHeight, "enemy");
 
         asteroidTextureAnimations = new Texture(Assets.asteroid2Animation);
-        animationsArray = new Animation[animationsCount];
-        currentAnimation = 0;
-        TextureRegion[][] animationSpriteSheet = TextureRegion.split(asteroidTextureAnimations, WIDTH, HEIGHT);
-        animationsArray[currentAnimation] = new Animation(animationSpeed, animationSpriteSheet[0]);
-        animationsArray[currentAnimation + 1] = new Animation(animationSpeed, animationSpriteSheet[1]);
-    }
-
-    public Animation<TextureRegion>[] getAnimationsArray() {
-        return animationsArray;
-    }
-
-    public int getCurrentAnimation() {
-        return currentAnimation;
+        asteroidAnimation = new Animation(animationSpeed, TextureRegion.split(asteroidTextureAnimations, realWidth, realHeight)[0]);
     }
 
     public void update(float deltaTime) {
@@ -60,7 +55,7 @@ public class Asteroid {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(this.getAnimationsArray()[this.getCurrentAnimation()].getKeyFrame(stateTime, true), this.x, this.y, WIDTH, HEIGHT);
+        batch.draw(asteroidAnimation.getKeyFrame(stateTime, true), this.x, this.y, this.preferredWidth, this.preferredHeight);
     }
 
     public CollisionRect getCollisionRect() {
@@ -73,5 +68,13 @@ public class Asteroid {
 
     public float getY() {
         return y;
+    }
+
+    public int getPreferredWidth() {
+        return preferredWidth;
+    }
+
+    public int getPreferredHeight() {
+        return preferredHeight;
     }
 }

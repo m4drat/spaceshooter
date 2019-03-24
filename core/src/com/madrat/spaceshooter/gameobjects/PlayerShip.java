@@ -12,15 +12,15 @@ import com.madrat.spaceshooter.utils.Assets;
 
 import java.util.ArrayList;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class PlayerShip extends SpaceShip {
 
     private static final int healthBarHeight = 5;
-    private static final int animationsCount = 2;// 0 - alive; 1 - died
 
-    private Animation<TextureRegion>[] animationsArray;
+    private Animation<TextureRegion> shipAnimation;
     private float stateTime;
-    private int currentAnimation, score;
-    private float animationSpeed;
+    private int score;
 
     private ArrayList<Bullet> bullets;
 
@@ -29,63 +29,36 @@ public class PlayerShip extends SpaceShip {
     // Constructor to generate player ship using only file data
     public PlayerShip() {
         // playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 0.14f,1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50)
-        super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShoots"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("prefferedShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("prefferedShipHeight"));
+        super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShoots"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
 
         Preferences data = Gdx.app.getPreferences("spacegame");
 
-        this.x = Gdx.graphics.getWidth() / 2 - this.prefferedShipWidth / 2;
+        this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
         this.y = 25;
 
-        this.shipCollisionRect = new CollisionRect(this.x, this.y, this.prefferedShipWidth - 5, this.prefferedShipHeight - 5, "player");
-        this.animationSpeed = data.getFloat("animationSpeed");
+        this.shipCollisionRect = new CollisionRect(this.x, this.y, this.preferredShipWidth, this.preferredShipHeight, "player");
 
-        this.animationsArray = new Animation[animationsCount];
+        this.shipAnimation = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), TextureRegion.split(new Texture(data.getString("animationTexture")), this.realShipWidth, this.realShipHeight)[0]);
 
-        // Set first "default" animation
-        this.currentAnimation = 0;
-        TextureRegion[][] animationSpriteSheet = TextureRegion.split(new Texture(data.getString("animationTexture")), this.realShipWidth, this.realShipHeight);
-
-        // Default fly animation
-        this.animationsArray[currentAnimation] = new Animation(animationSpeed, animationSpriteSheet[0]);
-
-        // Explosion animation
-        // this.animationsArray[currentAnimation + 1] = new Animation(animationSpeed, animationSpriteSheet[1]);
-
-        // Initialize bullets list
-        this.bullets = new ArrayList<Bullet>();
-
-        // Initialize score value
-        this.score = 0;
-
-        // Init blank texture to draw
-        this.healthBar = new Texture(Assets.blank);
+        setup();
     }
 
-    public PlayerShip(Texture shipAnimations, float animationSpeed, float currentHealth, float maxHealth, float damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int prefferedShipWidth, int prefferedShipHeight) {
+    public PlayerShip(Texture shipAnimations, float frameLength, float currentHealth, float maxHealth, float damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int prefferedShipWidth, int prefferedShipHeight) {
         super(currentHealth, maxHealth, damage, delayBetweenShoots, bulletsSpeed, speed, handle, realShipWidth, realShipHeight, prefferedShipWidth, prefferedShipHeight);
 
         // Place ship in center
-        this.x = Gdx.graphics.getWidth() / 2 - this.prefferedShipWidth / 2;
+        this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
         this.y = 25;
 
         // Create collision rect
-        this.shipCollisionRect = new CollisionRect(this.x, this.y, this.prefferedShipWidth, this.prefferedShipHeight, "player");
-
-        this.animationSpeed = animationSpeed;
+        this.shipCollisionRect = new CollisionRect(this.x, this.y, this.preferredShipWidth, this.preferredShipHeight, "player");
 
         // Initialize animation array
-        this.animationsArray = new Animation[animationsCount];
+        this.shipAnimation = new Animation<TextureRegion>(frameLength, TextureRegion.split(shipAnimations, this.realShipWidth, this.realShipHeight)[0]);
+        setup();
+    }
 
-        // Set first "default" animation
-        this.currentAnimation = 0;
-        TextureRegion[][] animationSpriteSheet = TextureRegion.split(shipAnimations, this.realShipWidth, this.realShipHeight);
-
-        // Default fly animation
-        this.animationsArray[currentAnimation] = new Animation(animationSpeed, animationSpriteSheet[0]);
-
-        // Explosion animation
-        // this.animationsArray[currentAnimation + 1] = new Animation(animationSpeed, animationSpriteSheet[1]);
-
+    private void setup() {
         // Initialize bullets list
         this.bullets = new ArrayList<Bullet>();
 
@@ -94,18 +67,6 @@ public class PlayerShip extends SpaceShip {
 
         // Init blank texture to draw
         this.healthBar = new Texture(Assets.blank);
-    }
-
-    public Animation<TextureRegion>[] getAnimationsArray() {
-        return animationsArray;
-    }
-
-    public int getCurrentAnimation() {
-        return currentAnimation;
-    }
-
-    public float getStateTime() {
-        return stateTime;
     }
 
     public void correctBounds() {
@@ -114,23 +75,23 @@ public class PlayerShip extends SpaceShip {
             this.x = 0;
 
         // Right bounds
-        if (this.x > MainGame.GENERAL_WIDTH - this.prefferedShipWidth)
-            this.x = MainGame.GENERAL_WIDTH - this.prefferedShipWidth;
+        if (this.x > MainGame.GENERAL_WIDTH - this.preferredShipWidth)
+            this.x = MainGame.GENERAL_WIDTH - this.preferredShipWidth;
 
         // Bottom bounds
         if (this.y < 0)
             this.y = 0;
 
         // Top bounds
-        if (this.y > MainGame.GENERAL_HEIGHT - this.prefferedShipHeight)
-            this.y = MainGame.GENERAL_HEIGHT - this.prefferedShipHeight;
+        if (this.y > MainGame.GENERAL_HEIGHT - this.preferredShipHeight)
+            this.y = MainGame.GENERAL_HEIGHT - this.preferredShipHeight;
     }
 
     public void draw(SpriteBatch batch, float delta) {
         if (needToShow && isAlive) {
             stateTime += delta;
             // rendering ship
-            batch.draw(this.getAnimationsArray()[this.getCurrentAnimation()].getKeyFrame(this.getStateTime(), true), this.getX(), this.getY(), this.prefferedShipWidth, this.prefferedShipHeight);
+            batch.draw(shipAnimation.getKeyFrame(stateTime, true), this.x, this.y, this.preferredShipWidth, this.preferredShipHeight);
 
             // Draw health bar
             if (this.currentHealth > 0.7f)
@@ -139,7 +100,7 @@ public class PlayerShip extends SpaceShip {
                 batch.setColor(Color.ORANGE);
             else if (this.currentHealth <= 0.3f)
                 batch.setColor(Color.RED);
-            batch.draw(healthBar, 0, 0, Gdx.graphics.getWidth() * this.currentHealth / this.maxHealth, healthBarHeight);
+            batch.draw(healthBar, 0, 0, Gdx.graphics.getWidth() * this.currentHealth / this.maxHealth, healthBarHeight * SCALE_FACTOR);
             batch.setColor(Color.WHITE);
         }
     }
@@ -148,8 +109,8 @@ public class PlayerShip extends SpaceShip {
         if (isAlive) {
             if (this.lastShoot > delayBetweenShoots) {
                 // Add two bullets
-                bullets.add(new Bullet(this.bulletsSpeed, this.x + this.prefferedShipWidth - this.prefferedShipWidth / 5, this.y + this.prefferedShipHeight / 2, "player"));
-                bullets.add(new Bullet(this.bulletsSpeed, this.x + this.prefferedShipWidth / 5 - 3, this.y + this.prefferedShipHeight / 2, "player"));
+                bullets.add(new Bullet(new Texture(Assets.bullet1), this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, 4, 10, "player"));
+                bullets.add(new Bullet(new Texture(Assets.bullet1), this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, 4, 10, "player"));
 
                 // set Shoot timer to 0
                 this.lastShoot = 0;

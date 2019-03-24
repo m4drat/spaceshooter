@@ -22,6 +22,8 @@ import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class GameTypeScreen implements Screen {
 
     MainGame game;
@@ -50,7 +52,7 @@ public class GameTypeScreen implements Screen {
         this.highScore = data.getInteger("highscore", 0);
 
         highScoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
-        highScoreFont.getData().setScale(0.7f);
+        highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreFont.setColor(new Color(0x7a9af1));
         highScoreLayout = new GlyphLayout(highScoreFont, "" + this.highScore);
         highScoreLayout.setText(highScoreFont, "Highscore:" + this.highScore);
@@ -68,7 +70,7 @@ public class GameTypeScreen implements Screen {
         multiplayer = new TextButton("multiplayer", skin);
         back = new TextButton("Back", skin);
 
-        singleplayer.getLabel().setFontScale(1f);
+        singleplayer.getLabel().setFontScale(1f * SCALE_FACTOR);
         singleplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -76,6 +78,7 @@ public class GameTypeScreen implements Screen {
             }
         });
 
+        multiplayer.getLabel().setFontScale(1f * SCALE_FACTOR);
         multiplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -88,11 +91,12 @@ public class GameTypeScreen implements Screen {
                 });
                 confirm.buttonYes.align(Align.center);
                 confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
                 confirm.show(stage);
             }
         });
 
-
+        back.getLabel().setFontScale(1f * SCALE_FACTOR);
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -101,10 +105,10 @@ public class GameTypeScreen implements Screen {
         });
 
         // Setup all relative positions
-        menuTable.padTop(120);
-        menuTable.add(singleplayer).padBottom(48);
+        menuTable.padTop(120 * SCALE_FACTOR);
+        menuTable.add(singleplayer).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
-        menuTable.add(multiplayer).padBottom(120);
+        menuTable.add(multiplayer).padBottom(120 * SCALE_FACTOR);
         menuTable.row();
         menuTable.add(back);
 

@@ -24,6 +24,8 @@ import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import java.util.ArrayList;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class MainMenuScreen implements Screen {
 
     MainGame game;
@@ -46,22 +48,8 @@ public class MainMenuScreen implements Screen {
     private DialogAlert exit;
 
     // Other runs constructor
-    public MainMenuScreen(MainGame newgame, SpriteBatch oldBatch, ScrollingBackground scrBack) {
-        this.game = newgame;
-
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
-        stage = new Stage(new ScreenViewport());
-
-        menuTable = new Table();
-        menuTable.setWidth(stage.getWidth());
-        menuTable.align(Align.center | Align.top);
-        menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
-
-        // Create buttons
-        playButton = new TextButton("Play", skin);
-        shopButton = new TextButton("Shop", skin);
-        settButton = new TextButton("Settings", skin);
-        exitButton = new TextButton("Exit", skin);
+    public MainMenuScreen(MainGame newGame, SpriteBatch oldBatch, ScrollingBackground scrBack) {
+        this.game = newGame;
 
         // Use old background
         this.scrollingBackground = scrBack;
@@ -69,83 +57,15 @@ public class MainMenuScreen implements Screen {
         // Use old SpriteBatch
         this.batch = oldBatch;
 
-        // Increase size of play button
-        playButton.getLabel().setFontScale(2.2f);
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameTypeScreen(game, batch, scrollingBackground));
-            }
-        });
-
-        shopButton.getLabel().setFontScale(1.4f);
-        settButton.getLabel().setFontScale(1.2f);
-        settButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingsScreen(game, batch, scrollingBackground));
-            }
-        });
-
-        // Exit Confirm Dialog
-        exit = new DialogAlert("", skin);
-        exit.text("Do you really\nwant to exit?");
-        exit.yesButton("YES", new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.exit();
-                return true;
-            }
-        }).noButton("NO", new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                exit.hide();
-                return true;
-            }
-        });
-        exit.buttonYes.getLabel().setColor(new Color(0xe57575ff));
-        exit.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
-
-        // Exit Button Listener
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // exitDialog.show(stage);
-                exit.show(stage);
-            }
-        });
-
-        // Setup all relative positions
-        menuTable.padTop(100);
-        menuTable.add(playButton).padBottom(48);
-        menuTable.row();
-        menuTable.add(shopButton).padBottom(48);
-        menuTable.row();
-        menuTable.add(settButton).padBottom(48);
-        menuTable.row();
-        menuTable.add(exitButton);
-
-        // Add table to stage (buttons)
-        stage.addActor(menuTable);
-
-        Gdx.input.setInputProcessor(stage);
+        setup();
     }
 
     // First run constructor
-    public MainMenuScreen(MainGame newgame) {
-        this.game = newgame;
+    public MainMenuScreen(MainGame newGame) {
+        this.game = newGame;
 
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
-        stage = new Stage(new ScreenViewport());
-
-        menuTable = new Table();
-        menuTable.setWidth(stage.getWidth());
-        menuTable.align(Align.center | Align.top);
-        menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
-
-        // Create buttons
-        playButton = new TextButton("Play", skin);
-        shopButton = new TextButton("Shop", skin);
-        settButton = new TextButton("Settings", skin);
-        exitButton = new TextButton("Exit", skin);
+        // Create Sprite batch
+        batch = new SpriteBatch();
 
         // Create base background for scrolling background
         background = new Sprite(new Texture(Gdx.files.internal(Assets.backgroundSpace)));
@@ -155,11 +75,27 @@ public class MainMenuScreen implements Screen {
         sprites = ScrollingBackground.initStarBackground();
         scrollingBackground = new ScrollingBackground(background, sprites);
 
-        // Create Sprite batch
-        batch = new SpriteBatch();
+        setup();
+    }
+
+    private void setup() {
+        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        stage = new Stage(new ScreenViewport());
+
+        menuTable = new Table();
+        menuTable.setWidth(stage.getWidth());
+        menuTable.align(Align.center | Align.top);
+        menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
+
+        // Create buttons
+        playButton = new TextButton("Play", skin);
+        shopButton = new TextButton("Shop", skin);
+        settButton = new TextButton("Settings", skin);
+        exitButton = new TextButton("Exit", skin);
+
 
         // Increase size of play button
-        playButton.getLabel().setFontScale(2.2f);
+        playButton.getLabel().setFontScale(2.2f * SCALE_FACTOR);
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -167,8 +103,9 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        shopButton.getLabel().setFontScale(1.4f);
-        settButton.getLabel().setFontScale(1.2f);
+        shopButton.getLabel().setFontScale(1.4f * SCALE_FACTOR);
+        settButton.getLabel().setFontScale(1.2f * SCALE_FACTOR);
+        exitButton.getLabel().setFontScale(SCALE_FACTOR);
         settButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -191,7 +128,10 @@ public class MainMenuScreen implements Screen {
             }
         });
         exit.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+        exit.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
         exit.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+        exit.buttonNo.getLabel().setFontScale(SCALE_FACTOR);
+
 
         // Exit Button Listener
         exitButton.addListener(new ClickListener() {
@@ -203,12 +143,12 @@ public class MainMenuScreen implements Screen {
         });
 
         // Setup all relative positions
-        menuTable.padTop(100);
-        menuTable.add(playButton).padBottom(48);
+        menuTable.padTop(100 * SCALE_FACTOR);
+        menuTable.add(playButton).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
-        menuTable.add(shopButton).padBottom(48);
+        menuTable.add(shopButton).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
-        menuTable.add(settButton).padBottom(48);
+        menuTable.add(settButton).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
         menuTable.add(exitButton);
 

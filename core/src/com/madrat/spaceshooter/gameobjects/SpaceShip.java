@@ -1,11 +1,13 @@
 package com.madrat.spaceshooter.gameobjects;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class SpaceShip {
     protected int realShipWidth;
     protected int realShipHeight;
 
-    protected int prefferedShipWidth;
-    protected int prefferedShipHeight;
+    protected int preferredShipWidth;
+    protected int preferredShipHeight;
 
     protected float x, y;
     protected float speed;
@@ -24,20 +26,20 @@ public class SpaceShip {
 
     public boolean needToShow, isAlive;
 
-    public SpaceShip(float currentHealth, float maxHealth, float damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int prefferedShipWidth, int prefferedShipHeight) {
+    public SpaceShip(float currentHealth, float maxHealth, float damage, float delayBetweenShoots, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight) {
         this.realShipHeight = realShipHeight;
         this.realShipWidth = realShipWidth;
 
-        this.prefferedShipHeight = prefferedShipHeight;
-        this.prefferedShipWidth = prefferedShipWidth;
+        this.preferredShipHeight = (int) (preferredShipHeight * SCALE_FACTOR);
+        this.preferredShipWidth = (int) (preferredShipWidth * SCALE_FACTOR);
 
         this.currentHealth = currentHealth;
         this.maxHealth = maxHealth;
         this.delayBetweenShoots = delayBetweenShoots;
-        this.bulletsSpeed = bulletsSpeed;
+        this.bulletsSpeed = bulletsSpeed * SCALE_FACTOR;
         this.lastShoot = 0;
         this.damage = damage;
-        this.speed = speed;
+        this.speed = speed * SCALE_FACTOR;
         this.handle = handle;
         this.needToShow = true;
         this.isAlive = true;
@@ -88,12 +90,12 @@ public class SpaceShip {
         isAlive = alive;
     }
 
-    public int getPrefferedShipWidth() {
-        return prefferedShipWidth;
+    public int getPreferredShipWidth() {
+        return preferredShipWidth;
     }
 
-    public int getPrefferedShipHeight() {
-        return prefferedShipHeight;
+    public int getPreferredShipHeight() {
+        return preferredShipHeight;
     }
 
     public CollisionRect getShipCollisionRect() {

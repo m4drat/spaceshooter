@@ -20,6 +20,8 @@ import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class SettingsScreen implements Screen {
 
     MainGame game;
@@ -36,8 +38,8 @@ public class SettingsScreen implements Screen {
     private Skin skin;
     private Table buttonsTable;
 
-    public SettingsScreen(MainGame newgame, SpriteBatch oldBatch, ScrollingBackground scrBack) {
-        this.game = newgame;
+    public SettingsScreen(MainGame newGame, SpriteBatch oldBatch, ScrollingBackground scrBack) {
+        this.game = newGame;
         this.batch = oldBatch;
         this.scrollingBackground = scrBack;
 
@@ -48,9 +50,10 @@ public class SettingsScreen implements Screen {
         buttonsTable.setWidth(stage.getWidth());
         buttonsTable.align(Align.center | Align.top);
         buttonsTable.setPosition(0, MainGame.GENERAL_HEIGHT);
-        buttonsTable.padTop(200);
+        buttonsTable.padTop(200 * SCALE_FACTOR);
 
         resetProgressBtn = new TextButton("Reset", skin);
+        resetProgressBtn.getLabel().setFontScale(SCALE_FACTOR);
         resetProgressBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -70,12 +73,16 @@ public class SettingsScreen implements Screen {
                     }
                 });
                 confirmDialog.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirmDialog.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
                 confirmDialog.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirmDialog.buttonNo.getLabel().setFontScale(SCALE_FACTOR);
                 confirmDialog.show(stage);
+                // confirmDialog.scaleBy(SCALE_FACTOR);
             }
         });
 
         backBtn = new TextButton("Back", skin);
+        backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -83,7 +90,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        buttonsTable.add(resetProgressBtn).padBottom(48);
+        buttonsTable.add(resetProgressBtn).padBottom(48 * SCALE_FACTOR);
         buttonsTable.row();
         buttonsTable.add(backBtn);
 

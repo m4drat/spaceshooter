@@ -22,6 +22,8 @@ import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class GameOverScreen implements Screen {
 
     MainGame game;
@@ -64,23 +66,28 @@ public class GameOverScreen implements Screen {
 
         gameOverFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
         gameOverFont.setColor(new Color(0x30db88ff));
-        gameOverFont.getData().setScale(1.2f);
+        gameOverFont.getData().setScale(1.2f * SCALE_FACTOR);
         gameOverLayout = new GlyphLayout(gameOverFont, "GAME OVER");
 
         highScoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
         highScoreFont.setColor(new Color(0x7a9af1ff));
-        highScoreFont.getData().setScale(0.9f);
+        highScoreFont.getData().setScale(0.9f * SCALE_FACTOR);
         highScoreLayout = new GlyphLayout(highScoreFont, "Highscore:" + data.getInteger("highscore", 0));
 
         scoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
         scoreFont.setColor(new Color(0xceb963ff));
-        scoreFont.getData().setScale(0.7f);
+        scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         scoreLayout = new GlyphLayout(scoreFont, "Current score:" + score);
 
         // Create buttons
         restartBtn = new TextButton("restart", skin);
+        restartBtn.getLabel().setFontScale(SCALE_FACTOR);
+
         backBtn = new TextButton("back", skin);
+        backBtn.getLabel().setFontScale(SCALE_FACTOR);
+
         exitBtn = new TextButton("exit", skin);
+        exitBtn.getLabel().setFontScale(SCALE_FACTOR);
 
         restartBtn.addListener(new ClickListener() {
             @Override
@@ -109,7 +116,10 @@ public class GameOverScreen implements Screen {
             }
         });
         exit.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+        exit.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
+
         exit.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+        exit.buttonNo.getLabel().setFontScale(SCALE_FACTOR);
 
         exitBtn.addListener(new ClickListener() {
             @Override
@@ -124,12 +134,12 @@ public class GameOverScreen implements Screen {
         menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
 
         // Setup all relative positions
-        menuTable.padTop(310);
-        menuTable.add(restartBtn).padBottom(48);
+        menuTable.padTop(310 * SCALE_FACTOR);
+        menuTable.add(restartBtn).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
-        menuTable.add(backBtn).padBottom(48);
+        menuTable.add(backBtn).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
-        menuTable.add(exitBtn).padBottom(120);
+        menuTable.add(exitBtn).padBottom(120 * SCALE_FACTOR);
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);

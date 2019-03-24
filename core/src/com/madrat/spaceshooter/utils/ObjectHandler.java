@@ -31,4 +31,12 @@ public class ObjectHandler implements Comparable<ObjectHandler> {
     public void dispose() {
         this.sprite.getTexture().dispose();
     }
+
+    public int getPreferredHeight() {
+        return preferredHeight;
+    }
+
+    public int getPreferredWidth() {
+        return preferredWidth;
+    }
 }

@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class ScrollingBackground {
 
     private ArrayList<ObjectHandler> miniObjects;
@@ -40,15 +42,15 @@ public class ScrollingBackground {
 
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
-            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star1))), size, size, ran.nextInt(5) + 3));
+            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star1))), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
         }
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
-            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star2))), size, size, ran.nextInt(5) + 3));
+            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star2))), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
         }
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
-            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star3))), size, size, ran.nextInt(5) + 3));
+            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star3))), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
         }
 
         // Generate 3 Random not repeating int's
@@ -60,12 +62,12 @@ public class ScrollingBackground {
         Collections.shuffle(Arrays.asList(randomSizes));
 
         // Add objects
-        size = ran.nextInt(100) + 60;
-        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.earth1))), size, size, randomSizes[0] + 1));
-        size = ran.nextInt(100) + 60;
-        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.jupiter1))), size, size, randomSizes[1] + 1));
-        size = ran.nextInt(100) + 60;
-        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.mars1))), size, size, randomSizes[2] + 1));
+        size = (int) ((ran.nextInt(100) + 60) * SCALE_FACTOR);
+        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.earth1))), size, size, (int) ((randomSizes[0] + 1) * SCALE_FACTOR)));
+        size = (int) ((ran.nextInt(100) + 60) * SCALE_FACTOR);
+        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.jupiter1))), size, size, (int) ((randomSizes[1] + 1) * SCALE_FACTOR)));
+        size = (int) ((ran.nextInt(100) + 60) * SCALE_FACTOR);
+        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.mars1))), size, size, (int) ((randomSizes[2] + 1) * SCALE_FACTOR)));
 
         // Sort object by sizes (place bigger object in front of other)
         Collections.sort(sprites);
@@ -82,7 +84,7 @@ public class ScrollingBackground {
                 // stopper - will be 0 if you want to stop background
                 object.y -= object.speed * stopper;
 
-                if (object.y + object.sprite.getHeight() < 0) {
+                if (object.y + object.getPreferredHeight() < 0) {
                     object.y = ran.nextInt(MainGame.GENERAL_HEIGHT / 2) + MainGame.GENERAL_HEIGHT;
                     object.x = ran.nextInt(MainGame.GENERAL_WIDTH + 1 - object.preferredWidth);
                 }

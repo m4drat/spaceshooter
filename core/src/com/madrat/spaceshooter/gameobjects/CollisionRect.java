@@ -1,12 +1,20 @@
 package com.madrat.spaceshooter.gameobjects;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public class CollisionRect {
 
     private float x, y;
     private int width, height;
     private String colliderTag;
 
+    private ShapeRenderer shapeRenderer;
+
     public CollisionRect(float x, float y, int width, int height, String colliderTag) {
+        this.shapeRenderer = new ShapeRenderer();
+
         this.x = x;
         this.y = y;
         this.width = width;
@@ -46,5 +54,14 @@ public class CollisionRect {
 
     public String getColliderTag() {
         return this.colliderTag;
+    }
+
+    public void drawCollider(SpriteBatch batch) {
+        batch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(this.x, this.y, this.width, this.height);
+        shapeRenderer.end();
+        batch.begin();
     }
 }

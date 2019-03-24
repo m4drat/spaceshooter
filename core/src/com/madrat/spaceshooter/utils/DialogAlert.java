@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 
+import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+
 public class DialogAlert extends Dialog {
 
     private float dialog_padding = 20f;
@@ -35,7 +37,7 @@ public class DialogAlert extends Dialog {
         setMovable(false);
         setResizable(false);
 
-        padTop(dialog_padding).padLeft(dialog_padding).padRight(dialog_padding);
+        padTop(dialog_padding * SCALE_FACTOR).padLeft(dialog_padding * SCALE_FACTOR).padRight(dialog_padding * SCALE_FACTOR);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class DialogAlert extends Dialog {
 
         label.setAlignment(Align.center);
         label.setWrap(false);
-        label.setFontScale(0.7f);
+        label.setFontScale(0.7f * SCALE_FACTOR);
 
         text(label);
         return this;
@@ -55,10 +57,10 @@ public class DialogAlert extends Dialog {
         buttonYes = new TextButton(buttonText, this.skin);
         buttonYes.addListener(listener);
 
-        buttonYes.padTop(button_pad_t);
+        buttonYes.padTop(button_pad_t * SCALE_FACTOR);
         // buttonYes.padLeft(button_pad_l);
         // buttonYes.padRight(button_pad_r);
-        buttonYes.padBottom(button_pad_b);
+        buttonYes.padBottom(button_pad_b * SCALE_FACTOR);
 
         button(buttonYes);
 
@@ -69,10 +71,10 @@ public class DialogAlert extends Dialog {
         buttonNo = new TextButton(buttonText, this.skin);
         buttonNo.addListener(listener);
 
-        buttonNo.padTop(button_pad_t);
-        buttonNo.padLeft(button_pad_l + 40);
+        buttonNo.padTop(button_pad_t * SCALE_FACTOR);
+        buttonNo.padLeft((button_pad_l + 40) * SCALE_FACTOR);
         // buttonNo.padRight(button_pad_r);
-        buttonNo.padBottom(button_pad_b);
+        buttonNo.padBottom(button_pad_b * SCALE_FACTOR);
 
         button(buttonNo);
 
