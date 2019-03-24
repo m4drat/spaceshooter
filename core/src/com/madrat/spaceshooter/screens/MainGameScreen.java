@@ -1,5 +1,6 @@
 package com.madrat.spaceshooter.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -27,6 +28,7 @@ import com.madrat.spaceshooter.gameobjects.Asteroid;
 import com.madrat.spaceshooter.gameobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.Explosion;
 import com.madrat.spaceshooter.gameobjects.PlayerShip;
+import com.madrat.spaceshooter.gameobjects.PowerUp;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
@@ -36,12 +38,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
-import static com.madrat.spaceshooter.MainGame.isMobile;
 
 public class MainGameScreen implements Screen {
 
     private ArrayList<Asteroid> asteroids;
     private ArrayList<Explosion> explosions;
+    private ArrayList<PowerUp> powerUps;
 
     private Random random;
 
@@ -61,6 +63,7 @@ public class MainGameScreen implements Screen {
     private ArrayList<Asteroid> asteroidsToRemove;
     private ArrayList<Bullet> bulletsToRemove;
     private ArrayList<Explosion> explosionToRemove;
+    private ArrayList<PowerUp> powerUpsToRemove;
 
     private Stage stage;
     private Skin skin;
@@ -249,6 +252,8 @@ public class MainGameScreen implements Screen {
             }
         });
 
+        powerUps = new ArrayList<PowerUp>();
+
         stage.addActor(pauseTable);
         stage.addActor(PauseMenuTable);
     }
@@ -272,30 +277,48 @@ public class MainGameScreen implements Screen {
             asteroidsToRemove = new ArrayList<Asteroid>();
             for (Asteroid asteroid : asteroids) {
                 asteroid.update(delta);
-                if (asteroid.remove)
+                if (asteroid.remove) {
                     asteroidsToRemove.add(asteroid);
+                    asteroid.dispose();
+                }
             }
 
             // Update player Bullets (delete old)
             bulletsToRemove = new ArrayList<Bullet>();
             for (Bullet bullet : playerShip.getBullets()) {
                 bullet.update(delta);
-                if (bullet.remove)
+                if (bullet.remove) {
                     bulletsToRemove.add(bullet);
+                    bullet.dispose();
+                }
             }
 
             // Update Explosion (delete old)
             explosionToRemove = new ArrayList<Explosion>();
             for (Explosion explosion : explosions) {
                 explosion.update(delta);
-                if (explosion.remove)
+                if (explosion.remove) {
                     explosionToRemove.add(explosion);
+                    explosion.dispose();
+                }
             }
             // Deleting Explosion
             explosions.removeAll(explosionToRemove);
 
+            // Update powerUps
+            powerUpsToRemove = new ArrayList<PowerUp>();
+            for (PowerUp powerUp : powerUps) {
+                powerUp.update(delta);
+                if (powerUp.remove) {
+                    powerUpsToRemove.add(powerUp);
+                    powerUp.dispose();
+                }
+            }
+            // Deleting powerUps
+            powerUps.removeAll(powerUpsToRemove);
+
             // Player ship moving
-            if (isMobile) {
+            if (MainGame.applicationType == Application.ApplicationType.Android) {
                 playerShip.performInput(delta);
             } else {
                 if (Gdx.input.isKeyPressed(Input.Keys.UP))
@@ -306,6 +329,8 @@ public class MainGameScreen implements Screen {
                     playerShip.setX(playerShip.getX() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
                 if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
                     playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+
+                playerShip.correctBounds();
             }
             // Update player collision rect
             playerShip.getShipCollisionRect().move(playerShip.getX(), playerShip.getY());
@@ -329,7 +354,7 @@ public class MainGameScreen implements Screen {
         if (playerShip.getBullets().size() > 0) {
             for (Bullet bullet : playerShip.getBullets()) {
                 bullet.render(batch);
-                bullet.getCollisionRect().drawCollider(batch);
+                // bullet.getCollisionRect().drawCollider(batch);
             }
         }
 
@@ -355,11 +380,35 @@ public class MainGameScreen implements Screen {
 
                         // Increase score value
                         playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
+
+                        // Spawn PowerUp
+                        if (random.nextInt(7) == 5)
+                            powerUps.add(new PowerUp(asteroid.getX(), asteroid.getY(), 0.2f, 30, 25, 30, 25, 10f, "healPowerUp", new Texture(Gdx.files.internal(Assets.healPowerUp))));
                     }
                 }
             }
             // Remove all bullets which must be destroyed (collision results, y < 0, ...)
             playerShip.getBullets().removeAll(bulletsToRemove);
+
+            // Check for collisions between player and powerUp
+            for (PowerUp powerUp : powerUps) {
+
+                // User pickUps powerUp
+                if (powerUp.getPowerUpCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
+                    powerUp.remove = true;
+
+                    // Heal powerUp
+                    if (powerUp.getPowerUpCollisionRect().getColliderTag() == "healPowerUp") {
+                        if (playerShip.getCurrentHealth() + playerShip.getMaxHealing() > playerShip.getMaxHealth()) {
+                            playerShip.setCurrentHealth(playerShip.getMaxHealth());
+                        } else {
+                            playerShip.setCurrentHealth(playerShip.getCurrentHealth() + playerShip.getMaxHealing());
+                        }
+                    } else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "ammoPowerUp") {
+
+                    }
+                }
+            }
 
             // Check for collisions between player and asteroids
             for (Asteroid asteroid : asteroids) {
@@ -368,7 +417,7 @@ public class MainGameScreen implements Screen {
                     asteroidsToRemove.add(asteroid);
 
                     // Spawn Explosion
-                    explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.getPreferredHeight() / 2, 0.1f, 128, 128, 128, new Texture(Assets.explosion3)));
+                    explosions.add(new Explosion(asteroid.getX() - asteroid.getPreferredWidth() / 2, asteroid.getY() - asteroid.getPreferredHeight() / 2, 0.1f, 128, 128, 128, new Texture(Assets.explosion3)));
 
                     // decrease player health
                     playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
@@ -385,8 +434,12 @@ public class MainGameScreen implements Screen {
 
             // After all possible collisions delete asteroids
             asteroids.removeAll(asteroidsToRemove);
+        }
 
-
+        // Render powerUps
+        for (PowerUp powerUp : powerUps) {
+            powerUp.render(batch);
+            powerUp.getPowerUpCollisionRect().drawCollider(batch);
         }
 
         // Draw ship with animations bullets etc

@@ -104,6 +104,13 @@ public class MainMenuScreen implements Screen {
         });
 
         shopButton.getLabel().setFontScale(1.4f * SCALE_FACTOR);
+        shopButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new ShopScreen(game, scrollingBackground, batch));
+            }
+        });
+
         settButton.getLabel().setFontScale(1.2f * SCALE_FACTOR);
         exitButton.getLabel().setFontScale(SCALE_FACTOR);
         settButton.addListener(new ClickListener() {

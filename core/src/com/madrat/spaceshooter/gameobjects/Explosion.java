@@ -6,11 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
-import static com.madrat.spaceshooter.MainGame.SCALE_X;
-import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
 public class Explosion {
 
+    private Texture explosion;
     private Animation<TextureRegion> animation;
     private float x, y;
     private float stateTime;
@@ -26,12 +25,14 @@ public class Explosion {
         this.x = x;
         this.y = y;
 
+        this.explosion = explosion;
+
         this.preferredWidth = (int) (preferredWidth * SCALE_FACTOR);
         this.preferredHeight = (int) (preferredHeight * SCALE_FACTOR);
 
         this.stateTime = 0;
 
-        this.animation = new Animation<TextureRegion>(frameLength, TextureRegion.split(explosion, tileSize, tileSize)[0]);
+        this.animation = new Animation<TextureRegion>(frameLength, TextureRegion.split(this.explosion, tileSize, tileSize)[0]);
     }
 
     public void update(float deltaTime) {
@@ -42,5 +43,9 @@ public class Explosion {
 
     public void render(SpriteBatch batch) {
         batch.draw(animation.getKeyFrame(stateTime), x, y, this.preferredWidth, this.preferredHeight);
+    }
+
+    public void dispose() {
+        this.explosion.dispose();
     }
 }

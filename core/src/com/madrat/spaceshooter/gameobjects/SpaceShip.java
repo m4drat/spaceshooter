@@ -16,8 +16,7 @@ public class SpaceShip {
 
     protected float lastShoot;
 
-    protected float currentHealth;
-    protected float maxHealth;
+    protected float currentHealth, maxHealth, maxHealing;
     protected float damage;
 
     protected String handle; // aka ship name
@@ -104,5 +103,13 @@ public class SpaceShip {
 
     public void setCurrentHealth(float currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+    public float getMaxHealing() {
+        return maxHealing;
+    }
+
+    public void setMaxHealing(float maxHealing) {
+        this.maxHealing = maxHealing;
     }
 }

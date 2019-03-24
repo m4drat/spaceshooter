@@ -1,6 +1,10 @@
 package com.madrat.spaceshooter.utils;
 
+import com.badlogic.gdx.assets.AssetManager;
+
 public class Assets {
+    public static final AssetManager manager = new AssetManager();
+
     public static final String playBtn = "buttons/playBtn.png", playBtnPressed = "buttons/playBtn_pressed.png";
     public static final String shopBtn = "buttons/shopBtn.png", shopBtnPressed = "buttons/shopBtn_pressed.png";
     public static final String settBtn = "buttons/settBtn.png", settBtnPressed = "buttons/settBtn_pressed.png";
@@ -30,7 +34,21 @@ public class Assets {
     public static final String uiskin = "ui/uiskin.json";
 
     public static final String ship1Animation = "ships/spaceShips/spaceship_animation.png", ship2Animation = "ships/spaceShips/spaceship2_animation.png";
-    public static final String ship3Animation = "ships/spaceShips/spaceship3_animation.png";
+    public static final String ship3Animation = "ships/spaceShips/spaceship3_animation.png", ship4Animation = "ships/spaceShips/spaceship4_animation.png";
+    public static final String ship5Animation = "ships/spaceShips/spaceship5_animation.png", ship6Animation = "ships/spaceShips/spaceship6_animation.png";
+    public static final String ship7Animation = "ships/spaceShips/spaceship7_animation.png", ship8Animation = "ships/spaceShips/spaceship8_animation.png";
+    public static final String ship9Animation = "ships/spaceShips/spaceship9_animation.png", ship10Animation = "ships/spaceShips/spaceship10_animation.png";
+    public static final String ship11Animation = "ships/spaceShips/spaceship11_animation.png";
 
     public static final String bullet1 = "ships/bullets/bullet1.png", bullet2 = "ships/bullets/bullet2.png", rocket1 = "ships/bullets/rocket1.png";
+
+    public static final String healPowerUp = "objects/powerUps/healPowerUp.png", ammoPowerUp = "objects/powerUps/ammoPowerUp.png";
+
+    public static void load() {
+
+    }
+
+    public static void dispose() {
+        manager.dispose();
+    }
 }

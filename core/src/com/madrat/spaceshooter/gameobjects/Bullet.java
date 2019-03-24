@@ -28,7 +28,6 @@ public class Bullet {
         this.preferredHeight = (int) (preferredHeight * SCALE_Y);
 
         this.rect = new CollisionRect(x, y, preferredWidth, preferredHeight, colliderTag);
-
         this.bulletTexture = bulletTexture;
     }
 
@@ -42,7 +41,7 @@ public class Bullet {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(bulletTexture, x, y, preferredWidth, preferredHeight);
+        batch.draw(this.bulletTexture, x, y, preferredWidth, preferredHeight);
     }
 
     public CollisionRect getCollisionRect() {
@@ -51,5 +50,9 @@ public class Bullet {
 
     public Texture getBulletTexture() {
         return bulletTexture;
+    }
+
+    public void dispose() {
+        // this.bulletTexture.dispose();
     }
 }

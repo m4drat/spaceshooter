@@ -1,14 +1,16 @@
 package com.madrat.spaceshooter;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Texture;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 
 public class MainGame extends Game {
 
-    public static final boolean isMobile = true;
+    public static Application.ApplicationType applicationType;
     public static int GENERAL_WIDTH = 480;
     public static int GENERAL_HEIGHT = 720;
     public static float SCALE_FACTOR;
@@ -18,6 +20,8 @@ public class MainGame extends Game {
 
     @Override
     public void create() {
+
+        applicationType = Gdx.app.getType();
 
         GENERAL_WIDTH = Gdx.graphics.getWidth();
         GENERAL_HEIGHT = Gdx.graphics.getHeight();
@@ -33,7 +37,11 @@ public class MainGame extends Game {
         Preferences data = Gdx.app.getPreferences("spacegame");
 
         if (data.getBoolean("firstRun", true)) {
+            // First run variable
             data.putBoolean("firstRun", false);
+
+            // Default money
+            data.putInteger("money", 1000);
 
             // Default spaceship
             data.putString("animationTexture", Assets.ship1Animation);
@@ -46,10 +54,19 @@ public class MainGame extends Game {
             data.putFloat("frameLength", 0.14f);
             data.putString("handle", "Zapper");
 
+            // Ship sizes
             data.putInteger("realShipWidth", 24);
             data.putInteger("realShipHeight", 23);
             data.putInteger("preferredShipWidth", 60);
             data.putInteger("preferredShipHeight", 50);
+
+            // Ship default healing value
+            data.putFloat("maxHealing", 0.2f);
+
+            // Ship Bullets
+            data.putInteger("preferredBulletHeight", 10);
+            data.putInteger("preferredBulletWidth", 4);
+            data.putString("bulletTexture", Assets.bullet1);
 
             data.flush();
         }

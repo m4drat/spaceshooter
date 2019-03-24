@@ -61,9 +61,7 @@ public class SettingsScreen implements Screen {
                 confirmDialog.text("Do you really\nwant to reset\nyour progress?");
                 confirmDialog.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        Preferences data = Gdx.app.getPreferences("spacegame");
-                        data.putInteger("highscore", 0);
-                        data.flush();
+                        setDefaultValues();
                         return true;
                     }
                 }).noButton("NO", new InputListener() {
@@ -98,6 +96,42 @@ public class SettingsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+    private void setDefaultValues() {
+        Preferences data = Gdx.app.getPreferences("spacegame");
+
+        // reset Highscore
+        data.putInteger("highscore", 0);
+
+        // Default money
+        data.putInteger("money", 1000);
+
+        // Default spaceship
+        data.putString("animationTexture", Assets.ship1Animation);
+        data.putFloat("animationSpeed", 0.14f);
+        data.putFloat("maxHealth", 1f);
+        data.putFloat("damage", 0.1f);
+        data.putFloat("delayBetweenShoots", 0.3f);
+        data.putFloat("bulletsSpeed", 600f);
+        data.putFloat("speed", 300f);
+        data.putFloat("frameLength", 0.14f);
+        data.putString("handle", "Zapper");
+
+        // Ship sizes
+        data.putInteger("realShipWidth", 24);
+        data.putInteger("realShipHeight", 23);
+        data.putInteger("preferredShipWidth", 60);
+        data.putInteger("preferredShipHeight", 50);
+
+        // Ship default healing value
+        data.putFloat("maxHealing", 0.2f);
+
+        // Ship Bullets
+        data.putInteger("preferredBulletHeight", 10);
+        data.putInteger("preferredBulletWidth", 4);
+        data.putString("bulletTexture", Assets.bullet1);
+
+        data.flush();
+    }
     @Override
     public void show() {
 

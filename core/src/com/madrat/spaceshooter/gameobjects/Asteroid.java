@@ -8,19 +8,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
-import static com.madrat.spaceshooter.MainGame.SCALE_X;
-import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
 public class Asteroid {
     public static final float MIN_ASTEROID_SPAWN_TIME = 2f;
     public static final float MAX_ASTEROID_SPAWN_TIME = 6f;
 
     public static final int REWARD = 50;
-    public static final float DAMAGE = 0.2f;
+    public static final float DAMAGE = 0.8f;
 
     private float asteroidSpeed;
 
-    private static Texture asteroidTextureAnimations;
+    private Texture asteroidTextureAnimations;
     private CollisionRect rect;
 
     private float x, y;
@@ -76,5 +74,9 @@ public class Asteroid {
 
     public int getPreferredHeight() {
         return preferredHeight;
+    }
+
+    public void dispose() {
+        asteroidTextureAnimations.dispose();
     }
 }

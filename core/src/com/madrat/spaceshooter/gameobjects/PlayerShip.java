@@ -23,10 +23,13 @@ public class PlayerShip extends SpaceShip {
     private int score;
 
     private ArrayList<Bullet> bullets;
-
     private Texture healthBar;
-
     private float newX, newY;
+
+    private boolean isUnderAmmoPowerUp, isUnderShieldPowerUp;
+
+    private Texture bulletTexture;
+    private int preferredBulletHeight, preferredBulletWidth;
 
     // Constructor to generate player ship using only file data
     public PlayerShip() {
@@ -34,14 +37,17 @@ public class PlayerShip extends SpaceShip {
         super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShoots"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
 
         Preferences data = Gdx.app.getPreferences("spacegame");
+        this.bulletTexture = new Texture(data.getString("bulletTexture"));
+        this.preferredBulletHeight = data.getInteger("preferredBulletHeight");
+        this.preferredBulletWidth = data.getInteger("preferredBulletWidth");
+
+        this.maxHealing = data.getFloat("maxHealing");
 
         this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
         this.y = 25;
 
         this.shipCollisionRect = new CollisionRect(this.x, this.y, this.preferredShipWidth, this.preferredShipHeight, "player");
-
         this.shipAnimation = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), TextureRegion.split(new Texture(data.getString("animationTexture")), this.realShipWidth, this.realShipHeight)[0]);
-
         setup();
     }
 
@@ -107,12 +113,13 @@ public class PlayerShip extends SpaceShip {
         }
     }
 
+
     public void shoot(float delta) {
         if (isAlive) {
             if (this.lastShoot > delayBetweenShoots) {
                 // Add two bullets
-                bullets.add(new Bullet(new Texture(Assets.bullet1), this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, 4, 10, "player"));
-                bullets.add(new Bullet(new Texture(Assets.bullet1), this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, 4, 10, "player"));
+                bullets.add(new Bullet(bulletTexture, this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player"));
+                bullets.add(new Bullet(bulletTexture, this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player"));
 
                 // set Shoot timer to 0
                 this.lastShoot = 0;
@@ -167,18 +174,24 @@ public class PlayerShip extends SpaceShip {
         score = newScore;
     }
 
-    public Texture getHealthBar() {
-        return healthBar;
+    public boolean isUnderAmmoPowerUp() {
+        return isUnderAmmoPowerUp;
+    }
+
+    public void setUnderAmmoPowerUp(boolean underAmmoPowerUp) {
+        isUnderAmmoPowerUp = underAmmoPowerUp;
+    }
+
+    public boolean isUnderShieldPowerUp() {
+        return isUnderShieldPowerUp;
+    }
+
+    public void setUnderShieldPowerUp(boolean underShieldPowerUp) {
+        isUnderShieldPowerUp = underShieldPowerUp;
     }
 
     public void dispose() {
-
         // Dispose health bar
         this.healthBar.dispose();
-
-        // Dispose bullets textures
-        for (Bullet bullet : this.bullets) {
-            bullet.getBulletTexture().dispose();
-        }
     }
 }
