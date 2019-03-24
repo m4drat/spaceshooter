@@ -26,6 +26,8 @@ public class PlayerShip extends SpaceShip {
 
     private Texture healthBar;
 
+    private float newX, newY;
+
     // Constructor to generate player ship using only file data
     public PlayerShip() {
         // playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 0.14f,1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50)
@@ -119,6 +121,39 @@ public class PlayerShip extends SpaceShip {
             }
         }
     }
+
+    // y = mx + b
+    // x = (-y + b) / -m
+
+    public void performInput(float deltaTime) {
+        if (Gdx.input.isTouched()) {
+            newX = Gdx.input.getX();
+            newY = Gdx.input.getY();
+
+            float xToGo, yToGo;
+
+            xToGo = MoveTowards(this.x, newX - this.preferredShipWidth / 2, deltaTime * this.speed);
+            yToGo = MoveTowards(this.y, -newY + Gdx.graphics.getHeight() - this.preferredShipHeight / 2, deltaTime * this.speed);
+
+            this.x = xToGo;
+            this.y = yToGo;
+            // float m = newY - this.y / newX - this.x; // calculate m
+            // float b = -(m * newX) + newY; // calculate b
+            // this.x = (newX - this.preferredShipWidth / 2); // (newX - this.preferredShipWidth / 2)
+            // this.y = (-newY + Gdx.graphics.getHeight() - this.preferredShipHeight / 2); // (-newY + Gdx.graphics.getHeight() - this.preferredShipHeight / 2)
+
+            // check for bounds
+            this.correctBounds();
+        }
+    }
+
+    public float MoveTowards(float current, float target, float maxDelta) {
+        if (Math.abs(target - current) <= maxDelta) {
+            return target;
+        }
+        return current + Math.signum(target - current) * maxDelta;
+    }
+
 
     public ArrayList<Bullet> getBullets() {
         return bullets;

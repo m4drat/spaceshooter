@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.MainGame.isMobile;
 
 public class MainGameScreen implements Screen {
 
@@ -294,15 +295,18 @@ public class MainGameScreen implements Screen {
             explosions.removeAll(explosionToRemove);
 
             // Player ship moving
-            if (Gdx.input.isKeyPressed(Input.Keys.UP))
-                playerShip.setY(playerShip.getY() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-                playerShip.setY(playerShip.getY() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-                playerShip.setX(playerShip.getX() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-                playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-
+            if (isMobile) {
+                playerShip.performInput(delta);
+            } else {
+                if (Gdx.input.isKeyPressed(Input.Keys.UP))
+                    playerShip.setY(playerShip.getY() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+                if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+                    playerShip.setY(playerShip.getY() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+                    playerShip.setX(playerShip.getX() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+                    playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
+            }
             // Update player collision rect
             playerShip.getShipCollisionRect().move(playerShip.getX(), playerShip.getY());
         }
@@ -382,8 +386,7 @@ public class MainGameScreen implements Screen {
             // After all possible collisions delete asteroids
             asteroids.removeAll(asteroidsToRemove);
 
-            // check for bounds
-            playerShip.correctBounds();
+
         }
 
         // Draw ship with animations bullets etc

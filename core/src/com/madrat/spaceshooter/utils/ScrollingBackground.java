@@ -62,11 +62,11 @@ public class ScrollingBackground {
         Collections.shuffle(Arrays.asList(randomSizes));
 
         // Add objects
-        size = (int) ((ran.nextInt(100) + 60) * SCALE_FACTOR);
+        size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
         sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.earth1))), size, size, (int) ((randomSizes[0] + 1) * SCALE_FACTOR)));
-        size = (int) ((ran.nextInt(100) + 60) * SCALE_FACTOR);
+        size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
         sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.jupiter1))), size, size, (int) ((randomSizes[1] + 1) * SCALE_FACTOR)));
-        size = (int) ((ran.nextInt(100) + 60) * SCALE_FACTOR);
+        size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
         sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.mars1))), size, size, (int) ((randomSizes[2] + 1) * SCALE_FACTOR)));
 
         // Sort object by sizes (place bigger object in front of other)
