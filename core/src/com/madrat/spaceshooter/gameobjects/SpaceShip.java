@@ -1,5 +1,7 @@
 package com.madrat.spaceshooter.gameobjects;
 
+import com.madrat.spaceshooter.physics2d.CollisionRect;
+
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class SpaceShip {

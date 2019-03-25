@@ -59,6 +59,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setDefault();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -68,6 +70,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setDestroyer();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -77,6 +81,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setIgnitor();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -86,6 +92,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setTurtle();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -95,6 +103,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setUfo();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -104,6 +114,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setStar();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -113,6 +125,8 @@ public class ShopScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setPinky();
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -287,8 +301,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 32);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 64);
-        data.putInteger("colliderHeight", 64);
+        data.putInteger("colliderWidth", 52);
+        data.putInteger("colliderHeight", 52);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -347,7 +361,7 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 32);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 64);
+        data.putInteger("colliderWidth", 50);
         data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);

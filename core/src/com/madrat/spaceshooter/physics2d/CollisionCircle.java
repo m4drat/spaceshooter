@@ -1,4 +1,4 @@
-package com.madrat.spaceshooter.gameobjects;
+package com.madrat.spaceshooter.physics2d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

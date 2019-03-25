@@ -122,6 +122,8 @@ public class SettingsScreen implements Screen {
         data.putInteger("realShipHeight", 23);
         data.putInteger("preferredShipWidth", 60);
         data.putInteger("preferredShipHeight", 50);
+        data.putInteger("colliderWidth", 60);
+        data.putInteger("colliderHeight", 50);
 
         // Ship default healing value
         data.putFloat("maxHealing", 0.2f);

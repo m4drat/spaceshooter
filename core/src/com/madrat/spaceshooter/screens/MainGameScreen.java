@@ -2,7 +2,6 @@ package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,11 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
-import com.madrat.spaceshooter.gameobjects.Asteroid;
-import com.madrat.spaceshooter.gameobjects.Bullet;
-import com.madrat.spaceshooter.gameobjects.Explosion;
+import com.madrat.spaceshooter.gameobjects.poolobjects.Asteroid;
+import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.PlayerShip;
 import com.madrat.spaceshooter.gameobjects.PowerUp;
+import com.madrat.spaceshooter.gameobjects.Spawner;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
@@ -41,15 +40,12 @@ import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class MainGameScreen implements Screen {
 
-    private ArrayList<Asteroid> asteroids;
-    private ArrayList<Explosion> explosions;
     private ArrayList<PowerUp> powerUps;
 
     private Random random;
 
     MainGame game;
     private PlayerShip playerShip;
-    private float asteroidSpawnTimer;
 
     private boolean isPaused;
     private Sprite background;
@@ -60,8 +56,6 @@ public class MainGameScreen implements Screen {
     private BitmapFont scoreFont;
     private GlyphLayout scoreLayout;
 
-    private ArrayList<Asteroid> asteroidsToRemove;
-    private ArrayList<Explosion> explosionToRemove;
     private ArrayList<PowerUp> powerUpsToRemove;
 
     private Stage stage;
@@ -77,6 +71,8 @@ public class MainGameScreen implements Screen {
     private DialogAlert confirm;
 
     private MainGameScreen gameScreen;
+
+    private Spawner spawner;
 
     public MainGameScreen(MainGame newGame) {
 
@@ -189,7 +185,7 @@ public class MainGameScreen implements Screen {
                 confirm.text("Do you really\nwant to exit?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        gameScreen.dispose();
+                        game.dispose();
                         Gdx.app.exit();
                         return true;
                     }
@@ -223,9 +219,6 @@ public class MainGameScreen implements Screen {
         PauseMenuTable.add(exitButton);
         PauseMenuTable.setVisible(false);
 
-        // Initialize explosions array
-        explosions = new ArrayList<Explosion>();
-
         // Score BitmapFont + score GlyphLayout
         scoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         scoreFont.setColor(new Color(0x7a9af1));
@@ -234,8 +227,6 @@ public class MainGameScreen implements Screen {
 
         // Asteroids
         random = new Random();
-        asteroids = new ArrayList<Asteroid>();
-        asteroidSpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
 
         // Spawn player ship
         playerShip = new PlayerShip();
@@ -266,6 +257,14 @@ public class MainGameScreen implements Screen {
 
         powerUps = new ArrayList<PowerUp>();
 
+        // Create spawner object + initialize asteroids
+        spawner = new Spawner();
+        spawner.initAsteroids();
+
+        // Initialize explosions
+        spawner.initExplosions();
+
+        // Add actor to stage (pause Button + pause menu)
         stage.addActor(pauseTable);
         stage.addActor(PauseMenuTable);
     }
@@ -276,47 +275,16 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
-        // Spawn asteroids
         if (!isPaused) {
-            asteroidSpawnTimer -= delta;
-            if (asteroidSpawnTimer <= 0) {
-                asteroidSpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
 
-                // FIXME memoryLeak
-                // asteroids.add(new Asteroid(120 * SCALE_FACTOR, random.nextInt(Gdx.graphics.getWidth() - (int) (64 * SCALE_FACTOR)), 0.07f, 32,64, 64));
-            }
-
-            // Update asteroids (delete old)
-            asteroidsToRemove = new ArrayList<Asteroid>();
-            for (Asteroid asteroid : asteroids) {
-                asteroid.update(delta);
-                if (asteroid.remove) {
-                    asteroidsToRemove.add(asteroid);
-                    // asteroid.dispose();
-                }
-            }
+            // Update and spawn asteroids
+            spawner.updateAsteroids(delta);
 
             // Update player Bullets (delete old)
-            for (Bullet bullet : playerShip.getActiveBullets()) {
-                bullet.update(delta);
-                if (bullet.remove) {
-                    playerShip.getBulletPool().free(bullet);
-                    playerShip.getActiveBullets().removeValue(bullet, true);
-                }
-            }
+            playerShip.updateBullets(delta);
 
             // Update Explosion (delete old)
-            explosionToRemove = new ArrayList<Explosion>();
-            for (Explosion explosion : explosions) {
-                explosion.update(delta);
-                if (explosion.remove) {
-                    explosionToRemove.add(explosion);
-                    // explosion.dispose();
-                }
-            }
-            // Deleting Explosion
-            explosions.removeAll(explosionToRemove);
+            spawner.updateExplosions(delta);
 
             // Update powerUps
             powerUpsToRemove = new ArrayList<PowerUp>();
@@ -332,18 +300,9 @@ public class MainGameScreen implements Screen {
 
             // Player ship moving
             if (MainGame.applicationType == Application.ApplicationType.Android) {
-                playerShip.performInput(delta);
+                playerShip.performInputMobile(delta);
             } else {
-                if (Gdx.input.isKeyPressed(Input.Keys.UP))
-                    playerShip.setY(playerShip.getY() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-                if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-                    playerShip.setY(playerShip.getY() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-                    playerShip.setX(playerShip.getX() - playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-                    playerShip.setX(playerShip.getX() + playerShip.getSpeed() * Gdx.graphics.getDeltaTime());
-
-                playerShip.correctBounds();
+                playerShip.performInputPC(delta);
             }
             // Update player collision rect
             playerShip.updateCollisionRect();
@@ -359,40 +318,32 @@ public class MainGameScreen implements Screen {
         // Draw background
         scrollingBackground.draw(batch);
 
-        // FIXME memoryLeak (in bullets creation)
         // Shooting
         if (!isPaused)
             playerShip.shoot(delta);
 
         // Render player bullets
-        if (playerShip.getActiveBullets().size > 0) {
-            for (Bullet bullet : playerShip.getActiveBullets()) {
-                bullet.render(batch);
-                // bullet.getCollisionRect().drawCollider(batch);
-            }
-        }
+        playerShip.renderBullets(batch);
 
         // Render asteroids
-        for (Asteroid asteroid : asteroids) {
-            asteroid.render(batch);
-            asteroid.getCollisionCirlce().drawCollider(batch);
-        }
+        spawner.renderAsteroids(batch);
 
         if (!isPaused) {
             // Collision detecting (only player bullets - asteroids)
             for (Bullet bullet : playerShip.getActiveBullets()) {
-                for (Asteroid asteroid : asteroids) {
+                for (Asteroid asteroid : spawner.getActiveAsteroids()) {
                     // Collision between asteroid and bullet
                     if (bullet.getCollisionRect().collidesWith(asteroid.getCollisionCirlce())) {
 
                         // If bullet collides with asteroid we need to delete them too
                         playerShip.getBulletPool().free(bullet);
                         playerShip.getActiveBullets().removeValue(bullet, true);
-                        asteroidsToRemove.add(asteroid);
+                        spawner.getAsteroidPool().free(asteroid);
+                        spawner.getActiveAsteroids().removeValue(asteroid, true);
 
-                        // FIXME memoryLeak
-                        // Spawn explosion
-                        explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.getRadius(), 0.11f, 96, 96, 96, Assets.manager.get(Assets.explosion2, Texture.class)));
+                        // Spawn Enemy explosion
+                        spawner.spawnEnemyExplosion(asteroid.getX(), asteroid.getY() - asteroid.getRadius(), 96, 96);
+                        // explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.getRadius(), 0.11f, 96, 96, 96, Assets.manager.get(Assets.explosion2, Texture.class)));
 
                         // Increase score value
                         playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
@@ -426,14 +377,14 @@ public class MainGameScreen implements Screen {
             }
 
             // Check for collisions between player and asteroids
-            for (Asteroid asteroid : asteroids) {
+            for (Asteroid asteroid : spawner.getActiveAsteroids()) {
                 if (asteroid.getCollisionCirlce().collidesWith(playerShip.getShipCollisionRect())) {
                     // delete asteroid
-                    asteroidsToRemove.add(asteroid);
+                    spawner.getAsteroidPool().free(asteroid);
+                    spawner.getActiveAsteroids().removeValue(asteroid, true);
 
-                    // FIXME memoryLeak
-                    // Spawn Explosion
-                    explosions.add(new Explosion(asteroid.getX() - asteroid.getRadius(), asteroid.getY() - asteroid.getRadius(), 0.1f, 128, 128, 128, Assets.manager.get(Assets.explosion3, Texture.class)));
+                    // Spawn Player Explosion
+                    spawner.spawnPlayerExplosion(asteroid.getX() - asteroid.getRadius(), asteroid.getY() - asteroid.getRadius(), 128, 128);
 
                     // decrease player health
                     playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
@@ -450,9 +401,6 @@ public class MainGameScreen implements Screen {
                     }
                 }
             }
-
-            // After all possible collisions delete asteroids
-            asteroids.removeAll(asteroidsToRemove);
         }
 
         // Render powerUps
@@ -461,14 +409,12 @@ public class MainGameScreen implements Screen {
             powerUp.getPowerUpCollisionRect().drawCollider(batch);
         }
 
-        // Draw ship with animations, bullets, etc + collisionRectangle
+        // Draw ship with animations and collisionRectangle
         playerShip.draw(batch, delta);
         playerShip.getShipCollisionRect().drawCollider(batch);
 
-        // Render explosions
-        for (Explosion explosion : explosions) {
-            explosion.render(batch);
-        }
+        // Render all possible explosions
+        spawner.renderExplosion(batch);
 
         if (!isPaused) {
             // Draw and update score

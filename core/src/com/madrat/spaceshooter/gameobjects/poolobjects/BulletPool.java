@@ -1,4 +1,4 @@
-package com.madrat.spaceshooter.gameobjects;
+package com.madrat.spaceshooter.gameobjects.poolobjects;
 
 import com.badlogic.gdx.utils.Pool;
 
@@ -19,7 +19,7 @@ public class BulletPool extends Pool<Bullet> {
     // method to create a single object
     @Override
     protected Bullet newObject() {
-        System.out.println("[+] Creating new bullet");
+        // System.out.println("[+] Creating new bullet");
         return new Bullet();
     }
 }

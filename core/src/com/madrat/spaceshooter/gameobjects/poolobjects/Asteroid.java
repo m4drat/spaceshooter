@@ -1,4 +1,4 @@
-package com.madrat.spaceshooter.gameobjects;
+package com.madrat.spaceshooter.gameobjects.poolobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Pool;
+import com.madrat.spaceshooter.physics2d.CollisionCircle;
 import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class Asteroid implements Pool.Poolable {
-    public static final float MIN_ASTEROID_SPAWN_TIME = 0.5f;
-    public static final float MAX_ASTEROID_SPAWN_TIME = 1f;
+    public static final float MIN_ASTEROID_SPAWN_TIME = 0.08f;
+    public static final float MAX_ASTEROID_SPAWN_TIME = 3f;
 
     public static final int REWARD = 50;
     public static final float DAMAGE = 0.2f;
@@ -33,20 +34,23 @@ public class Asteroid implements Pool.Poolable {
     public void reset() {
         // Called when asteroid is freed
         this.remove = false;
-        System.out.println("[+] Resetting asteroid");
+        // System.out.println("[+] Resetting asteroid");
     }
 
-    public Asteroid(float asteroidSpeed, float x, float animationSpeed, int radius, int realWidth, int realHeight) {
-        this.asteroidSpeed = asteroidSpeed;
-        this.x = x;
-        this.y = Gdx.graphics.getHeight();
-
+    public Asteroid(float animationSpeed, int radius, int realWidth, int realHeight) {
         this.radius = (int) (radius * SCALE_FACTOR);
 
         this.collisionCircle = new CollisionCircle(this.x, this.y, (int) (this.radius - 5 * SCALE_FACTOR), "enemy");
 
         asteroidTextureAnimations = Assets.manager.get(Assets.asteroid2Animation, Texture.class);
         asteroidAnimation = new Animation(animationSpeed, TextureRegion.split(asteroidTextureAnimations, realWidth, realHeight)[0]);
+    }
+
+    public void setUpAsteroid(float asteroidSpeed, float x) {
+        this.asteroidSpeed = asteroidSpeed;
+
+        this.x = x;
+        this.y = Gdx.graphics.getHeight();
     }
 
     public void update(float deltaTime) {

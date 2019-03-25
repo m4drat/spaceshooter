@@ -1,6 +1,7 @@
 package com.madrat.spaceshooter.gameobjects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,9 +10,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
+import com.madrat.spaceshooter.gameobjects.poolobjects.BulletPool;
+import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
-
-import java.util.ArrayList;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -23,15 +25,16 @@ public class PlayerShip extends SpaceShip {
     private float stateTime;
     private int score;
 
+    private String bulletTexturePath;
+    private int preferredBulletHeight, preferredBulletWidth;
     private final BulletPool bulletPool = new BulletPool();
     private Array<Bullet> activeBullets;
+
     private Texture healthBar;
     private float newX, newY;
 
     private boolean isUnderAmmoPowerUp, isUnderShieldPowerUp;
 
-    private String bulletTexturePath;
-    private int preferredBulletHeight, preferredBulletWidth;
     private int colliderWidth, colliderHeight;
 
     private Texture animationSheet;
@@ -111,11 +114,11 @@ public class PlayerShip extends SpaceShip {
             batch.draw(shipAnimation.getKeyFrame(stateTime, true), this.x, this.y, this.preferredShipWidth, this.preferredShipHeight);
 
             // Draw health bar
-            if (this.currentHealth > 0.7f)
+            if (this.currentHealth > 0.7f * maxHealth)
                 batch.setColor(Color.GREEN);
-            else if (this.currentHealth <= 0.7f && this.currentHealth > 0.3)
+            else if (this.currentHealth <= 0.7f * maxHealth && this.currentHealth > 0.3 * maxHealth)
                 batch.setColor(Color.ORANGE);
-            else if (this.currentHealth <= 0.3f)
+            else if (this.currentHealth <= 0.3f * maxHealth)
                 batch.setColor(Color.RED);
             batch.draw(healthBar, 0, 0, Gdx.graphics.getWidth() * this.currentHealth / this.maxHealth, healthBarHeight * SCALE_FACTOR);
             batch.setColor(Color.WHITE);
@@ -127,6 +130,9 @@ public class PlayerShip extends SpaceShip {
         if (isAlive) {
             if (this.lastShoot > delayBetweenShoots) {
 
+                // set Shoot timer to 0
+                this.lastShoot = 0;
+
                 // Add first activeBullet
                 Bullet newBullet1 = bulletPool.obtain();
                 newBullet1.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
@@ -137,24 +143,35 @@ public class PlayerShip extends SpaceShip {
                 newBullet2.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
                 activeBullets.add(newBullet2);
 
-                System.out.println("[+] Objects in bulletPool: " + bulletPool.getFree());
-
-                // set Shoot timer to 0
-                this.lastShoot = 0;
+                // System.out.println("[+] Objects in bulletPool: " + bulletPool.getFree());
             } else {
                 lastShoot += delta;
             }
         }
     }
 
-    // y = mx + b
-    // x = (-y + b) / -m
-
     public void updateCollisionRect() {
         this.shipCollisionRect.move(this.x + ((this.preferredShipWidth - this.colliderWidth)) / 2, this.y + ((this.preferredShipHeight - this.colliderHeight)) / 2);
     }
 
-    public void performInput(float deltaTime) {
+    public void updateBullets(float delta) {
+        for (Bullet bullet : activeBullets) {
+            bullet.update(delta);
+            if (bullet.remove) {
+                bulletPool.free(bullet);
+                activeBullets.removeValue(bullet, true);
+            }
+        }
+    }
+
+    public void renderBullets(SpriteBatch batch) {
+        for (Bullet bullet : this.activeBullets) {
+            bullet.render(batch);
+            // bullet.getCollisionRect().drawCollider(batch);
+        }
+    }
+
+    public void performInputMobile(float deltaTime) {
         if (Gdx.input.isTouched()) {
             newX = Gdx.input.getX();
             newY = Gdx.input.getY();
@@ -166,10 +183,6 @@ public class PlayerShip extends SpaceShip {
 
             this.x = xToGo;
             this.y = yToGo;
-            // float m = newY - this.y / newX - this.x; // calculate m
-            // float b = -(m * newX) + newY; // calculate b
-            // this.x = (newX - this.preferredShipWidth / 2); // (newX - this.preferredShipWidth / 2)
-            // this.y = (-newY + Gdx.graphics.getHeight() - this.preferredShipHeight / 2); // (-newY + Gdx.graphics.getHeight() - this.preferredShipHeight / 2)
 
             // check for bounds
             this.correctBounds();
@@ -183,6 +196,18 @@ public class PlayerShip extends SpaceShip {
         return current + Math.signum(target - current) * maxDelta;
     }
 
+    public void performInputPC(float delta) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+            this.y = (this.y + this.speed * delta);
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            this.y = (this.y - this.speed * delta);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            this.x = (this.x - this.speed * delta);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            this.x = (this.x + this.speed * delta);
+
+        this.correctBounds();
+    }
 
     public Array<Bullet> getActiveBullets() {
         return activeBullets;

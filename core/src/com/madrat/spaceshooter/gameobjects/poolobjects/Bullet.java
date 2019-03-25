@@ -1,9 +1,10 @@
-package com.madrat.spaceshooter.gameobjects;
+package com.madrat.spaceshooter.gameobjects.poolobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Pool;
+import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_X;
@@ -21,18 +22,19 @@ public class Bullet implements Pool.Poolable {
 
     private CollisionRect rect;
 
-    public boolean remove = false;
+    public boolean remove;
 
     @Override
     public void reset() {
         // Called when bullet is freed
         this.remove = false;
-        System.out.println("[+] Resetting bullet");
+        // System.out.println("[+] Resetting bullet");
     }
 
     public Bullet() {
         this.rect = new CollisionRect(0, y, preferredWidth, preferredHeight, "none");
         this.bulletTexture = Assets.manager.get(Assets.bullet1, Texture.class);
+        remove = false;
     }
 
     public void setupBullet(float bulletSpeed, float x, float y, int preferredWidth, int preferredHeight, String colliderTag) {

@@ -1,6 +1,7 @@
 package com.madrat.spaceshooter.gameobjects;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 
 import java.util.ArrayList;
 
