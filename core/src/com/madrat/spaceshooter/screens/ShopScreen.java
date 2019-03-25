@@ -39,12 +39,12 @@ public class ShopScreen implements Screen {
     private Skin skin;
     private Table buttonsTable;
 
-    public ShopScreen(MainGame newGame, ScrollingBackground scrBack, SpriteBatch oldBatch) {
+    public ShopScreen(MainGame newGame, ScrollingBackground scrBack) {
         this.game = newGame;
         this.scrollingBackground = scrBack;
-        this.batch = oldBatch;
+        this.batch = new SpriteBatch();
 
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
         buttonsTable = new Table();
@@ -121,7 +121,8 @@ public class ShopScreen implements Screen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game, batch, scrollingBackground));
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
@@ -166,6 +167,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 23);
         data.putInteger("preferredShipWidth", 60);
         data.putInteger("preferredShipHeight", 50);
+        data.putInteger("colliderWidth", 60);
+        data.putInteger("colliderHeight", 50);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -194,6 +197,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 64);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
+        data.putInteger("colliderWidth", 64);
+        data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -222,6 +227,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 64);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
+        data.putInteger("colliderWidth", 64);
+        data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -250,6 +257,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 32);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
+        data.putInteger("colliderWidth", 46);
+        data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -278,6 +287,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 32);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
+        data.putInteger("colliderWidth", 64);
+        data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -306,6 +317,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 32);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
+        data.putInteger("colliderWidth", 64);
+        data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -334,6 +347,8 @@ public class ShopScreen implements Screen {
         data.putInteger("realShipHeight", 32);
         data.putInteger("preferredShipWidth", 64);
         data.putInteger("preferredShipHeight", 64);
+        data.putInteger("colliderWidth", 64);
+        data.putInteger("colliderHeight", 64);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);

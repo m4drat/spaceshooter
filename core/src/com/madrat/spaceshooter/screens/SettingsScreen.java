@@ -38,12 +38,12 @@ public class SettingsScreen implements Screen {
     private Skin skin;
     private Table buttonsTable;
 
-    public SettingsScreen(MainGame newGame, SpriteBatch oldBatch, ScrollingBackground scrBack) {
+    public SettingsScreen(MainGame newGame, ScrollingBackground scrBack) {
         this.game = newGame;
-        this.batch = oldBatch;
+        this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
 
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
         buttonsTable = new Table();
@@ -84,7 +84,8 @@ public class SettingsScreen implements Screen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game, batch, scrollingBackground));
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 

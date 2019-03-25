@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
-import static com.madrat.spaceshooter.MainGame.SCALE_X;
-import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
 public class PowerUp {
 
@@ -32,8 +30,8 @@ public class PowerUp {
 
         this.timeToLive = timeToLive;
 
-        this.preferredWidth = (int) (preferredWidth * SCALE_X);
-        this.preferredHeight = (int) (preferredHeight * SCALE_Y);
+        this.preferredWidth = (int) (preferredWidth * SCALE_FACTOR);
+        this.preferredHeight = (int) (preferredHeight * SCALE_FACTOR);
 
         this.animationSheet = animationSheet;
         this.stateTime = 0;

@@ -1,6 +1,11 @@
 package com.madrat.spaceshooter.utils;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets {
     public static final AssetManager manager = new AssetManager();
@@ -44,8 +49,122 @@ public class Assets {
 
     public static final String healPowerUp = "objects/powerUps/healPowerUp.png", ammoPowerUp = "objects/powerUps/ammoPowerUp.png";
 
-    public static void load() {
+    public static void loadFont() {
+        manager.load(emulogicfnt, BitmapFont.class);
+    }
 
+    public static void loadExplosions() {
+        manager.load(explosion2, Texture.class);
+        manager.load(explosion3, Texture.class);
+    }
+
+    public static void loadAsteroids() {
+        manager.load(asteroid2Animation, Texture.class);
+    }
+
+    public static void loadUiButtons() {
+        manager.load(blank, Texture.class);
+        manager.load(pauseBtnUp, Texture.class);
+        manager.load(pauseBtnDown, Texture.class);
+    }
+
+    public static void loadBackground() {
+        manager.load(backgroundSpace, Texture.class);
+        manager.load(star1, Texture.class);
+        manager.load(star2, Texture.class);
+        manager.load(star3, Texture.class);
+
+        manager.load(mars1, Texture.class);
+        manager.load(earth1, Texture.class);
+        manager.load(jupiter1, Texture.class);
+    }
+
+    public static void loadPowerups() {
+        manager.load(healPowerUp, Texture.class);
+        manager.load(ammoPowerUp, Texture.class);
+    }
+
+    public static void loadShips() {
+        manager.load(ship1Animation, Texture.class);
+        manager.load(ship2Animation, Texture.class);
+        manager.load(ship3Animation, Texture.class);
+        manager.load(ship4Animation, Texture.class);
+        manager.load(ship5Animation, Texture.class);
+        manager.load(ship6Animation, Texture.class);
+        manager.load(ship7Animation, Texture.class);
+        manager.load(ship8Animation, Texture.class);
+        manager.load(ship9Animation, Texture.class);
+        manager.load(ship10Animation, Texture.class);
+        manager.load(ship11Animation, Texture.class);
+    }
+
+    public static void loadBullets() {
+        manager.load(bullet1, Texture.class);
+        manager.load(bullet2, Texture.class);
+        manager.load(rocket1, Texture.class);
+    }
+
+    public static void loadSkin() {
+        manager.load(uiskin, Skin.class);
+    }
+
+    public static void unloadFont() {
+        manager.unload(emulogicfnt);
+    }
+
+    public static void unloadExplosions() {
+        manager.unload(explosion2);
+        manager.unload(explosion3);
+    }
+
+    public static void unloadAsteroids() {
+        manager.unload(asteroid2Animation);
+    }
+
+    public static void unloadUiButtons() {
+        manager.unload(blank);
+        manager.unload(pauseBtnUp);
+        manager.unload(pauseBtnDown);
+    }
+
+    public static void unloadBackground() {
+        manager.unload(backgroundSpace);
+        manager.unload(star1);
+        manager.unload(star2);
+        manager.unload(star3);
+
+        manager.unload(mars1);
+        manager.unload(earth1);
+        manager.unload(jupiter1);
+    }
+
+    public static void unloadPowerups() {
+        manager.unload(healPowerUp);
+        manager.unload(ammoPowerUp);
+    }
+
+    public static void unloadShips() {
+        manager.unload(ship1Animation);
+        manager.unload(ship2Animation);
+        manager.unload(ship3Animation);
+        manager.unload(ship4Animation);
+        manager.unload(ship5Animation);
+        manager.unload(ship6Animation);
+        manager.unload(ship7Animation);
+        manager.unload(ship8Animation);
+        manager.unload(ship9Animation);
+        manager.unload(ship10Animation);
+        manager.unload(ship11Animation);
+    }
+
+    public static void unloadBullets() {
+        manager.unload(bullet1);
+        manager.unload(bullet2);
+        manager.unload(rocket1);
+    }
+
+    public static void unloadSkin() {
+        manager.unload(uiskin);
     }
 
     public static void dispose() {

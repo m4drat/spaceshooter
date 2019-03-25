@@ -5,40 +5,47 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Pool;
 import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
-public class Asteroid {
-    public static final float MIN_ASTEROID_SPAWN_TIME = 2f;
-    public static final float MAX_ASTEROID_SPAWN_TIME = 6f;
+public class Asteroid implements Pool.Poolable {
+    public static final float MIN_ASTEROID_SPAWN_TIME = 0.5f;
+    public static final float MAX_ASTEROID_SPAWN_TIME = 1f;
 
     public static final int REWARD = 50;
-    public static final float DAMAGE = 0.8f;
+    public static final float DAMAGE = 0.2f;
 
     private float asteroidSpeed;
 
     private Texture asteroidTextureAnimations;
-    private CollisionRect rect;
+    private CollisionCircle collisionCircle;
 
     private float x, y;
     public boolean remove = false;
 
     private Animation<TextureRegion> asteroidAnimation;
     private float stateTime;
-    private int preferredWidth, preferredHeight;
+    private int radius;
 
-    public Asteroid(float asteroidSpeed, float x, float animationSpeed, int preferredWidth, int preferredHeight, int realWidth, int realHeight) {
+    @Override
+    public void reset() {
+        // Called when asteroid is freed
+        this.remove = false;
+        System.out.println("[+] Resetting asteroid");
+    }
+
+    public Asteroid(float asteroidSpeed, float x, float animationSpeed, int radius, int realWidth, int realHeight) {
         this.asteroidSpeed = asteroidSpeed;
         this.x = x;
         this.y = Gdx.graphics.getHeight();
 
-        this.preferredWidth = (int) (preferredWidth * SCALE_FACTOR);
-        this.preferredHeight = (int) (preferredHeight * SCALE_FACTOR);
+        this.radius = (int) (radius * SCALE_FACTOR);
 
-        this.rect = new CollisionRect(x, y, this.preferredWidth, this.preferredHeight, "enemy");
+        this.collisionCircle = new CollisionCircle(this.x, this.y, (int) (this.radius - 5 * SCALE_FACTOR), "enemy");
 
-        asteroidTextureAnimations = new Texture(Assets.asteroid2Animation);
+        asteroidTextureAnimations = Assets.manager.get(Assets.asteroid2Animation, Texture.class);
         asteroidAnimation = new Animation(animationSpeed, TextureRegion.split(asteroidTextureAnimations, realWidth, realHeight)[0]);
     }
 
@@ -49,15 +56,15 @@ public class Asteroid {
         if (y < -(asteroidTextureAnimations.getHeight() / 2))
             remove = true;
 
-        rect.move(x, y);
+        collisionCircle.move(x + this.radius, y + this.radius);
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(asteroidAnimation.getKeyFrame(stateTime, true), this.x, this.y, this.preferredWidth, this.preferredHeight);
+        batch.draw(asteroidAnimation.getKeyFrame(stateTime, true), this.x, this.y, radius * 2, radius * 2);
     }
 
-    public CollisionRect getCollisionRect() {
-        return rect;
+    public CollisionCircle getCollisionCirlce() {
+        return collisionCircle;
     }
 
     public float getX() {
@@ -68,15 +75,14 @@ public class Asteroid {
         return y;
     }
 
-    public int getPreferredWidth() {
-        return preferredWidth;
-    }
-
-    public int getPreferredHeight() {
-        return preferredHeight;
+    public int getRadius() {
+        return this.radius;
     }
 
     public void dispose() {
         asteroidTextureAnimations.dispose();
+        for (TextureRegion region : asteroidAnimation.getKeyFrames()) {
+            region.getTexture().dispose();
+        }
     }
 }

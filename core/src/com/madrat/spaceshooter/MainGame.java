@@ -4,7 +4,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.Texture;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 
@@ -20,9 +19,8 @@ public class MainGame extends Game {
 
     @Override
     public void create() {
-
+        // System info
         applicationType = Gdx.app.getType();
-
         GENERAL_WIDTH = Gdx.graphics.getWidth();
         GENERAL_HEIGHT = Gdx.graphics.getHeight();
 
@@ -59,6 +57,8 @@ public class MainGame extends Game {
             data.putInteger("realShipHeight", 23);
             data.putInteger("preferredShipWidth", 60);
             data.putInteger("preferredShipHeight", 50);
+            data.putInteger("colliderWidth", 60);
+            data.putInteger("colliderHeight", 50);
 
             // Ship default healing value
             data.putFloat("maxHealing", 0.2f);
@@ -81,6 +81,6 @@ public class MainGame extends Game {
 
     @Override
     public void dispose() {
-
+        Assets.dispose();
     }
 }

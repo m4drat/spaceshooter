@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 
@@ -22,14 +23,18 @@ public class PlayerShip extends SpaceShip {
     private float stateTime;
     private int score;
 
-    private ArrayList<Bullet> bullets;
+    private final BulletPool bulletPool = new BulletPool();
+    private Array<Bullet> activeBullets;
     private Texture healthBar;
     private float newX, newY;
 
     private boolean isUnderAmmoPowerUp, isUnderShieldPowerUp;
 
-    private Texture bulletTexture;
+    private String bulletTexturePath;
     private int preferredBulletHeight, preferredBulletWidth;
+    private int colliderWidth, colliderHeight;
+
+    private Texture animationSheet;
 
     // Constructor to generate player ship using only file data
     public PlayerShip() {
@@ -37,7 +42,7 @@ public class PlayerShip extends SpaceShip {
         super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShoots"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
 
         Preferences data = Gdx.app.getPreferences("spacegame");
-        this.bulletTexture = new Texture(data.getString("bulletTexture"));
+        this.bulletTexturePath = data.getString("bulletTexture");
         this.preferredBulletHeight = data.getInteger("preferredBulletHeight");
         this.preferredBulletWidth = data.getInteger("preferredBulletWidth");
 
@@ -46,8 +51,12 @@ public class PlayerShip extends SpaceShip {
         this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
         this.y = 25;
 
-        this.shipCollisionRect = new CollisionRect(this.x, this.y, this.preferredShipWidth, this.preferredShipHeight, "player");
-        this.shipAnimation = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), TextureRegion.split(new Texture(data.getString("animationTexture")), this.realShipWidth, this.realShipHeight)[0]);
+        this.colliderWidth = (int) (data.getInteger("colliderWidth") * SCALE_FACTOR);
+        this.colliderHeight = (int) (data.getInteger("colliderHeight") * SCALE_FACTOR);
+
+        this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR), this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR), this.colliderWidth, this.colliderHeight, "player");
+        this.animationSheet = Assets.manager.get(data.getString("animationTexture"), Texture.class);
+        this.shipAnimation = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), TextureRegion.split(this.animationSheet, this.realShipWidth, this.realShipHeight)[0]);
         setup();
     }
 
@@ -67,14 +76,14 @@ public class PlayerShip extends SpaceShip {
     }
 
     private void setup() {
-        // Initialize bullets list
-        this.bullets = new ArrayList<Bullet>();
+        // Initialize activeBullets list
+        this.activeBullets = new Array<Bullet>();
 
         // Initialize score value
         this.score = 0;
 
         // Init blank texture to draw
-        this.healthBar = new Texture(Assets.blank);
+        this.healthBar = Assets.manager.get(Assets.blank, Texture.class);
     }
 
     public void correctBounds() {
@@ -117,9 +126,18 @@ public class PlayerShip extends SpaceShip {
     public void shoot(float delta) {
         if (isAlive) {
             if (this.lastShoot > delayBetweenShoots) {
-                // Add two bullets
-                bullets.add(new Bullet(bulletTexture, this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player"));
-                bullets.add(new Bullet(bulletTexture, this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player"));
+
+                // Add first activeBullet
+                Bullet newBullet1 = bulletPool.obtain();
+                newBullet1.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+                activeBullets.add(newBullet1);
+
+                // Add second activeBullet
+                Bullet newBullet2 = bulletPool.obtain();
+                newBullet2.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+                activeBullets.add(newBullet2);
+
+                System.out.println("[+] Objects in bulletPool: " + bulletPool.getFree());
 
                 // set Shoot timer to 0
                 this.lastShoot = 0;
@@ -131,6 +149,10 @@ public class PlayerShip extends SpaceShip {
 
     // y = mx + b
     // x = (-y + b) / -m
+
+    public void updateCollisionRect() {
+        this.shipCollisionRect.move(this.x + ((this.preferredShipWidth - this.colliderWidth)) / 2, this.y + ((this.preferredShipHeight - this.colliderHeight)) / 2);
+    }
 
     public void performInput(float deltaTime) {
         if (Gdx.input.isTouched()) {
@@ -162,8 +184,8 @@ public class PlayerShip extends SpaceShip {
     }
 
 
-    public ArrayList<Bullet> getBullets() {
-        return bullets;
+    public Array<Bullet> getActiveBullets() {
+        return activeBullets;
     }
 
     public int getScore() {
@@ -190,8 +212,17 @@ public class PlayerShip extends SpaceShip {
         isUnderShieldPowerUp = underShieldPowerUp;
     }
 
+    public void setActiveBullets(Array<Bullet> activeBullets) {
+        this.activeBullets = activeBullets;
+    }
+
+    public BulletPool getBulletPool() {
+        return bulletPool;
+    }
+
     public void dispose() {
         // Dispose health bar
+        this.animationSheet.dispose();
         this.healthBar.dispose();
     }
 }

@@ -48,27 +48,28 @@ public class MainMenuScreen implements Screen {
     private DialogAlert exit;
 
     // Other runs constructor
-    public MainMenuScreen(MainGame newGame, SpriteBatch oldBatch, ScrollingBackground scrBack) {
+    public MainMenuScreen(MainGame newGame, ScrollingBackground scrBack) {
         this.game = newGame;
 
         // Use old background
         this.scrollingBackground = scrBack;
-
-        // Use old SpriteBatch
-        this.batch = oldBatch;
 
         setup();
     }
 
     // First run constructor
     public MainMenuScreen(MainGame newGame) {
+
+        // Load assets
+        Assets.loadFont();
+        Assets.loadBackground();
+        Assets.loadSkin();
+        Assets.manager.finishLoading();
+
         this.game = newGame;
 
-        // Create Sprite batch
-        batch = new SpriteBatch();
-
         // Create base background for scrolling background
-        background = new Sprite(new Texture(Gdx.files.internal(Assets.backgroundSpace)));
+        background = new Sprite(Assets.manager.get(Assets.backgroundSpace, Texture.class));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Create objects for scrolling background and run it
@@ -79,7 +80,10 @@ public class MainMenuScreen implements Screen {
     }
 
     private void setup() {
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        // Create Sprite batch
+        batch = new SpriteBatch();
+
+        skin = Assets.manager.get(Assets.uiskin, Skin.class); // skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
         menuTable = new Table();
@@ -99,7 +103,8 @@ public class MainMenuScreen implements Screen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameTypeScreen(game, batch, scrollingBackground));
+                batch.dispose();
+                game.setScreen(new GameTypeScreen(game, scrollingBackground));
             }
         });
 
@@ -107,7 +112,8 @@ public class MainMenuScreen implements Screen {
         shopButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new ShopScreen(game, scrollingBackground, batch));
+                batch.dispose();
+                game.setScreen(new ShopScreen(game, scrollingBackground));
             }
         });
 
@@ -116,7 +122,8 @@ public class MainMenuScreen implements Screen {
         settButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingsScreen(game, batch, scrollingBackground));
+                batch.dispose();
+                game.setScreen(new SettingsScreen(game, scrollingBackground));
             }
         });
 

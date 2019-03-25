@@ -40,17 +40,17 @@ public class ScrollingBackground {
         Random ran = new Random();
         ArrayList<ObjectHandler> sprites = new ArrayList<ObjectHandler>();
 
-        for (int i = 0; i < 25; ++i) {
-            size = ran.nextInt(4) + 1;
-            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star1))), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
+        for (int i = 0; i < 50; ++i) {
+            size = ran.nextInt(3) + 1;
+            sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.star1, Texture.class)), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
         }
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
-            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star2))), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
+            sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.star2, Texture.class)), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
         }
         for (int i = 0; i < 25; ++i) {
             size = ran.nextInt(4) + 1;
-            sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.star3))), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
+            sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.star3, Texture.class)), (int) (size * SCALE_FACTOR), (int) (size * SCALE_FACTOR), (int) (ran.nextInt(5) + 3 * SCALE_FACTOR)));
         }
 
         // Generate 3 Random not repeating int's
@@ -63,11 +63,11 @@ public class ScrollingBackground {
 
         // Add objects
         size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
-        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.earth1))), size, size, (int) ((randomSizes[0] + 1) * SCALE_FACTOR)));
+        sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.earth1, Texture.class)), size, size, (int) ((randomSizes[0] + 1) * SCALE_FACTOR)));
         size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
-        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.jupiter1))), size, size, (int) ((randomSizes[1] + 1) * SCALE_FACTOR)));
+        sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.jupiter1, Texture.class)), size, size, (int) ((randomSizes[1] + 1) * SCALE_FACTOR)));
         size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
-        sprites.add(new ObjectHandler(new Sprite(new Texture(Gdx.files.internal(Assets.mars1))), size, size, (int) ((randomSizes[2] + 1) * SCALE_FACTOR)));
+        sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.mars1, Texture.class)), size, size, (int) ((randomSizes[2] + 1) * SCALE_FACTOR)));
 
         // Sort object by sizes (place bigger object in front of other)
         Collections.sort(sprites);

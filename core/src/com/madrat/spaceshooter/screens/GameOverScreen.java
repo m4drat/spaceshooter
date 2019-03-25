@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.github.czyzby.kiwi.util.gdx.asset.Asset;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
@@ -46,13 +47,13 @@ public class GameOverScreen implements Screen {
 
     private int score, highScore;
 
-    public GameOverScreen(MainGame newgame, SpriteBatch oldBatch, ScrollingBackground scrBack, int score) {
+    public GameOverScreen(MainGame newgame, ScrollingBackground scrBack, int score) {
         this.game = newgame;
-        this.batch = oldBatch;
+        this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
         this.score = score;
 
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
         // Get highscore from file
@@ -64,17 +65,17 @@ public class GameOverScreen implements Screen {
             data.flush();
         }
 
-        gameOverFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
+        gameOverFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         gameOverFont.setColor(new Color(0x30db88ff));
         gameOverFont.getData().setScale(1.2f * SCALE_FACTOR);
         gameOverLayout = new GlyphLayout(gameOverFont, "GAME OVER");
 
-        highScoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
+        highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.setColor(new Color(0x7a9af1ff));
         highScoreFont.getData().setScale(0.9f * SCALE_FACTOR);
         highScoreLayout = new GlyphLayout(highScoreFont, "Highscore:" + data.getInteger("highscore", 0));
 
-        scoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
+        scoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         scoreFont.setColor(new Color(0xceb963ff));
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         scoreLayout = new GlyphLayout(scoreFont, "Current score:" + score);
@@ -92,13 +93,15 @@ public class GameOverScreen implements Screen {
         restartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainGameScreen(game, batch));
+                batch.dispose();
+                game.setScreen(new MainGameScreen(game));
             }
         });
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game, batch, scrollingBackground));
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 

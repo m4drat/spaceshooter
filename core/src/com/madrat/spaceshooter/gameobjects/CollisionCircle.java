@@ -4,21 +4,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-public class CollisionRect {
-
+public class CollisionCircle {
     private float x, y;
-    private int width, height;
+    private int radius;
     private String colliderTag;
 
     private ShapeRenderer shapeRenderer;
 
-    public CollisionRect(float x, float y, int width, int height, String colliderTag) {
+    public CollisionCircle(float x, float y, int radius, String colliderTag) {
         this.shapeRenderer = new ShapeRenderer();
 
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.radius = radius;
         this.colliderTag = colliderTag;
     }
 
@@ -27,19 +25,18 @@ public class CollisionRect {
         this.y = y;
     }
 
-    public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public void resize(int radius) {
+        this.radius = radius;
     }
 
-    public boolean collidesWith(CollisionRect rect) { // rect - rect
-        return x < rect.x + rect.width && y < rect.y + rect.height && x + width > rect.x && y + height > rect.y;
+    public boolean collidesWith(CollisionRect rect) { // circle - rect
+        float DeltaX = this.x - Math.max(rect.getX(), Math.min(this.x, rect.getX() + rect.getWidth()));
+        float DeltaY = this.y - Math.max(rect.getY(), Math.min(this.y, rect.getY() + rect.getHeight()));
+        return (DeltaX * DeltaX + DeltaY * DeltaY) < (this.radius * this.radius);
     }
 
-    public boolean collidesWith(CollisionCircle circle) { // rect - circle
-        float DeltaX = circle.getX() - Math.max(this.x, Math.min(circle.getX(), this.x + this.width));
-        float DeltaY = circle.getY() - Math.max(this.y, Math.min(circle.getY(), this.y + this.height));
-        return (DeltaX * DeltaX + DeltaY * DeltaY) < (circle.getRadius() * circle.getRadius());
+    public boolean collidesWith(CollisionCircle circle) { // circle - circle
+        return Math.pow(circle.getX() - this.x, 2) + Math.pow(this.y - circle.getY(), 2) <= Math.pow(this.radius + circle.getRadius(), 2);
     }
 
     public float getX() {
@@ -50,12 +47,8 @@ public class CollisionRect {
         return y;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    public int getRadius() {
+        return radius;
     }
 
     public String getColliderTag() {
@@ -70,7 +63,7 @@ public class CollisionRect {
         batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(this.x, this.y, this.width, this.height);
+        shapeRenderer.circle(this.x, this.y, this.radius);
         shapeRenderer.end();
         batch.begin();
     }

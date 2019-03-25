@@ -42,7 +42,7 @@ public class DialogAlert extends Dialog {
 
     @Override
     public DialogAlert text(String text) {
-        BitmapFont font = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt), Gdx.files.internal(Assets.emulogicpng), false);
+        BitmapFont font = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         label = new Label(text, new Label.LabelStyle(font, Color.WHITE));
 
         label.setAlignment(Align.center);

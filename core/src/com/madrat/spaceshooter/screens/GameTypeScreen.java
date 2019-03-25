@@ -43,21 +43,21 @@ public class GameTypeScreen implements Screen {
     private BitmapFont highScoreFont;
     private GlyphLayout highScoreLayout;
 
-    public GameTypeScreen(MainGame newgame, final SpriteBatch oldBatch, ScrollingBackground scrBack) {
-        this.game = newgame;
-        this.batch = oldBatch;
+    public GameTypeScreen(MainGame newGame, ScrollingBackground scrBack) {
+        this.game = newGame;
+        this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
 
         Preferences data = Gdx.app.getPreferences("spacegame");
         this.highScore = data.getInteger("highscore", 0);
 
-        highScoreFont = new BitmapFont(Gdx.files.internal(Assets.emulogicfnt));
+        highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreFont.setColor(new Color(0x7a9af1));
         highScoreLayout = new GlyphLayout(highScoreFont, "" + this.highScore);
         highScoreLayout.setText(highScoreFont, "Highscore:" + this.highScore);
 
-        skin = new Skin(Gdx.files.internal(Assets.uiskin));
+        skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
         menuTable = new Table();
@@ -74,7 +74,8 @@ public class GameTypeScreen implements Screen {
         singleplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainGameScreen(game, batch));
+                batch.dispose();
+                game.setScreen(new MainGameScreen(game));
             }
         });
 
@@ -82,7 +83,7 @@ public class GameTypeScreen implements Screen {
         multiplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                final DialogAlert confirm = new DialogAlert("", skin);
+                DialogAlert confirm = new DialogAlert("", skin);
                 confirm.text("Sorry, not\nimplemented");
                 confirm.yesButton("OK", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -100,7 +101,8 @@ public class GameTypeScreen implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game, batch, scrollingBackground));
+                batch.dispose();
+                game.setScreen(new MainMenuScreen(game, scrollingBackground));
             }
         });
 
