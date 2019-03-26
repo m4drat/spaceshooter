@@ -26,7 +26,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Asteroid;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.PlayerShip;
-import com.madrat.spaceshooter.gameobjects.PowerUp;
+import com.madrat.spaceshooter.gameobjects.poolobjects.poweruppools.PowerUp;
 import com.madrat.spaceshooter.gameobjects.Spawner;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
@@ -37,10 +37,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
 
 public class MainGameScreen implements Screen {
-
-    private ArrayList<PowerUp> powerUps;
 
     private Random random;
 
@@ -55,8 +54,6 @@ public class MainGameScreen implements Screen {
 
     private BitmapFont scoreFont;
     private GlyphLayout scoreLayout;
-
-    private ArrayList<PowerUp> powerUpsToRemove;
 
     private Stage stage;
     private Skin skin;
@@ -80,7 +77,7 @@ public class MainGameScreen implements Screen {
         Assets.loadExplosions();
         Assets.loadAsteroids();
         Assets.loadUiButtons();
-        Assets.loadPowerups();
+        Assets.loadPowerUps();
         Assets.loadShips();
         Assets.loadBullets();
         Assets.manager.finishLoading();
@@ -255,14 +252,15 @@ public class MainGameScreen implements Screen {
             }
         });
 
-        powerUps = new ArrayList<PowerUp>();
-
         // Create spawner object + initialize asteroids
         spawner = new Spawner();
         spawner.initAsteroids();
 
         // Initialize explosions
         spawner.initExplosions();
+
+        // Initialize powerUps
+        spawner.initPowerUps();
 
         // Add actor to stage (pause Button + pause menu)
         stage.addActor(pauseTable);
@@ -287,16 +285,7 @@ public class MainGameScreen implements Screen {
             spawner.updateExplosions(delta);
 
             // Update powerUps
-            powerUpsToRemove = new ArrayList<PowerUp>();
-            for (PowerUp powerUp : powerUps) {
-                powerUp.update(delta);
-                if (powerUp.remove) {
-                    powerUpsToRemove.add(powerUp);
-                    // powerUp.dispose();
-                }
-            }
-            // Deleting powerUps
-            powerUps.removeAll(powerUpsToRemove);
+            spawner.updatePowerUps(delta);
 
             // Player ship moving
             if (MainGame.applicationType == Application.ApplicationType.Android) {
@@ -348,16 +337,14 @@ public class MainGameScreen implements Screen {
                         // Increase score value
                         playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
 
-                        // FIXME memoryLeak
-                        // Spawn PowerUp
-                        if (random.nextInt(7) == 5)
-                            powerUps.add(new PowerUp(asteroid.getX(), asteroid.getY(), 0.2f, 30, 25, 30, 25, 10f, "healPowerUp", Assets.manager.get(Assets.healPowerUp, Texture.class)));
+                        // Spawn Random PowerUp
+                        spawner.randomPowerUp(asteroid.getX(), asteroid.getY());
                     }
                 }
             }
 
             // Check for collisions between player and powerUp
-            for (PowerUp powerUp : powerUps) {
+            for (PowerUp powerUp : spawner.getActivePowerUps()) {
 
                 // User pickUps powerUp
                 if (powerUp.getPowerUpCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
@@ -371,7 +358,14 @@ public class MainGameScreen implements Screen {
                             playerShip.setCurrentHealth(playerShip.getCurrentHealth() + playerShip.getMaxHealing());
                         }
                     } else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "ammoPowerUp") {
-
+                        // TODO implement rocket firing
+                    } else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "shieldPowerUp") {
+                        // Activate Shield
+                        playerShip.setShieldActive(true);
+                        // Set shield animation
+                        playerShip.setCurrentAnimation(animationState.shieldJustActivatedAnimation);
+                        // Increase shield hp
+                        playerShip.setCurrentShieldHealth(playerShip.getShieldHealthMax());
                     }
                 }
             }
@@ -386,8 +380,21 @@ public class MainGameScreen implements Screen {
                     // Spawn Player Explosion
                     spawner.spawnPlayerExplosion(asteroid.getX() - asteroid.getRadius(), asteroid.getY() - asteroid.getRadius(), 128, 128);
 
-                    // decrease player health
-                    playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
+                    // decrease player health or shield if its active
+                    if (playerShip.isShieldActive()) {
+                        playerShip.setCurrentShieldHealth(playerShip.getCurrentShieldHealth() - asteroid.DAMAGE);
+                    } else {
+                        playerShip.setCurrentHealth(playerShip.getCurrentHealth() - asteroid.DAMAGE);
+                    }
+
+                    // Set damage animation if shield isn't active
+                    if (playerShip.getCurrentAnimation() != animationState.shieldJustActivatedAnimation && playerShip.getCurrentAnimation() != animationState.shieldDestroyedAnimation && playerShip.getCurrentAnimation() != animationState.shieldDefaultAnimation)
+                        playerShip.setCurrentAnimation(animationState.shipUnderAttackAnimation);
+
+                    // Shield over
+                    if (playerShip.getCurrentShieldHealth() <= 0) {
+                        playerShip.setShieldActive(false);
+                    }
 
                     // Increase score value
                     playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
@@ -404,14 +411,12 @@ public class MainGameScreen implements Screen {
         }
 
         // Render powerUps
-        for (PowerUp powerUp : powerUps) {
-            powerUp.render(batch);
-            powerUp.getPowerUpCollisionRect().drawCollider(batch);
-        }
+        spawner.renderPowerUps(batch);
 
         // Draw ship with animations and collisionRectangle
         playerShip.draw(batch, delta);
         playerShip.getShipCollisionRect().drawCollider(batch);
+        playerShip.updateShieldState(delta);
 
         // Render all possible explosions
         spawner.renderExplosion(batch);
@@ -460,7 +465,7 @@ public class MainGameScreen implements Screen {
         Assets.unloadExplosions();
         Assets.unloadAsteroids();
         Assets.unloadUiButtons();
-        Assets.unloadPowerups();
+        Assets.unloadPowerUps();
         Assets.unloadShips();
         Assets.unloadBullets();
     }

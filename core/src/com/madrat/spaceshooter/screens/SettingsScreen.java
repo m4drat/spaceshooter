@@ -111,7 +111,7 @@ public class SettingsScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.3f);
+        data.putFloat("delayBetweenShootsBullets", 0.3f);
         data.putFloat("bulletsSpeed", 600f);
         data.putFloat("speed", 300f);
         data.putFloat("frameLength", 0.14f);
@@ -124,6 +124,8 @@ public class SettingsScreen implements Screen {
         data.putInteger("preferredShipHeight", 50);
         data.putInteger("colliderWidth", 60);
         data.putInteger("colliderHeight", 50);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         // Ship default healing value
         data.putFloat("maxHealing", 0.2f);

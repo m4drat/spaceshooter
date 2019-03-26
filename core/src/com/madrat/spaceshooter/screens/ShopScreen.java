@@ -169,7 +169,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.3f);
+        data.putFloat("delayBetweenShootsBullets", 0.3f);
         data.putFloat("bulletsSpeed", 600f);
         data.putFloat("speed", 300f);
         data.putFloat("frameLength", 0.14f);
@@ -183,6 +183,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 50);
         data.putInteger("colliderWidth", 60);
         data.putInteger("colliderHeight", 50);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -199,7 +201,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 2f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.4f);
+        data.putFloat("delayBetweenShootsBullets", 0.4f);
         data.putFloat("bulletsSpeed", 600f);
         data.putFloat("speed", 400f);
         data.putFloat("frameLength", 0.14f);
@@ -213,6 +215,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 64);
         data.putInteger("colliderWidth", 64);
         data.putInteger("colliderHeight", 64);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -229,7 +233,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.2f);
+        data.putFloat("delayBetweenShootsBullets", 0.2f);
         data.putFloat("bulletsSpeed", 700f);
         data.putFloat("speed", 500f);
         data.putFloat("frameLength", 0.14f);
@@ -243,6 +247,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 64);
         data.putInteger("colliderWidth", 64);
         data.putInteger("colliderHeight", 64);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -259,7 +265,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 4f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.5f);
+        data.putFloat("delayBetweenShootsBullets", 0.5f);
         data.putFloat("bulletsSpeed", 600f);
         data.putFloat("speed", 200f);
         data.putFloat("frameLength", 0.14f);
@@ -273,6 +279,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 64);
         data.putInteger("colliderWidth", 46);
         data.putInteger("colliderHeight", 64);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -289,7 +297,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 2f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.3f);
+        data.putFloat("delayBetweenShootsBullets", 0.3f);
         data.putFloat("bulletsSpeed", 700f);
         data.putFloat("speed", 400f);
         data.putFloat("frameLength", 0.14f);
@@ -303,6 +311,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 64);
         data.putInteger("colliderWidth", 52);
         data.putInteger("colliderHeight", 52);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", -3);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -319,7 +329,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.3f);
+        data.putFloat("delayBetweenShootsBullets", 0.3f);
         data.putFloat("bulletsSpeed", 700f);
         data.putFloat("speed", 600f);
         data.putFloat("frameLength", 0.14f);
@@ -333,6 +343,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 64);
         data.putInteger("colliderWidth", 64);
         data.putInteger("colliderHeight", 64);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
@@ -349,7 +361,7 @@ public class ShopScreen implements Screen {
         data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShoots", 0.3f);
+        data.putFloat("delayBetweenShootsBullets", 0.3f);
         data.putFloat("bulletsSpeed", 400f);
         data.putFloat("speed", 200f);
         data.putFloat("frameLength", 0.14f);
@@ -363,6 +375,8 @@ public class ShopScreen implements Screen {
         data.putInteger("preferredShipHeight", 64);
         data.putInteger("colliderWidth", 50);
         data.putInteger("colliderHeight", 64);
+        data.putInteger("colliderXcoordOffset", 0);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);

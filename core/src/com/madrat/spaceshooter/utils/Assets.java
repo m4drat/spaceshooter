@@ -48,6 +48,7 @@ public class Assets {
     public static final String bullet1 = "ships/bullets/bullet1.png", bullet2 = "ships/bullets/bullet2.png", rocket1 = "ships/bullets/rocket1.png";
 
     public static final String healPowerUp = "objects/powerUps/healPowerUp.png", ammoPowerUp = "objects/powerUps/ammoPowerUp.png";
+    public static final String shieldPowerUp = "objects/powerUps/shieldPowerUp.png";
 
     public static void loadFont() {
         manager.load(emulogicfnt, BitmapFont.class);
@@ -79,9 +80,10 @@ public class Assets {
         manager.load(jupiter1, Texture.class);
     }
 
-    public static void loadPowerups() {
+    public static void loadPowerUps() {
         manager.load(healPowerUp, Texture.class);
         manager.load(ammoPowerUp, Texture.class);
+        manager.load(shieldPowerUp, Texture.class);
     }
 
     public static void loadShips() {
@@ -138,9 +140,10 @@ public class Assets {
         manager.unload(jupiter1);
     }
 
-    public static void unloadPowerups() {
+    public static void unloadPowerUps() {
         manager.unload(healPowerUp);
         manager.unload(ammoPowerUp);
+        manager.unload(shieldPowerUp);
     }
 
     public static void unloadShips() {
