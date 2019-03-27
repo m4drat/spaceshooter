@@ -53,6 +53,10 @@ public class GameOverScreen implements Screen {
         this.scrollingBackground = scrBack;
         this.score = score;
 
+        Assets.unloadFont();
+        Assets.loadFont();
+        Assets.manager.finishLoading();
+
         skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
@@ -109,6 +113,7 @@ public class GameOverScreen implements Screen {
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Assets.manager.dispose();
                 Gdx.app.exit();
                 return true;
             }

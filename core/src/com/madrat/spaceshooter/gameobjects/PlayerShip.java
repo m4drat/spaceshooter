@@ -16,6 +16,7 @@ import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState.shipUnderAttackAnimation;
 
 public class PlayerShip extends SpaceShip {
 
@@ -23,26 +24,36 @@ public class PlayerShip extends SpaceShip {
 
     // 0 - default ship State
     // 1 - ship damage
-    // 2 - shield under attack
+    // 2 - shield default animation
     // 3 - shield Activated
     // 4 - shield destroyed
+    // 5 - shield under attack
+    // 6 - shield Going to disappear (4 seconds left)
+    // 7 - ship destroyed (gameOver)
     public enum animationState {
         defaultFlyAnimation,
         shipUnderAttackAnimation,
         shieldDefaultAnimation,
         shieldJustActivatedAnimation,
-        shieldDestroyedAnimation
+        shieldDestroyedAnimation,
+        shieldAttackedAnimation,
+        shieldGoingToDisappear,
+        shipDestroyedAnimation
     }
 
     private Animation<TextureRegion>[] shipAnimations;
     private animationState currentAnimation;
+    private Texture animationSheet;
     private float stateTime;
 
     private int score;
 
-    private String bulletTexturePath;
-    private int preferredBulletHeight, preferredBulletWidth;
-    private final BulletPool bulletPool = new BulletPool();
+    private String bulletTexturePath, rocketTexturePath;
+    private int preferredBulletHeight, preferredBulletWidth, preferredRocketHeight, preferredRocketWidth;
+    private BulletPool bulletPool;
+    private BulletPool rocketPool;
+    private float rocketSpeed, lastRocketShoot, delayBetweenShootsRockets;
+    private int maxRockets, currentRockets;
     private Array<Bullet> activeBullets;
 
     private Color lightBlue;
@@ -52,23 +63,35 @@ public class PlayerShip extends SpaceShip {
     private int colliderXcoordOffset, colliderYcoordOffset;
     private int colliderWidth, colliderHeight;
 
-    private Texture animationSheet;
-
     private boolean isShieldActive, isAmmoActive;
     private float shieldHealthMax, currentShieldHealth, shieldLifeTime, shieldStateTime;
 
     // Constructor to generate player ship using only file data
     public PlayerShip() {
         // playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 0.14f,1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50)
-        super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShootsBullets"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
+        super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShootsBullets"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
 
         Preferences data = Gdx.app.getPreferences("spacegame");
+
+        // Init bullets
         this.bulletTexturePath = data.getString("bulletTexture");
         this.preferredBulletHeight = data.getInteger("preferredBulletHeight");
         this.preferredBulletWidth = data.getInteger("preferredBulletWidth");
 
+        // TODO init from file
+        // Init rockets
+        this.rocketTexturePath = Assets.rocket1;
+        this.preferredRocketHeight = 20;
+        this.preferredRocketWidth = 20;
+        this.rocketSpeed = 500 * SCALE_FACTOR;
+        this.maxRockets = 40;
+        this.currentRockets = 0;
+        this.lastRocketShoot = 0;
+        this.delayBetweenShootsRockets = 0.55f;
+
         this.maxHealing = data.getFloat("maxHealing");
 
+        // TODO init from file
         this.shieldLifeTime = 15f;
         this.shieldHealthMax = this.maxHealth / 2;
         this.currentShieldHealth = 0;
@@ -105,6 +128,11 @@ public class PlayerShip extends SpaceShip {
     }
 
     private void setup() {
+
+        // Initialize bullet/rocket pool
+        this.bulletPool = new BulletPool(bulletTexturePath, 1f, 3, 8, "bullet");
+        this.rocketPool = new BulletPool(rocketTexturePath, 0.1f, 16, 16, "rocket");
+
         // Initialize activeBullets list
         this.activeBullets = new Array<Bullet>();
 
@@ -191,26 +219,41 @@ public class PlayerShip extends SpaceShip {
     public void shoot(float delta) {
         if (isAlive) {
             if (this.lastBulletShoot > delayBetweenShootsBullets) {
-
                 // set Shoot timer to 0
                 this.lastBulletShoot = 0;
 
                 // Add first activeBullet
                 Bullet newBullet1 = bulletPool.obtain();
                 newBullet1.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
-                activeBullets.add(newBullet1);
 
                 // Add second activeBullet
                 Bullet newBullet2 = bulletPool.obtain();
                 newBullet2.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+
+                activeBullets.add(newBullet1);
                 activeBullets.add(newBullet2);
                 // System.out.println("[+] Objects in bulletPool: " + bulletPool.getFree());
             } else {
                 lastBulletShoot += delta;
             }
 
-            if (this.isAmmoActive) {
-                // TODO spawn rockets
+            if (this.lastRocketShoot > delayBetweenShootsRockets) {
+                this.lastRocketShoot = 0;
+                if (currentRockets > 0 && isAmmoActive) {
+                    Bullet newRocket1 = rocketPool.obtain();
+                    newRocket1.setupBullet(this.rocketSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 4 - 10, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
+                    Bullet newRocket2 = rocketPool.obtain();
+                    newRocket2.setupBullet(this.rocketSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
+
+                    activeBullets.add(newRocket1);
+                    activeBullets.add(newRocket2);
+
+                    currentRockets -= 2;
+                } else {
+                    isAmmoActive = false;
+                }
+            } else {
+                lastRocketShoot += delta;
             }
         }
     }
@@ -223,7 +266,11 @@ public class PlayerShip extends SpaceShip {
         for (Bullet bullet : activeBullets) {
             bullet.update(delta);
             if (bullet.remove) {
-                bulletPool.free(bullet);
+                if (bullet.getBulletType() == "rocket") {
+                    rocketPool.free(bullet);
+                } else if (bullet.getBulletType() == "bullet") {
+                    bulletPool.free(bullet);
+                }
                 activeBullets.removeValue(bullet, true);
             }
         }
@@ -319,12 +366,44 @@ public class PlayerShip extends SpaceShip {
         }
     }
 
+    public void updateHealth(float damage) {
+
+        // decrease player health or shield if its active
+        if (isShieldActive) {
+            currentShieldHealth -= damage;
+        } else {
+            currentHealth -= damage;
+        }
+
+        // Set damage animation if shield isn't active
+        if (currentAnimation != animationState.shieldJustActivatedAnimation && currentAnimation != animationState.shieldDestroyedAnimation && currentAnimation != animationState.shieldDefaultAnimation)
+            this.setCurrentAnimation(shipUnderAttackAnimation);
+
+    }
+
+    public void healUsingPowerUp() {
+        if (this.currentHealth + this.maxHealing > this.maxHealth) {
+            this.currentHealth = this.maxHealth;
+        } else {
+            this.currentHealth += this.maxHealing;
+        }
+    }
+
     public boolean isAmmoActive() {
         return isAmmoActive;
     }
 
-    public void setAmmoActive(boolean ammoActive) {
-        isAmmoActive = ammoActive;
+    public void setAmmoActive(boolean ammoActive, int currentRockets) {
+        this.currentRockets = currentRockets;
+        this.isAmmoActive = ammoActive;
+    }
+
+    public int getCurrentRockets() {
+        return currentRockets;
+    }
+
+    public BulletPool getRocketPool() {
+        return rocketPool;
     }
 
     public float getShieldHealthMax() {

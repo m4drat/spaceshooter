@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.assets.AssetManager;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 
@@ -19,6 +20,20 @@ public class MainGame extends Game {
 
     @Override
     public void create() {
+
+        // Load Assets
+        Assets.manager = new AssetManager();
+        Assets.loadFont();
+        Assets.loadBackground();
+        Assets.loadSkin();
+        Assets.loadExplosions();
+        Assets.loadAsteroids();
+        Assets.loadUiButtons();
+        Assets.loadPowerUps();
+        Assets.loadShips();
+        Assets.loadBullets();
+        Assets.manager.finishLoading();
+
         // System info
         applicationType = Gdx.app.getType();
         GENERAL_WIDTH = Gdx.graphics.getWidth();

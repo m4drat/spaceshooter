@@ -2,6 +2,7 @@ package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -59,13 +60,6 @@ public class MainMenuScreen implements Screen {
 
     // First run constructor
     public MainMenuScreen(MainGame newGame) {
-
-        // Load assets
-        Assets.loadFont();
-        Assets.loadBackground();
-        Assets.loadSkin();
-        Assets.manager.finishLoading();
-
         this.game = newGame;
 
         // Create base background for scrolling background
@@ -83,7 +77,7 @@ public class MainMenuScreen implements Screen {
         // Create Sprite batch
         batch = new SpriteBatch();
 
-        skin = Assets.manager.get(Assets.uiskin, Skin.class); // skin = Assets.manager.get(Assets.uiskin, Skin.class);
+        skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
         menuTable = new Table();
@@ -132,6 +126,7 @@ public class MainMenuScreen implements Screen {
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Assets.manager.dispose();
                 Gdx.app.exit();
                 return true;
             }

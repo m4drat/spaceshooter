@@ -2,7 +2,9 @@ package com.madrat.spaceshooter.gameobjects.poolobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Pool;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
@@ -14,6 +16,10 @@ public class Bullet implements Pool.Poolable {
     private float bulletSpeed;
 
     private Texture bulletTexture;
+    private Animation<TextureRegion> bulletAnimation;
+    private float stateTime;
+
+    String bulletType;
 
     private int preferredWidth;
     private int preferredHeight;
@@ -31,9 +37,14 @@ public class Bullet implements Pool.Poolable {
         // System.out.println("[+] Resetting bullet");
     }
 
-    public Bullet() {
+    public Bullet(String bulletTexturePath, float animationSpeed, int realWidth, int realHeight, String bulletType) {
         this.rect = new CollisionRect(0, y, preferredWidth, preferredHeight, "none");
-        this.bulletTexture = Assets.manager.get(Assets.bullet1, Texture.class);
+
+        this.bulletTexture = Assets.manager.get(bulletTexturePath, Texture.class);
+        this.bulletAnimation = new Animation(animationSpeed, TextureRegion.split(bulletTexture, realWidth, realHeight)[0]);
+
+        this.bulletType = bulletType;
+
         remove = false;
     }
 
@@ -50,16 +61,20 @@ public class Bullet implements Pool.Poolable {
     }
 
     public void update(float deltaTime) {
+        stateTime += deltaTime;
+
         y += bulletSpeed * deltaTime;
 
         if (y > Gdx.graphics.getHeight())
+            remove = true;
+        if (y < -preferredHeight)
             remove = true;
 
         rect.move(x, y);
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(this.bulletTexture, x, y, preferredWidth, preferredHeight);
+        batch.draw(bulletAnimation.getKeyFrame(stateTime, false), this.x, this.y, preferredWidth, preferredHeight);
     }
 
     public CollisionRect getCollisionRect() {
@@ -68,6 +83,26 @@ public class Bullet implements Pool.Poolable {
 
     public Texture getBulletTexture() {
         return bulletTexture;
+    }
+
+    public String getBulletType() {
+        return bulletType;
+    }
+
+    public int getPreferredWidth() {
+        return preferredWidth;
+    }
+
+    public int getPreferredHeight() {
+        return preferredHeight;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
     public void dispose() {

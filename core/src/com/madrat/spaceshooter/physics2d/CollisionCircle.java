@@ -29,12 +29,14 @@ public class CollisionCircle {
         this.radius = radius;
     }
 
+    // Check for collision between circle and rectangle
     public boolean collidesWith(CollisionRect rect) { // circle - rect
         float DeltaX = this.x - Math.max(rect.getX(), Math.min(this.x, rect.getX() + rect.getWidth()));
         float DeltaY = this.y - Math.max(rect.getY(), Math.min(this.y, rect.getY() + rect.getHeight()));
         return (DeltaX * DeltaX + DeltaY * DeltaY) < (this.radius * this.radius);
     }
 
+    // Check for collision between circle and circle
     public boolean collidesWith(CollisionCircle circle) { // circle - circle
         return Math.pow(circle.getX() - this.x, 2) + Math.pow(this.y - circle.getY(), 2) <= Math.pow(this.radius + circle.getRadius(), 2);
     }
@@ -59,6 +61,7 @@ public class CollisionCircle {
         this.colliderTag = colliderTag;
     }
 
+    // Draw collider
     public void drawCollider(SpriteBatch batch) {
         batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

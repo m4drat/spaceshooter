@@ -3,6 +3,7 @@ package com.madrat.spaceshooter.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -316,7 +317,7 @@ public class ShopScreen implements Screen {
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet2);
+        data.putString("bulletTexture", Assets.bullet1);
 
         data.flush();
     }

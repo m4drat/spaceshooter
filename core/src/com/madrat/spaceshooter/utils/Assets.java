@@ -1,14 +1,12 @@
 package com.madrat.spaceshooter.utils;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets {
-    public static final AssetManager manager = new AssetManager();
+    public static AssetManager manager;
 
     public static final String playBtn = "buttons/playBtn.png", playBtnPressed = "buttons/playBtn_pressed.png";
     public static final String shopBtn = "buttons/shopBtn.png", shopBtnPressed = "buttons/shopBtn_pressed.png";
@@ -74,7 +72,6 @@ public class Assets {
         manager.load(star1, Texture.class);
         manager.load(star2, Texture.class);
         manager.load(star3, Texture.class);
-
         manager.load(mars1, Texture.class);
         manager.load(earth1, Texture.class);
         manager.load(jupiter1, Texture.class);
@@ -134,7 +131,6 @@ public class Assets {
         manager.unload(star1);
         manager.unload(star2);
         manager.unload(star3);
-
         manager.unload(mars1);
         manager.unload(earth1);
         manager.unload(jupiter1);

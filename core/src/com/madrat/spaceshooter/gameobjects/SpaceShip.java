@@ -13,10 +13,7 @@ public class SpaceShip {
 
     protected float x, y;
     protected float speed;
-    protected float delayBetweenShootsBullets;
-    protected float bulletsSpeed;
-
-    protected float lastBulletShoot;
+    protected float delayBetweenShootsBullets, bulletsSpeed, lastBulletShoot;
 
     protected float currentHealth, maxHealth, maxHealing;
     protected float damage;
@@ -27,14 +24,14 @@ public class SpaceShip {
 
     public boolean needToShow, isAlive;
 
-    public SpaceShip(float currentHealth, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight) {
+    public SpaceShip(float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight) {
         this.realShipHeight = realShipHeight;
         this.realShipWidth = realShipWidth;
 
         this.preferredShipHeight = (int) (preferredShipHeight * SCALE_FACTOR);
         this.preferredShipWidth = (int) (preferredShipWidth * SCALE_FACTOR);
 
-        this.currentHealth = currentHealth;
+        this.currentHealth = maxHealth;
         this.maxHealth = maxHealth;
         this.delayBetweenShootsBullets = delayBetweenShootsBullets;
         this.bulletsSpeed = bulletsSpeed * SCALE_FACTOR;
@@ -61,10 +58,6 @@ public class SpaceShip {
 
     public float getY() {
         return y;
-    }
-
-    public float getSpeed() {
-        return speed;
     }
 
     public float getCurrentHealth() {

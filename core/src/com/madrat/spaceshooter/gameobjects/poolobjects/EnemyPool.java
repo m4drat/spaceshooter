@@ -1,0 +1,38 @@
+package com.madrat.spaceshooter.gameobjects.poolobjects;
+
+import com.badlogic.gdx.utils.Pool;
+
+public class EnemyPool extends Pool<Enemy> {
+
+    private int realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight;
+    private int colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset;
+    private float maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed;
+
+    private String handle, enemyAnimationSheetPath;
+
+    public EnemyPool(int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, String enemyAnimationSheetPath) {
+        super();
+
+        this.realShipWidth = realShipWidth;
+        this.realShipHeight = realShipHeight;
+        this.preferredShipWidth = preferredShipWidth;
+        this.preferredShipHeight = preferredShipHeight;
+        this.colliderWidth = colliderWidth;
+        this.colliderHeight = colliderHeight;
+        this.colliderXcoordOffset = colliderXcoordOffset;
+        this.colliderYcoordOffset = colliderYcoordOffset;
+        this.maxHealth = maxHealth;
+        this.damage = damage;
+        this.delayBetweenShootsBullets = delayBetweenShootsBullets;
+        this.bulletsSpeed = bulletsSpeed;
+        this.speed = speed;
+        this.handle = handle;
+        this.enemyAnimationSheetPath = enemyAnimationSheetPath;
+    }
+
+    @Override
+    protected Enemy newObject() {
+        // System.out.println("[+] Creating new Enemy");
+        return new Enemy(colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset, maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed, handle, realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight, enemyAnimationSheetPath);
+    }
+}

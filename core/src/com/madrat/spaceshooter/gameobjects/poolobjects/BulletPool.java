@@ -4,22 +4,26 @@ import com.badlogic.gdx.utils.Pool;
 
 public class BulletPool extends Pool<Bullet> {
 
-    // constructor with initial object count and max object count
-    // max is the maximum of object held in the pool and not the
-    // maximum amount of objects that can be created by the pool
-    public BulletPool(int init, int max) {
-        super(init, max);
-    }
+    private String bulletTexturePath;
+    private float animationSpeed;
+    private int realWidth, realHeight;
+    String bulletType;
 
-    // make pool with default 16 initial objects and no max
-    public BulletPool() {
+    public BulletPool(String bulletTexturePath, float animationSpeed, int realWidth, int realHeight, String bulletType) {
         super();
+
+        this.bulletTexturePath = bulletTexturePath;
+        this.animationSpeed = animationSpeed;
+        this.realWidth = realWidth;
+        this.realHeight = realHeight;
+
+        this.bulletType = bulletType;
     }
 
     // method to create a single object
     @Override
     protected Bullet newObject() {
         // System.out.println("[+] Creating new bullet");
-        return new Bullet();
+        return new Bullet(this.bulletTexturePath, animationSpeed, realWidth, realHeight, bulletType);
     }
 }

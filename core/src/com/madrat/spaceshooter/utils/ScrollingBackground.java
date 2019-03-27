@@ -62,11 +62,11 @@ public class ScrollingBackground {
         Collections.shuffle(Arrays.asList(randomSizes));
 
         // Add objects
-        size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
+        size = (int) ((ran.nextInt(140) + 80) * SCALE_FACTOR);
         sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.earth1, Texture.class)), size, size, (int) ((randomSizes[0] + 1) * SCALE_FACTOR)));
-        size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
+        size = (int) ((ran.nextInt(140) + 80) * SCALE_FACTOR);
         sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.jupiter1, Texture.class)), size, size, (int) ((randomSizes[1] + 1) * SCALE_FACTOR)));
-        size = (int) ((ran.nextInt(160) + 60) * SCALE_FACTOR);
+        size = (int) ((ran.nextInt(140) + 80) * SCALE_FACTOR);
         sprites.add(new ObjectHandler(new Sprite(Assets.manager.get(Assets.mars1, Texture.class)), size, size, (int) ((randomSizes[2] + 1) * SCALE_FACTOR)));
 
         // Sort object by sizes (place bigger object in front of other)
