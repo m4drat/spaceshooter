@@ -37,7 +37,6 @@ public class PlayerShip extends SpaceShip {
         shieldJustActivatedAnimation,
         shieldDestroyedAnimation,
         shieldAttackedAnimation,
-        shieldGoingToDisappear,
         shipDestroyedAnimation
     }
 
@@ -63,7 +62,7 @@ public class PlayerShip extends SpaceShip {
     private int colliderXcoordOffset, colliderYcoordOffset;
     private int colliderWidth, colliderHeight;
 
-    private boolean isShieldActive, isAmmoActive;
+    private boolean isShieldActive, isAmmoActive, isDestroyed, goingToDie;
     private float shieldHealthMax, currentShieldHealth, shieldLifeTime, shieldStateTime;
 
     // Constructor to generate player ship using only file data
@@ -89,6 +88,9 @@ public class PlayerShip extends SpaceShip {
         this.lastRocketShoot = 0;
         this.delayBetweenShootsRockets = 0.55f;
 
+        this.isDestroyed = false;
+        this.goingToDie = false;
+
         this.maxHealing = data.getFloat("maxHealing");
 
         // TODO init from file
@@ -111,7 +113,7 @@ public class PlayerShip extends SpaceShip {
         this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset, this.colliderWidth, this.colliderHeight, "player");
 
         this.currentAnimation = animationState.defaultFlyAnimation;
-        this.shipAnimations = new Animation[5];
+        this.shipAnimations = new Animation[7];
         this.animationSheet = Assets.manager.get(data.getString("animationTexture"), Texture.class);
         TextureRegion[][] statesSpriteSheet = TextureRegion.split(this.animationSheet, this.realShipWidth, this.realShipHeight);
         // Default animation
@@ -124,6 +126,11 @@ public class PlayerShip extends SpaceShip {
         this.shipAnimations[3] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[3]);
         // shield destroyed animation
         this.shipAnimations[4] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[4]);
+        // Shield under attack animation
+        this.shipAnimations[5] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[5]);
+        // ship destroyed animation
+        this.shipAnimations[6] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f) + 0.1f, statesSpriteSheet[6]);
+
         setup();
     }
 
@@ -190,6 +197,12 @@ public class PlayerShip extends SpaceShip {
                     if (shipAnimations[4].isAnimationFinished(stateTime))
                         setCurrentAnimation(animationState.defaultFlyAnimation);
                     break;
+                // TODO shield under attack animation
+                case shipDestroyedAnimation:
+                    batch.draw(shipAnimations[6].getKeyFrame(stateTime, false), this.x, this.y, this.preferredShipWidth, this.preferredShipHeight);
+                    if (shipAnimations[6].isAnimationFinished(stateTime))
+                        this.isDestroyed = true;
+                    break;
                 default:
                     batch.draw(shipAnimations[0].getKeyFrame(stateTime, true), this.x, this.y, this.preferredShipWidth, this.preferredShipHeight);
                     break;
@@ -217,21 +230,20 @@ public class PlayerShip extends SpaceShip {
 
 
     public void shoot(float delta) {
-        if (isAlive) {
+        if (isAlive && !goingToDie) {
             if (this.lastBulletShoot > delayBetweenShootsBullets) {
                 // set Shoot timer to 0
                 this.lastBulletShoot = 0;
 
                 // Add first activeBullet
                 Bullet newBullet1 = bulletPool.obtain();
-                newBullet1.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+                newBullet1.setupBullet(this.bulletsSpeed, this.x + (8) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
 
                 // Add second activeBullet
                 Bullet newBullet2 = bulletPool.obtain();
-                newBullet2.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+                newBullet2.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth - (12 * SCALE_FACTOR), this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
 
-                activeBullets.add(newBullet1);
-                activeBullets.add(newBullet2);
+                activeBullets.add(newBullet1, newBullet2);
                 // System.out.println("[+] Objects in bulletPool: " + bulletPool.getFree());
             } else {
                 lastBulletShoot += delta;
@@ -241,12 +253,11 @@ public class PlayerShip extends SpaceShip {
                 this.lastRocketShoot = 0;
                 if (currentRockets > 0 && isAmmoActive) {
                     Bullet newRocket1 = rocketPool.obtain();
-                    newRocket1.setupBullet(this.rocketSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 4 - 10, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
+                    newRocket1.setupBullet(this.rocketSpeed, this.x + 11 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
                     Bullet newRocket2 = rocketPool.obtain();
-                    newRocket2.setupBullet(this.rocketSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
+                    newRocket2.setupBullet(this.rocketSpeed, this.x + this.colliderWidth - 16 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
 
-                    activeBullets.add(newRocket1);
-                    activeBullets.add(newRocket2);
+                    activeBullets.add(newRocket1, newRocket2);
 
                     currentRockets -= 2;
                 } else {
@@ -376,7 +387,7 @@ public class PlayerShip extends SpaceShip {
         }
 
         // Set damage animation if shield isn't active
-        if (currentAnimation != animationState.shieldJustActivatedAnimation && currentAnimation != animationState.shieldDestroyedAnimation && currentAnimation != animationState.shieldDefaultAnimation)
+        if (currentAnimation != animationState.shieldJustActivatedAnimation && currentAnimation != animationState.shieldDestroyedAnimation && currentAnimation != animationState.shieldDefaultAnimation && currentAnimation != animationState.shipDestroyedAnimation)
             this.setCurrentAnimation(shipUnderAttackAnimation);
 
     }
@@ -416,6 +427,18 @@ public class PlayerShip extends SpaceShip {
 
     public void setCurrentShieldHealth(float currentShieldHealth) {
         this.currentShieldHealth = currentShieldHealth;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    public boolean isGoingToDie() {
+        return goingToDie;
+    }
+
+    public void setGoingToDie(boolean goingToDie) {
+        this.goingToDie = goingToDie;
     }
 
     public void dispose() {

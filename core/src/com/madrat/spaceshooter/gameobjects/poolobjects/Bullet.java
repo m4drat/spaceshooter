@@ -34,6 +34,10 @@ public class Bullet implements Pool.Poolable {
     public void reset() {
         // Called when bullet is freed
         this.remove = false;
+        this.stateTime = 0;
+
+        this.x = 0;
+        this.y = 0;
         // System.out.println("[+] Resetting bullet");
     }
 
@@ -55,7 +59,7 @@ public class Bullet implements Pool.Poolable {
         this.preferredWidth = (int) (preferredWidth * SCALE_X);
         this.preferredHeight = (int) (preferredHeight * SCALE_Y);
 
-        this.rect.move(x, y);
+        this.rect.move(this.x, this.y);
         this.rect.resize(preferredWidth, preferredHeight);
         this.rect.setColliderTag(colliderTag);
     }

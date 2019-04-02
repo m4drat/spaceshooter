@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class Assets {
     public static AssetManager manager;
 
+    public static final String settingsXmlFile = "spacegame.xml", settingsFile = "spacegame";
+
     public static final String playBtn = "buttons/playBtn.png", playBtnPressed = "buttons/playBtn_pressed.png";
     public static final String shopBtn = "buttons/shopBtn.png", shopBtnPressed = "buttons/shopBtn_pressed.png";
     public static final String settBtn = "buttons/settBtn.png", settBtnPressed = "buttons/settBtn_pressed.png";

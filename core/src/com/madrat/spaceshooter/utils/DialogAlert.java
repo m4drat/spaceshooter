@@ -3,7 +3,9 @@ package com.madrat.spaceshooter.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -26,18 +28,39 @@ public class DialogAlert extends Dialog {
     public TextButton buttonYes;
     public TextButton buttonNo;
 
+    private InputListener inputListener;
+
     public DialogAlert(String title, Skin skin) {
         super(title, skin);
         setup();
         this.skin = skin;
+
+        // Close dialog if user click anywhere outside thi dialog
+        inputListener = new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) {
+                    hide();
+                    event.cancel();
+                    return true;
+                }
+                return false;
+            }
+        };
+        addListener(inputListener);
     }
 
     private void setup() {
-        setModal(false);
+        setModal(true);
         setMovable(false);
         setResizable(false);
 
         padTop(dialog_padding * SCALE_FACTOR).padLeft(dialog_padding * SCALE_FACTOR).padRight(dialog_padding * SCALE_FACTOR);
+    }
+
+    @Override
+    public Dialog show(Stage stage) {
+        return super.show(stage);
     }
 
     @Override

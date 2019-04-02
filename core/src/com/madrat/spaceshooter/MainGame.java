@@ -7,8 +7,12 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.Cryptor;
+
 
 public class MainGame extends Game {
+
+    public static String pathToSettFile;
 
     public static Application.ApplicationType applicationType;
     public static int GENERAL_WIDTH = 480;
@@ -17,10 +21,8 @@ public class MainGame extends Game {
     public static float SCALE_X;
     public static float SCALE_Y;
 
-
     @Override
     public void create() {
-
         // Load Assets
         Assets.manager = new AssetManager();
         Assets.loadFont();
@@ -46,6 +48,23 @@ public class MainGame extends Game {
         // System.out.println("Scale Factor: " + SCALE_FACTOR);
         // System.out.println("Scale FactorX: " + SCALE_X);
         // System.out.println("Scale FactorY: " + SCALE_Y);
+
+        init();
+        this.setScreen(new MainMenuScreen(this));
+    }
+
+    void init() {
+
+        Cryptor cryp = new Cryptor();
+        cryp.generateKey();
+
+        if (this.applicationType == Application.ApplicationType.Android) {
+            this.pathToSettFile = Gdx.files.getExternalStoragePath().replace("files", "shared_prefs") + Assets.settingsXmlFile;
+        } else if (this.applicationType == Application.ApplicationType.Desktop) {
+            this.pathToSettFile = Gdx.files.getExternalStoragePath() + ".prefs\\" + Assets.settingsFile;
+        }
+        System.out.println("Preferences file path : " + pathToSettFile);
+
 
         Preferences data = Gdx.app.getPreferences("spacegame");
 
@@ -87,8 +106,6 @@ public class MainGame extends Game {
 
             data.flush();
         }
-
-        this.setScreen(new MainMenuScreen(this));
     }
 
     @Override

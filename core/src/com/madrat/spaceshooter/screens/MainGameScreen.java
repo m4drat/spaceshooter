@@ -3,7 +3,6 @@ package com.madrat.spaceshooter.screens;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,7 +41,7 @@ import java.util.Random;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
-import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState.shipUnderAttackAnimation;
+import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
 
 public class MainGameScreen implements Screen {
 
@@ -219,7 +220,7 @@ public class MainGameScreen implements Screen {
         // Spawn player ship
         playerShip = new PlayerShip();
 
-        // Create SpriteBatch to draw
+        // Set new input processor
         Gdx.input.setInputProcessor(stage);
 
         // Create background Sprite
@@ -272,7 +273,7 @@ public class MainGameScreen implements Screen {
             // Update and spawn asteroids
             spawner.updateAsteroids(delta);
 
-            // Update player Bullets (delete old)
+            // Update player Bullets (delete old + move them)
             playerShip.updateBullets(delta);
 
             // Update Explosion (delete old)
@@ -330,8 +331,8 @@ public class MainGameScreen implements Screen {
                         playerShip.getActiveBullets().removeValue(bullet, true);
 
                         enemy.setCurrentHealth(enemy.getCurrentHealth() - playerShip.getDamage());
-                        if (enemy.getCurrentAnimation() != shipUnderAttackAnimation)
-                            enemy.setCurrentAnimation(shipUnderAttackAnimation);
+                        if (enemy.getCurrentAnimation() != animationState.shipUnderAttackAnimation)
+                            enemy.setCurrentAnimation(animationState.shipUnderAttackAnimation);
 
                         if (enemy.getCurrentHealth() <= 0) {
                             enemy.die();
@@ -451,7 +452,12 @@ public class MainGameScreen implements Screen {
 
         // Game Over
         if (playerShip.getCurrentHealth() <= 0) {
-            game.setScreen(new GameOverScreen(game, scrollingBackground, playerShip.getScore()));
+            if (playerShip.isDestroyed())
+                game.setScreen(new GameOverScreen(game, scrollingBackground, playerShip.getScore()));
+            if (!playerShip.isGoingToDie()) {
+                playerShip.setGoingToDie(true);
+                playerShip.setCurrentAnimation(animationState.shipDestroyedAnimation);
+            }
         }
 
         // Render enemies

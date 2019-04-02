@@ -313,7 +313,7 @@ public class ShopScreen implements Screen {
         data.putInteger("colliderWidth", 52);
         data.putInteger("colliderHeight", 52);
         data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", -3);
+        data.putInteger("colliderYcoordOffset", 0);
 
         data.putInteger("preferredBulletHeight", 10);
         data.putInteger("preferredBulletWidth", 4);
