@@ -87,6 +87,7 @@ public class PlayerShip extends SpaceShip {
         this.currentRockets = 0;
         this.lastRocketShoot = 0;
         this.delayBetweenShootsRockets = 0.55f;
+        this.isAmmoActive = false;
 
         this.isDestroyed = false;
         this.goingToDie = false;
@@ -94,22 +95,24 @@ public class PlayerShip extends SpaceShip {
         this.maxHealing = data.getFloat("maxHealing");
 
         // TODO init from file
-        this.shieldLifeTime = 15f;
+        this.shieldLifeTime = 20f;
         this.shieldHealthMax = this.maxHealth / 2;
         this.currentShieldHealth = 0;
         this.isShieldActive = false;
-        this.isAmmoActive = false;
         this.lightBlue = new Color(0x1f8be2ff);
 
         this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
         this.y = 25;
 
+        // set collider width
         this.colliderWidth = (int) (data.getInteger("colliderWidth") * SCALE_FACTOR);
         this.colliderHeight = (int) (data.getInteger("colliderHeight") * SCALE_FACTOR);
 
+        // set offsets for the collider
         this.colliderXcoordOffset = (int) (data.getInteger("colliderXcoordOffset", 0) * SCALE_FACTOR);
         this.colliderYcoordOffset = (int) (data.getInteger("colliderYcoordOffset", 0) * SCALE_FACTOR);
 
+        // create collision rect
         this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset, this.colliderWidth, this.colliderHeight, "player");
 
         this.currentAnimation = animationState.defaultFlyAnimation;

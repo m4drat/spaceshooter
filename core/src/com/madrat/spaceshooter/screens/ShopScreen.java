@@ -167,7 +167,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship1Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.3f);
@@ -199,7 +198,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship2Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 2f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.4f);
@@ -231,7 +229,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship4Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.2f);
@@ -263,7 +260,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship6Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 4f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.5f);
@@ -295,7 +291,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship11Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 2f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.3f);
@@ -327,7 +322,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship8Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.3f);
@@ -359,7 +353,6 @@ public class ShopScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship9Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.3f);

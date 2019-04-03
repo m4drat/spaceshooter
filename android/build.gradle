@@ -1,11 +1,5 @@
 android {
     signingConfigs {
-        defaultConfig {
-            storeFile file('F:/Installs/Android_projects/SpaceShooter/sign/key.keystore')
-            keyAlias 'defaultKey'
-            keyPassword 'LJAwURn9XPqAH3b3FdIQ'
-            storePassword '4AlrJGecQxpGccD2aebe'
-        }
     }
     buildToolsVersion "28.0.3"
     compileSdkVersion 28
@@ -26,7 +20,7 @@ android {
     }
     defaultConfig {
         applicationId 'com.madrat.spaceshooter'
-        minSdkVersion 9
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"

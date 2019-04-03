@@ -108,7 +108,6 @@ public class SettingsScreen implements Screen {
 
         // Default spaceship
         data.putString("animationTexture", Assets.ship1Animation);
-        data.putFloat("animationSpeed", 0.14f);
         data.putFloat("maxHealth", 1f);
         data.putFloat("damage", 0.1f);
         data.putFloat("delayBetweenShootsBullets", 0.3f);

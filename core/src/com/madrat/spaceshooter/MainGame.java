@@ -7,12 +7,13 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
-import com.madrat.spaceshooter.utils.Cryptor;
+import com.madrat.spaceshooter.utils.Encryptor;
 
 
 public class MainGame extends Game {
 
     public static String pathToSettFile;
+    public static String rootAppPath;
 
     public static Application.ApplicationType applicationType;
     public static int GENERAL_WIDTH = 480;
@@ -21,20 +22,12 @@ public class MainGame extends Game {
     public static float SCALE_X;
     public static float SCALE_Y;
 
+    public static Encryptor cryptor;
+
     @Override
     public void create() {
         // Load Assets
-        Assets.manager = new AssetManager();
-        Assets.loadFont();
-        Assets.loadBackground();
-        Assets.loadSkin();
-        Assets.loadExplosions();
-        Assets.loadAsteroids();
-        Assets.loadUiButtons();
-        Assets.loadPowerUps();
-        Assets.loadShips();
-        Assets.loadBullets();
-        Assets.manager.finishLoading();
+        loadAssets();
 
         // System info
         applicationType = Gdx.app.getType();
@@ -53,21 +46,36 @@ public class MainGame extends Game {
         this.setScreen(new MainMenuScreen(this));
     }
 
-    void init() {
+    void loadAssets() {
+        Assets.manager = new AssetManager();
+        Assets.loadFont();
+        Assets.loadBackground();
+        Assets.loadSkin();
+        Assets.loadExplosions();
+        Assets.loadAsteroids();
+        Assets.loadUiButtons();
+        Assets.loadPowerUps();
+        Assets.loadShips();
+        Assets.loadBullets();
+        Assets.manager.finishLoading();
+    }
 
-        Cryptor cryp = new Cryptor();
-        cryp.generateKey();
+    void init() {
+        // create cryptor object
+        // cryptor = new Encryptor();
+        // cryptor.encryptFile("C:\\Users\\User\\.prefs\\test.txt");
+        // cryptor.decryptFile("C:\\Users\\User\\.prefs\\test.txt");
 
         if (this.applicationType == Application.ApplicationType.Android) {
-            this.pathToSettFile = Gdx.files.getExternalStoragePath().replace("files", "shared_prefs") + Assets.settingsXmlFile;
+            this.rootAppPath = Gdx.files.getExternalStoragePath().replace("files", "shared_prefs");
+            this.pathToSettFile = rootAppPath + Assets.settingsXmlFile;
         } else if (this.applicationType == Application.ApplicationType.Desktop) {
-            this.pathToSettFile = Gdx.files.getExternalStoragePath() + ".prefs\\" + Assets.settingsFile;
+            this.rootAppPath = Gdx.files.getExternalStoragePath() + ".prefs\\";
+            this.pathToSettFile = rootAppPath + Assets.settingsFile;
         }
         System.out.println("Preferences file path : " + pathToSettFile);
 
-
         Preferences data = Gdx.app.getPreferences("spacegame");
-
         if (data.getBoolean("firstRun", true)) {
             // First run variable
             data.putBoolean("firstRun", false);
@@ -77,7 +85,6 @@ public class MainGame extends Game {
 
             // Default spaceship
             data.putString("animationTexture", Assets.ship1Animation);
-            data.putFloat("animationSpeed", 0.14f);
             data.putFloat("maxHealth", 1f);
             data.putFloat("damage", 0.1f);
             data.putFloat("delayBetweenShootsBullets", 0.3f);
@@ -104,6 +111,7 @@ public class MainGame extends Game {
             data.putInteger("preferredBulletWidth", 4);
             data.putString("bulletTexture", Assets.bullet1);
 
+            // Write changes to file
             data.flush();
         }
     }

@@ -28,15 +28,13 @@ public class DialogAlert extends Dialog {
     public TextButton buttonYes;
     public TextButton buttonNo;
 
-    private InputListener inputListener;
-
     public DialogAlert(String title, Skin skin) {
         super(title, skin);
         setup();
         this.skin = skin;
 
-        // Close dialog if user click anywhere outside thi dialog
-        inputListener = new InputListener() {
+        // Close dialog if user clicks anywhere outside current dialog
+        InputListener inputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) {
@@ -55,6 +53,7 @@ public class DialogAlert extends Dialog {
         setMovable(false);
         setResizable(false);
 
+        // Some paddings
         padTop(dialog_padding * SCALE_FACTOR).padLeft(dialog_padding * SCALE_FACTOR).padRight(dialog_padding * SCALE_FACTOR);
     }
 
@@ -68,6 +67,7 @@ public class DialogAlert extends Dialog {
         BitmapFont font = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         label = new Label(text, new Label.LabelStyle(font, Color.WHITE));
 
+        // Position settings + font scale
         label.setAlignment(Align.center);
         label.setWrap(false);
         label.setFontScale(0.7f * SCALE_FACTOR);
@@ -76,6 +76,7 @@ public class DialogAlert extends Dialog {
         return this;
     }
 
+    // Yes button
     public DialogAlert yesButton(String buttonText, InputListener listener) {
         buttonYes = new TextButton(buttonText, this.skin);
         buttonYes.addListener(listener);
@@ -90,6 +91,7 @@ public class DialogAlert extends Dialog {
         return this;
     }
 
+    // No button
     public DialogAlert noButton(String buttonText, InputListener listener) {
         buttonNo = new TextButton(buttonText, this.skin);
         buttonNo.addListener(listener);

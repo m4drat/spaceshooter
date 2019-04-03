@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
-        
+
 
     }
 }
@@ -49,7 +49,6 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        
     }
 }
 
@@ -93,7 +92,6 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.4"
         compile "com.github.czyzby:gdx-kiwi:1.9.1.9.6"
-        
     }
 }
 
