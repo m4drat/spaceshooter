@@ -36,8 +36,8 @@ public class Bullet implements Pool.Poolable {
         this.remove = false;
         this.stateTime = 0;
 
-        this.x = 0;
-        this.y = 0;
+        this.x = 0f;
+        this.y = 0f;
         // System.out.println("[+] Resetting bullet");
     }
 

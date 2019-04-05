@@ -1,21 +1,26 @@
 package com.madrat.spaceshooter.gameobjects;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.poolobjects.BulletPool;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 
+
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState.shieldAttackedAnimation;
 import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState.shipUnderAttackAnimation;
 
 public class PlayerShip extends SpaceShip {
@@ -67,74 +72,110 @@ public class PlayerShip extends SpaceShip {
 
     // Constructor to generate player ship using only file data
     public PlayerShip() {
-        // playerShip = new PlayerShip(new Texture(Assets.ship1Animation), 0.14f,1f, 2f, 1, 0.3f, 600f, 300f, "Zapper", 24, 23, 60, 50)
-        super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShootsBullets"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
+        super();
+        // super(Gdx.app.getPreferences("spacegame").getFloat("maxHealth"), Gdx.app.getPreferences("spacegame").getFloat("damage"), Gdx.app.getPreferences("spacegame").getFloat("delayBetweenShootsBullets"), Gdx.app.getPreferences("spacegame").getFloat("bulletsSpeed"), Gdx.app.getPreferences("spacegame").getFloat("speed"), Gdx.app.getPreferences("spacegame").getString("handle"), Gdx.app.getPreferences("spacegame").getInteger("realShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("realShipHeight"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipWidth"), Gdx.app.getPreferences("spacegame").getInteger("preferredShipHeight"));
 
-        Preferences data = Gdx.app.getPreferences("spacegame");
-
-        // Init bullets
-        this.bulletTexturePath = data.getString("bulletTexture");
-        this.preferredBulletHeight = data.getInteger("preferredBulletHeight");
-        this.preferredBulletWidth = data.getInteger("preferredBulletWidth");
-
-        // TODO init from file
-        // Init rockets
-        this.rocketTexturePath = Assets.rocket1;
-        this.preferredRocketHeight = 20;
-        this.preferredRocketWidth = 20;
-        this.rocketSpeed = 500 * SCALE_FACTOR;
-        this.maxRockets = 40;
-        this.currentRockets = 0;
-        this.lastRocketShoot = 0;
-        this.delayBetweenShootsRockets = 0.55f;
-        this.isAmmoActive = false;
-
-        this.isDestroyed = false;
-        this.goingToDie = false;
-
-        this.maxHealing = data.getFloat("maxHealing");
-
-        // TODO init from file
-        this.shieldLifeTime = 20f;
-        this.shieldHealthMax = this.maxHealth / 2;
-        this.currentShieldHealth = 0;
-        this.isShieldActive = false;
-        this.lightBlue = new Color(0x1f8be2ff);
-
-        this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
-        this.y = 25;
-
-        // set collider width
-        this.colliderWidth = (int) (data.getInteger("colliderWidth") * SCALE_FACTOR);
-        this.colliderHeight = (int) (data.getInteger("colliderHeight") * SCALE_FACTOR);
-
-        // set offsets for the collider
-        this.colliderXcoordOffset = (int) (data.getInteger("colliderXcoordOffset", 0) * SCALE_FACTOR);
-        this.colliderYcoordOffset = (int) (data.getInteger("colliderYcoordOffset", 0) * SCALE_FACTOR);
-
-        // create collision rect
-        this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset, this.colliderWidth, this.colliderHeight, "player");
-
-        this.currentAnimation = animationState.defaultFlyAnimation;
-        this.shipAnimations = new Animation[7];
-        this.animationSheet = Assets.manager.get(data.getString("animationTexture"), Texture.class);
-        TextureRegion[][] statesSpriteSheet = TextureRegion.split(this.animationSheet, this.realShipWidth, this.realShipHeight);
-        // Default animation
-        this.shipAnimations[0] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[0]);
-        // Damage animation
-        this.shipAnimations[1] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.1f), statesSpriteSheet[1]);
-        // shield default animation
-        this.shipAnimations[2] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[2]);
-        // shield just activated animation
-        this.shipAnimations[3] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[3]);
-        // shield destroyed animation
-        this.shipAnimations[4] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[4]);
-        // Shield under attack animation
-        this.shipAnimations[5] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f), statesSpriteSheet[5]);
-        // ship destroyed animation
-        this.shipAnimations[6] = new Animation<TextureRegion>(data.getFloat("frameLength", 0.14f) + 0.1f, statesSpriteSheet[6]);
-
+        initFromFile(MainGame.pathToCurrentState);
         setup();
+    }
+
+    private void initFromFile(String path) {
+        FileHandle currentFileHandle;
+        JsonObject shipData;
+
+        JsonParser parser = new JsonParser();
+
+        // Set appropriate path to file
+        if (MainGame.applicationType == Application.ApplicationType.Android) {
+            currentFileHandle = Gdx.files.local(path);
+        } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
+            currentFileHandle = Gdx.files.absolute(path);
+        } else {
+            currentFileHandle = Gdx.files.local(path);
+        }
+
+        try {
+            // Init health, real sizes, speed
+            shipData = parser.parse(currentFileHandle.readString()).getAsJsonObject().getAsJsonObject("currentShip");
+
+            // System.out.println(shipData.toString());
+
+            this.maxHealth = shipData.get("maxHealth").getAsFloat();
+            this.currentHealth = maxHealth;
+            this.damage = shipData.get("damage").getAsFloat();
+            this.delayBetweenShootsBullets = shipData.get("delayBetweenShootsBullets").getAsFloat();
+            this.bulletsSpeed = (shipData.get("bulletSpeed").getAsFloat()) * SCALE_FACTOR;
+            this.speed = (shipData.get("shipSpeed").getAsFloat()) * SCALE_FACTOR;
+            this.handle = shipData.get("handler").getAsString();
+
+            this.realShipWidth = shipData.get("realShipWidth").getAsInt();
+            this.realShipHeight = shipData.get("realShipHeight").getAsInt();
+            this.preferredShipWidth = (int) (shipData.get("preferredShipWidth").getAsInt() * SCALE_FACTOR);
+            this.preferredShipHeight = (int) (shipData.get("preferredShipHeight").getAsInt() * SCALE_FACTOR);
+            // set collider width
+            this.colliderWidth = (int) (shipData.get("colliderWidth").getAsInt() * SCALE_FACTOR);
+            this.colliderHeight = (int) (shipData.get("colliderHeight").getAsInt() * SCALE_FACTOR);
+            // set offsets for the collider
+            this.colliderXcoordOffset = (int) (shipData.get("colliderXcoordOffset").getAsInt() * SCALE_FACTOR);
+            this.colliderYcoordOffset = (int) (shipData.get("colliderYcoordOffset").getAsInt() * SCALE_FACTOR);
+
+            // Init bullets
+            this.bulletTexturePath = shipData.get("bulletTexture").getAsString();
+            this.preferredBulletHeight = shipData.get("preferredBulletHeight").getAsInt();
+            this.preferredBulletWidth = shipData.get("preferredBulletWidth").getAsInt();
+            this.lastBulletShoot = 0;
+
+            // Init rockets
+            this.rocketTexturePath = shipData.get("rocketTexturePath").getAsString();
+            this.preferredRocketHeight = shipData.get("preferredRocketHeight").getAsInt();
+            this.preferredRocketWidth = shipData.get("preferredRocketWidth").getAsInt();
+            this.rocketSpeed = (shipData.get("rocketSpeed").getAsFloat()) * SCALE_FACTOR;
+            this.maxRockets = shipData.get("maxRockets").getAsInt();
+            this.currentRockets = shipData.get("currentRockets").getAsInt();
+            this.lastRocketShoot = shipData.get("lastRocketShoot").getAsFloat();
+            this.delayBetweenShootsRockets = (float) shipData.get("delayBetweenShootsRockets").getAsFloat();
+            this.isAmmoActive = shipData.get("isAmmoActive").getAsBoolean();
+
+            this.isAlive = true;
+            this.needToShow = true;
+            this.isDestroyed = false;
+            this.goingToDie = false;
+
+            this.maxHealing = shipData.get("maxHealing").getAsFloat();
+            this.shieldLifeTime = shipData.get("shieldLifeTime").getAsFloat();
+            this.shieldHealthMax = this.maxHealth / 2; // (float) shipData.getDouble("shieldHealthMax");
+            this.currentShieldHealth = shipData.get("currentShieldHealth").getAsFloat();
+            this.isShieldActive = shipData.get("isShieldActive").getAsBoolean();
+            this.lightBlue = new Color(0x1f8be2ff);
+
+            this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
+            this.y = 25;
+
+            // create collision rect
+            this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset, this.colliderWidth, this.colliderHeight, "player");
+
+            this.currentAnimation = animationState.defaultFlyAnimation;
+            this.shipAnimations = new Animation[7];
+            this.animationSheet = Assets.manager.get(shipData.get("animationTexture").getAsString(), Texture.class);
+            TextureRegion[][] statesSpriteSheet = TextureRegion.split(this.animationSheet, this.realShipWidth, this.realShipHeight);
+            // Default animation
+            this.shipAnimations[0] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[0]);
+            // Damage animation
+            this.shipAnimations[1] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[1]);
+            // shield default animation
+            this.shipAnimations[2] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[2]);
+            // shield just activated animation
+            this.shipAnimations[3] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[3]);
+            // shield destroyed animation
+            this.shipAnimations[4] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[4]);
+            // Shield under attack animation
+            this.shipAnimations[5] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[5]);
+            // ship destroyed animation
+            this.shipAnimations[6] = new Animation<TextureRegion>(shipData.get("frameLength").getAsFloat(), statesSpriteSheet[6]);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void setup() {
@@ -200,7 +241,11 @@ public class PlayerShip extends SpaceShip {
                     if (shipAnimations[4].isAnimationFinished(stateTime))
                         setCurrentAnimation(animationState.defaultFlyAnimation);
                     break;
-                // TODO shield under attack animation
+                case shieldAttackedAnimation:
+                    batch.draw(shipAnimations[5].getKeyFrame(stateTime, false), this.x, this.y, this.preferredShipWidth, this.preferredShipHeight);
+                    if (shipAnimations[5].isAnimationFinished(stateTime))
+                        setCurrentAnimation(animationState.shieldDefaultAnimation);
+                    break;
                 case shipDestroyedAnimation:
                     batch.draw(shipAnimations[6].getKeyFrame(stateTime, false), this.x, this.y, this.preferredShipWidth, this.preferredShipHeight);
                     if (shipAnimations[6].isAnimationFinished(stateTime))
@@ -384,22 +429,29 @@ public class PlayerShip extends SpaceShip {
 
         // decrease player health or shield if its active
         if (isShieldActive) {
+            this.setCurrentAnimation(shieldAttackedAnimation);
             currentShieldHealth -= damage;
         } else {
             currentHealth -= damage;
         }
 
-        // Set damage animation if shield isn't active
-        if (currentAnimation != animationState.shieldJustActivatedAnimation && currentAnimation != animationState.shieldDestroyedAnimation && currentAnimation != animationState.shieldDefaultAnimation && currentAnimation != animationState.shipDestroyedAnimation)
+        // Set damage animation if shield (and other states doesn't set) isn't active
+        if (currentAnimation != animationState.shieldJustActivatedAnimation
+                && currentAnimation != animationState.shieldDestroyedAnimation
+                && currentAnimation != animationState.shieldDefaultAnimation
+                && currentAnimation != animationState.shipDestroyedAnimation
+                && currentAnimation != animationState.shieldAttackedAnimation)
             this.setCurrentAnimation(shipUnderAttackAnimation);
 
     }
 
     public void healUsingPowerUp() {
-        if (this.currentHealth + this.maxHealing > this.maxHealth) {
-            this.currentHealth = this.maxHealth;
-        } else {
-            this.currentHealth += this.maxHealing;
+        if (currentAnimation != animationState.shipDestroyedAnimation) {
+            if (this.currentHealth + this.maxHealing > this.maxHealth) {
+                this.currentHealth = this.maxHealth;
+            } else {
+                this.currentHealth += this.maxHealing;
+            }
         }
     }
 

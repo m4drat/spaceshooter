@@ -152,14 +152,14 @@ public class Spawner {
             // System.out.println("[+] Objects in healPowerUpPool: " + healPowerUpPool.getFree());
 
             // Ammo powerUp
-        } else if (true) {
+        } else if (random.nextInt(22) == 14) {
             PowerUp newPowerUp = ammoPowerUpPool.obtain();
             newPowerUp.setupPowerUp(x, y, 28, 26, 10f);
             activePowerUps.add(newPowerUp);
             // System.out.println("[+] Objects in ammoPowerUpPool: " + ammoPowerUpPool.getFree());
 
             // Shield powerUp
-        } else if (random.nextInt(22) == 21) {
+        } else if (true) {
             PowerUp newPowerUp = shieldPowerUpPool.obtain();
             newPowerUp.setupPowerUp(x, y, 28, 28, 10f);
             activePowerUps.add(newPowerUp);

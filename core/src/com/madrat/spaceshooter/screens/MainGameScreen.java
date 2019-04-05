@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -41,11 +39,8 @@ import java.util.Random;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
-import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
 
 public class MainGameScreen implements Screen {
-
-    private Random random;
 
     MainGame game;
     private PlayerShip playerShip;
@@ -58,6 +53,7 @@ public class MainGameScreen implements Screen {
 
     private BitmapFont scoreFont;
     private GlyphLayout scoreLayout, ammoLayout;
+    private Color ammoLayoutColor = new Color(0x7a9af1);
 
     private Stage stage;
     private Skin skin;
@@ -213,9 +209,6 @@ public class MainGameScreen implements Screen {
         scoreLayout = new GlyphLayout(scoreFont, "0");
 
         ammoLayout = new GlyphLayout(scoreFont, "0");
-
-        // Asteroids
-        random = new Random();
 
         // Spawn player ship
         playerShip = new PlayerShip();
@@ -480,7 +473,7 @@ public class MainGameScreen implements Screen {
                 scoreFont.getData().setScale(SCALE_FACTOR / 2);
                 ammoLayout.setText(scoreFont, "" + playerShip.getCurrentRockets());
                 scoreFont.draw(batch, ammoLayout, Gdx.graphics.getWidth() / 2 - ammoLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height * 2 - 20 * SCALE_FACTOR);
-                scoreFont.setColor(new Color(0x7a9af1));
+                scoreFont.setColor(ammoLayoutColor);
                 scoreFont.getData().setScale(SCALE_FACTOR);
             }
             // Draw and update score

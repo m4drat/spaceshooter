@@ -54,7 +54,7 @@ public class ScrollingBackground {
         }
 
         // Generate 3 Random not repeating int's
-        Integer[] randomSizes = new Integer[3];
+        Integer[] randomSizes = new Integer[4];
         for (int i = 0; i < randomSizes.length; i++) {
             randomSizes[i] = i;
         }

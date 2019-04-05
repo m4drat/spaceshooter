@@ -29,6 +29,7 @@ public class Assets {
 
     public static final String mars1 = "objects/planets/mars1.png", aqua1 = "objects/planets/aqua1.png";
     public static final String earth1 = "objects/planets/earth1.png", jupiter1 = "objects/planets/jupiter1.png";
+    public static final String neptune1 = "objects/planets/neptune1.png";
 
     public static final String star1 = "objects/stars/star1.png", star2 = "objects/stars/star2.png", star3 = "objects/stars/star3.png";
 
@@ -49,6 +50,10 @@ public class Assets {
 
     public static final String healPowerUp = "objects/powerUps/healPowerUp.png", ammoPowerUp = "objects/powerUps/ammoPowerUp.png";
     public static final String shieldPowerUp = "objects/powerUps/shieldPowerUp.png";
+
+    public static final String shipConfigs = "shipConfigs.json", defaultParameters = "defaultParameters.json";
+    public static final String currentState = "currentState.json";
+
 
     public static void loadFont() {
         manager.load(emulogicfnt, BitmapFont.class);
@@ -77,6 +82,7 @@ public class Assets {
         manager.load(mars1, Texture.class);
         manager.load(earth1, Texture.class);
         manager.load(jupiter1, Texture.class);
+        // manager.load(neptune1, Texture.class);
     }
 
     public static void loadPowerUps() {
@@ -136,6 +142,7 @@ public class Assets {
         manager.unload(mars1);
         manager.unload(earth1);
         manager.unload(jupiter1);
+        // manager.unload(neptune1, Texture.class);
     }
 
     public static void unloadPowerUps() {

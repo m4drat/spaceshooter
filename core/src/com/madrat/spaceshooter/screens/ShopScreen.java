@@ -1,9 +1,9 @@
 package com.madrat.spaceshooter.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+
+import com.google.gson.*;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -163,220 +165,71 @@ public class ShopScreen implements Screen {
     }
 
     private void setDefault() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
-
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship1Animation);
-        data.putFloat("maxHealth", 1f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.3f);
-        data.putFloat("bulletsSpeed", 600f);
-        data.putFloat("speed", 300f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Zapper");
-
-        data.putFloat("maxHealing", 0.2f);
-
-        data.putInteger("realShipWidth", 24);
-        data.putInteger("realShipHeight", 23);
-        data.putInteger("preferredShipWidth", 60);
-        data.putInteger("preferredShipHeight", 50);
-        data.putInteger("colliderWidth", 60);
-        data.putInteger("colliderHeight", 50);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet1);
-
-        data.flush();
+        setNewShip("zapper");
     }
 
     private void setDestroyer() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
-
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship2Animation);
-        data.putFloat("maxHealth", 2f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.4f);
-        data.putFloat("bulletsSpeed", 600f);
-        data.putFloat("speed", 400f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Destroyer");
-
-        data.putFloat("maxHealing", 0.4f);
-
-        data.putInteger("realShipWidth", 64);
-        data.putInteger("realShipHeight", 64);
-        data.putInteger("preferredShipWidth", 64);
-        data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 64);
-        data.putInteger("colliderHeight", 64);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet1);
-
-        data.flush();
+        setNewShip("destroyer");
     }
 
     private void setIgnitor() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
+        setNewShip("ignitor");
 
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship4Animation);
-        data.putFloat("maxHealth", 1f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.2f);
-        data.putFloat("bulletsSpeed", 700f);
-        data.putFloat("speed", 500f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Ignitor");
-
-        data.putFloat("maxHealing", 0.2f);
-
-        data.putInteger("realShipWidth", 64);
-        data.putInteger("realShipHeight", 64);
-        data.putInteger("preferredShipWidth", 64);
-        data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 64);
-        data.putInteger("colliderHeight", 64);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet1);
-
-        data.flush();
     }
 
     private void setTurtle() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
+        setNewShip("turtle");
 
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship6Animation);
-        data.putFloat("maxHealth", 4f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.5f);
-        data.putFloat("bulletsSpeed", 600f);
-        data.putFloat("speed", 200f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Turtle");
-
-        data.putFloat("maxHealing", 0.6f);
-
-        data.putInteger("realShipWidth", 32);
-        data.putInteger("realShipHeight", 32);
-        data.putInteger("preferredShipWidth", 64);
-        data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 46);
-        data.putInteger("colliderHeight", 64);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet1);
-
-        data.flush();
     }
 
     private void setUfo() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
+        setNewShip("ufo");
 
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship11Animation);
-        data.putFloat("maxHealth", 2f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.3f);
-        data.putFloat("bulletsSpeed", 700f);
-        data.putFloat("speed", 400f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Ufo");
-
-        data.putFloat("maxHealing", 0.4f);
-
-        data.putInteger("realShipWidth", 32);
-        data.putInteger("realShipHeight", 32);
-        data.putInteger("preferredShipWidth", 64);
-        data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 52);
-        data.putInteger("colliderHeight", 52);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet1);
-
-        data.flush();
     }
 
     private void setStar() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
+        setNewShip("star");
 
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship8Animation);
-        data.putFloat("maxHealth", 1f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.3f);
-        data.putFloat("bulletsSpeed", 700f);
-        data.putFloat("speed", 600f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Star");
-
-        data.putFloat("maxHealing", 0.2f);
-
-        data.putInteger("realShipWidth", 32);
-        data.putInteger("realShipHeight", 32);
-        data.putInteger("preferredShipWidth", 64);
-        data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 64);
-        data.putInteger("colliderHeight", 64);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet2);
-
-        data.flush();
     }
 
     private void setPinky() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
+        setNewShip("pinky");
+    }
 
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship9Animation);
-        data.putFloat("maxHealth", 1f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.3f);
-        data.putFloat("bulletsSpeed", 400f);
-        data.putFloat("speed", 200f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Star");
+    private void setNewShip(String newShipJsonHandler) {
+        FileHandle currentStateFileHandle;
+        FileHandle allShipsFileHandle;
 
-        data.putFloat("maxHealing", 0.2f);
+        JsonParser parser = new JsonParser();
+        Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
-        data.putInteger("realShipWidth", 32);
-        data.putInteger("realShipHeight", 32);
-        data.putInteger("preferredShipWidth", 64);
-        data.putInteger("preferredShipHeight", 64);
-        data.putInteger("colliderWidth", 50);
-        data.putInteger("colliderHeight", 64);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
+        JsonObject newShip;
+        JsonObject curState;
 
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet2);
+        // Set appropriate path to file
+        if (MainGame.applicationType == Application.ApplicationType.Android) {
+            currentStateFileHandle = Gdx.files.local(MainGame.pathToCurrentState);
+            allShipsFileHandle = Gdx.files.local(MainGame.pathToShipConfigs);
+        } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
+            currentStateFileHandle = Gdx.files.absolute(MainGame.pathToCurrentState);
+            allShipsFileHandle = Gdx.files.absolute(MainGame.pathToShipConfigs);
+        } else {
+            currentStateFileHandle = Gdx.files.local(MainGame.pathToCurrentState);
+            allShipsFileHandle = Gdx.files.local(MainGame.pathToShipConfigs);
+        }
 
-        data.flush();
+        try {
+            curState = parser.parse(currentStateFileHandle.readString()).getAsJsonObject();
+            newShip = parser.parse(allShipsFileHandle.readString()).getAsJsonObject().getAsJsonObject(newShipJsonHandler);
+
+            // Place new ship into userFile
+            curState.add("currentShip", newShip);
+
+            // currentFileHandle.writeString(MainGame.cryptor.encrypt(currentState.toString(4)), false);
+            currentStateFileHandle.writeString(builder.toJson(curState), false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

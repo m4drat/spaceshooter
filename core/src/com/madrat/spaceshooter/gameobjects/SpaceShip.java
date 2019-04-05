@@ -24,6 +24,10 @@ public class SpaceShip {
 
     public boolean needToShow, isAlive;
 
+    public SpaceShip() {
+
+    }
+
     public SpaceShip(float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight) {
         this.realShipHeight = realShipHeight;
         this.realShipWidth = realShipWidth;

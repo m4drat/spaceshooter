@@ -1,8 +1,9 @@
 package com.madrat.spaceshooter.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,10 +16,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.screens.settingssubscreens.AboutScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+
+import org.json.JSONObject;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -32,7 +40,7 @@ public class SettingsScreen implements Screen {
     private DialogAlert confirmDialog;
 
     private TextButton resetProgressBtn;
-    private TextButton backBtn;
+    private TextButton aboutBtn, statsBtn, backBtn;
 
     private Stage stage;
     private Skin skin;
@@ -61,7 +69,7 @@ public class SettingsScreen implements Screen {
                 confirmDialog.text("Do you really\nwant to reset\nyour progress?");
                 confirmDialog.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        setDefaultValues();
+                        setDefaultValues(MainGame.pathToCurrentState, MainGame.pathToDefaultParameters);
                         return true;
                     }
                 }).noButton("NO", new InputListener() {
@@ -79,6 +87,16 @@ public class SettingsScreen implements Screen {
             }
         });
 
+        aboutBtn = new TextButton("About", skin);
+        aboutBtn.getLabel().setFontScale(SCALE_FACTOR);
+        aboutBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                batch.dispose();
+                game.setScreen(new AboutScreen(game, scrollingBackground));
+            }
+        });
+
         backBtn = new TextButton("Back", skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
@@ -89,7 +107,9 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        buttonsTable.add(resetProgressBtn).padBottom(48 * SCALE_FACTOR);
+        buttonsTable.add(resetProgressBtn).padBottom(32 * SCALE_FACTOR);
+        buttonsTable.row();
+        buttonsTable.add(aboutBtn).padBottom(70 * SCALE_FACTOR);
         buttonsTable.row();
         buttonsTable.add(backBtn);
 
@@ -97,44 +117,33 @@ public class SettingsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void setDefaultValues() {
-        Preferences data = Gdx.app.getPreferences("spacegame");
+    private void setDefaultValues(String pathToCurrentState, String pathToDefaultValues) {
+        FileHandle currentFileHandle;
+        FileHandle defaultValuesHandle;
+        JsonObject defaultState;
 
-        // reset Highscore
-        data.putInteger("highscore", 0);
+        JsonParser parser = new JsonParser();
+        Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
-        // Default money
-        data.putInteger("money", 1000);
+        // Set appropriate path to file
+        if (MainGame.applicationType == Application.ApplicationType.Android) {
+            currentFileHandle = Gdx.files.local(pathToCurrentState);
+            defaultValuesHandle = Gdx.files.local(pathToDefaultValues);
+        } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
+            currentFileHandle = Gdx.files.absolute(pathToCurrentState);
+            defaultValuesHandle = Gdx.files.absolute(pathToDefaultValues);
+        } else {
+            currentFileHandle = Gdx.files.local(pathToCurrentState);
+            defaultValuesHandle = Gdx.files.local(pathToDefaultValues);
+        }
 
-        // Default spaceship
-        data.putString("animationTexture", Assets.ship1Animation);
-        data.putFloat("maxHealth", 1f);
-        data.putFloat("damage", 0.1f);
-        data.putFloat("delayBetweenShootsBullets", 0.3f);
-        data.putFloat("bulletsSpeed", 600f);
-        data.putFloat("speed", 300f);
-        data.putFloat("frameLength", 0.14f);
-        data.putString("handle", "Zapper");
-
-        // Ship sizes
-        data.putInteger("realShipWidth", 24);
-        data.putInteger("realShipHeight", 23);
-        data.putInteger("preferredShipWidth", 60);
-        data.putInteger("preferredShipHeight", 50);
-        data.putInteger("colliderWidth", 60);
-        data.putInteger("colliderHeight", 50);
-        data.putInteger("colliderXcoordOffset", 0);
-        data.putInteger("colliderYcoordOffset", 0);
-
-        // Ship default healing value
-        data.putFloat("maxHealing", 0.2f);
-
-        // Ship Bullets
-        data.putInteger("preferredBulletHeight", 10);
-        data.putInteger("preferredBulletWidth", 4);
-        data.putString("bulletTexture", Assets.bullet1);
-
-        data.flush();
+        try {
+            defaultState = parser.parse(defaultValuesHandle.readString()).getAsJsonObject();
+            // currentFileHandle.writeString(MainGame.cryptor.encrypt(currentState.toString(4)), false);
+            currentFileHandle.writeString(builder.toJson(defaultState), false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     @Override
     public void show() {

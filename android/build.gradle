@@ -24,6 +24,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        applicationId = "com.madrat.spaceshooter"
     }
     buildTypes {
         release {
@@ -32,7 +33,7 @@ android {
             applicationIdSuffix '.release'
         }
         debug {
-            applicationIdSuffix '.debug'
+            // applicationIdSuffix '.debug_0'
         }
     }
     productFlavors {

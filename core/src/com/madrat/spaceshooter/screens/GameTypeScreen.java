@@ -1,8 +1,9 @@
 package com.madrat.spaceshooter.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,6 +22,8 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+
+import com.google.gson.*;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -48,8 +51,7 @@ public class GameTypeScreen implements Screen {
         this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
 
-        Preferences data = Gdx.app.getPreferences("spacegame");
-        this.highScore = data.getInteger("highscore", 0);
+        this.highScore = getCurrentHighscore(MainGame.pathToCurrentState);
 
         highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
@@ -118,6 +120,32 @@ public class GameTypeScreen implements Screen {
         stage.addActor(menuTable);
 
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private int getCurrentHighscore(String path) {
+        FileHandle currentFileHandle;
+        JsonObject currentState;
+
+        JsonParser parser = new JsonParser();
+        Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+
+        // Set appropriate path to file
+        if (MainGame.applicationType == Application.ApplicationType.Android) {
+            currentFileHandle = Gdx.files.local(path);
+        } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
+            currentFileHandle = Gdx.files.absolute(path);
+        } else {
+            currentFileHandle = Gdx.files.local(path);
+        }
+
+        try {
+            currentState = parser.parse(currentFileHandle.readString()).getAsJsonObject();
+
+            return currentState.get("highscore").getAsInt(); // "highscore"
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return -1;
     }
 
     @Override
