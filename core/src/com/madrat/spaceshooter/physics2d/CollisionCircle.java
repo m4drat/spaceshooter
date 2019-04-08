@@ -5,19 +5,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class CollisionCircle {
+
+    private CollisionRect.colliderTag tag;
+
     private float x, y;
     private int radius;
-    private String colliderTag;
 
     private ShapeRenderer shapeRenderer;
 
-    public CollisionCircle(float x, float y, int radius, String colliderTag) {
+    public CollisionCircle(float x, float y, int radius, CollisionRect.colliderTag tag) {
         this.shapeRenderer = new ShapeRenderer();
 
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.colliderTag = colliderTag;
+        this.tag = tag;
     }
 
     public void move(float x, float y) {
@@ -53,12 +55,12 @@ public class CollisionCircle {
         return radius;
     }
 
-    public String getColliderTag() {
-        return this.colliderTag;
+    public CollisionRect.colliderTag getTag() {
+        return tag;
     }
 
-    public void setColliderTag(String colliderTag) {
-        this.colliderTag = colliderTag;
+    public void setTag(CollisionRect.colliderTag tag) {
+        this.tag = tag;
     }
 
     // Draw collider

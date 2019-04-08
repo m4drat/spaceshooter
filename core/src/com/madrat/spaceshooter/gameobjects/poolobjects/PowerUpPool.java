@@ -1,26 +1,29 @@
 package com.madrat.spaceshooter.gameobjects.poolobjects;
 
 import com.badlogic.gdx.utils.Pool;
+import com.madrat.spaceshooter.physics2d.CollisionRect;
 
 public class PowerUpPool extends Pool<PowerUp> {
 
     private float frameLength;
     private int tileWidth, tileHeight;
-    private String colliderTag, pathToAnimationSheet;
+    private String pathToAnimationSheet;
 
-    public PowerUpPool(float frameLength, int tileWidth, int tileHeight, String colliderTag, String pathToAnimationSheet) {
+    private CollisionRect.colliderTag tag;
+
+    public PowerUpPool(float frameLength, int tileWidth, int tileHeight, CollisionRect.colliderTag tag, String pathToAnimationSheet) {
         super();
 
         this.frameLength = frameLength;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
-        this.colliderTag = colliderTag;
+        this.tag = tag;
         this.pathToAnimationSheet = pathToAnimationSheet;
     }
 
     @Override
     protected PowerUp newObject() {
         // System.out.println("[+] Creating new powerUp");
-        return new PowerUp(frameLength, tileWidth, tileHeight, colliderTag, pathToAnimationSheet);
+        return new PowerUp(frameLength, tileWidth, tileHeight, tag, pathToAnimationSheet);
     }
 }

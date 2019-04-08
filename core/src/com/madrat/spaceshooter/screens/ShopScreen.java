@@ -219,14 +219,14 @@ public class ShopScreen implements Screen {
         }
 
         try {
-            curState = parser.parse(currentStateFileHandle.readString()).getAsJsonObject();
-            newShip = parser.parse(allShipsFileHandle.readString()).getAsJsonObject().getAsJsonObject(newShipJsonHandler);
+            curState = parser.parse(MainGame.cryptor.decrypt(currentStateFileHandle.readString())).getAsJsonObject();
+            newShip = parser.parse(MainGame.cryptor.decrypt(allShipsFileHandle.readString())).getAsJsonObject().getAsJsonObject(newShipJsonHandler);
 
             // Place new ship into userFile
             curState.add("currentShip", newShip);
 
             // currentFileHandle.writeString(MainGame.cryptor.encrypt(currentState.toString(4)), false);
-            currentStateFileHandle.writeString(builder.toJson(curState), false);
+            currentStateFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(curState)), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

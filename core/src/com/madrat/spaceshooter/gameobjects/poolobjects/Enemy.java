@@ -23,15 +23,15 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
     private float stateTime; // Animation State time
 
     private int preferredBulletHeight, preferredBulletWidth;
-    private final BulletPool bulletPool = new BulletPool(Assets.bullet2, 1f, 3, 8, "bullet");
+    private final BulletPool bulletPool = new BulletPool(Assets.bullet2, 1f, 3, 8, Bullet.bulletType.bullet);
     private Array<Bullet> activeBullets;
+    private Array<Bullet> bulletsToRemove;
 
     private int colliderXcoordOffset, colliderYcoordOffset;
     private int colliderWidth, colliderHeight;
     private float collisionDamage;
 
     private int reward;
-
     public boolean remove;
 
     @Override
@@ -42,20 +42,21 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         this.isAlive = true;
     }
 
-    public Enemy(int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, String enemyAnimationSheetPath) {
+    public Enemy(int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, SpaceShip.shipHandler handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, String enemyAnimationSheetPath) {
         super(maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed, handle, realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight);
 
         this.preferredBulletHeight = 10;
         this.preferredBulletWidth = 4;
 
         this.activeBullets = new Array<Bullet>();
+        this.bulletsToRemove = new Array<Bullet>();
 
         this.colliderWidth = (int) (colliderWidth * SCALE_FACTOR);
         this.colliderHeight = (int) (colliderHeight * SCALE_FACTOR);
         this.colliderXcoordOffset = (int) (colliderXcoordOffset * SCALE_FACTOR);
         this.colliderYcoordOffset = (int) (colliderYcoordOffset * SCALE_FACTOR);
 
-        this.shipCollisionRect = new CollisionRect(0, 0, this.colliderWidth, this.colliderHeight, "enemy");
+        this.shipCollisionRect = new CollisionRect(0, 0, this.colliderWidth, this.colliderHeight, CollisionRect.colliderTag.enemy);
 
         this.remove = false;
         this.isAlive = true;
@@ -90,40 +91,48 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         if (y < -preferredShipHeight || !isAlive)
             remove = true;
 
-        if (this.lastBulletShoot > delayBetweenShootsBullets) {
-            this.lastBulletShoot = 0;
+        if (isAlive) {
+            if (this.lastBulletShoot > delayBetweenShootsBullets) {
+                this.lastBulletShoot = 0;
 
-            // Add first activeBullet
-            Bullet newBullet1 = bulletPool.obtain();
-            newBullet1.setupBullet(-this.bulletsSpeed, this.x + this.preferredShipWidth - this.preferredShipWidth / 5, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "enemybullet");
-            activeBullets.add(newBullet1);
+                // Add first activeBullet
+                Bullet newBullet1 = bulletPool.obtain();
+                newBullet1.setupBullet(-this.bulletsSpeed, getShipCollisionRect().getX() + 8 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.enemybullet);
+                activeBullets.add(newBullet1);
 
-            // Add second activeBullet
-            Bullet newBullet2 = bulletPool.obtain();
-            newBullet2.setupBullet(-this.bulletsSpeed, this.x + this.preferredShipWidth / 5 - 3, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "enemybullet");
-            activeBullets.add(newBullet2);
-        } else {
-            lastBulletShoot += delta;
+                // Add second activeBullet
+                Bullet newBullet2 = bulletPool.obtain();
+                newBullet2.setupBullet(-this.bulletsSpeed, getShipCollisionRect().getX() + colliderWidth - (16 - preferredBulletWidth) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.enemybullet);
+                activeBullets.add(newBullet2);
+            } else {
+                lastBulletShoot += delta;
+            }
         }
 
         // Move collision rect
         shipCollisionRect.move(x + ((this.preferredShipWidth - this.colliderWidth)) / 2 + this.colliderXcoordOffset, y + ((this.preferredShipHeight - this.colliderHeight)) / 2 + this.colliderYcoordOffset);
 
         // Update Bullets
+        bulletsToRemove.clear();
         for (Bullet bullet : activeBullets) {
             bullet.update(delta);
             if (bullet.remove) {
                 // System.out.println("[+] Deleting enemy bullet\nEnemyBulletPool size: " + bulletPool.getFree());
                 bulletPool.free(bullet);
-                activeBullets.removeValue(bullet, true);
+                bulletsToRemove.add(bullet);
             }
         }
+        activeBullets.removeAll(bulletsToRemove, true);
     }
 
     public void die() {
         this.isAlive = false;
         this.speed = 0;
         this.shipCollisionRect.resize(0, 0);
+/*        for (Bullet bullet : activeBullets) {
+            activeBullets.removeValue(bullet, true);
+            bulletPool.free(bullet);
+        }*/
         setCurrentAnimation(animationState.shipDestroyedAnimation);
     }
 

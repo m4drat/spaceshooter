@@ -5,6 +5,17 @@ import com.madrat.spaceshooter.physics2d.CollisionRect;
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class SpaceShip {
+
+    public enum shipHandler {
+        zapper,
+        destroyer,
+        ignitor,
+        turtle,
+        ufo,
+        star,
+        pinky
+    }
+
     protected int realShipWidth;
     protected int realShipHeight;
 
@@ -18,7 +29,7 @@ public class SpaceShip {
     protected float currentHealth, maxHealth, maxHealing;
     protected float damage;
 
-    protected String handle; // aka ship name
+    protected shipHandler handle; // aka ship type
 
     protected CollisionRect shipCollisionRect;
 
@@ -28,7 +39,7 @@ public class SpaceShip {
 
     }
 
-    public SpaceShip(float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight) {
+    public SpaceShip(float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, shipHandler handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight) {
         this.realShipHeight = realShipHeight;
         this.realShipWidth = realShipWidth;
 
@@ -76,7 +87,7 @@ public class SpaceShip {
         return damage;
     }
 
-    public String getHandle() {
+    public shipHandler getHandle() {
         return handle;
     }
 

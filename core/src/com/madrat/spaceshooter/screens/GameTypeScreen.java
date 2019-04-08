@@ -127,7 +127,6 @@ public class GameTypeScreen implements Screen {
         JsonObject currentState;
 
         JsonParser parser = new JsonParser();
-        Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
         // Set appropriate path to file
         if (MainGame.applicationType == Application.ApplicationType.Android) {
@@ -139,7 +138,7 @@ public class GameTypeScreen implements Screen {
         }
 
         try {
-            currentState = parser.parse(currentFileHandle.readString()).getAsJsonObject();
+            currentState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject();
 
             return currentState.get("highscore").getAsInt(); // "highscore"
         } catch (Exception ex) {

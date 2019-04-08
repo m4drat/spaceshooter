@@ -6,20 +6,31 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class CollisionRect {
 
+    public enum colliderTag {
+        player,
+        enemy,
+        healPowerUp,
+        ammoPowerUp,
+        shieldPowerUp,
+        enemybullet,
+        none
+    }
+
+    private colliderTag tag;
+
     private float x, y;
     private int width, height;
-    private String colliderTag;
 
     private ShapeRenderer shapeRenderer;
 
-    public CollisionRect(float x, float y, int width, int height, String colliderTag) {
+    public CollisionRect(float x, float y, int width, int height, colliderTag tag) {
         this.shapeRenderer = new ShapeRenderer();
 
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.colliderTag = colliderTag;
+        this.tag = tag;
     }
 
     public void move(float x, float y) {
@@ -58,12 +69,12 @@ public class CollisionRect {
         return height;
     }
 
-    public String getColliderTag() {
-        return this.colliderTag;
+    public colliderTag getTag() {
+        return tag;
     }
 
-    public void setColliderTag(String colliderTag) {
-        this.colliderTag = colliderTag;
+    public void setTag(colliderTag tag) {
+        this.tag = tag;
     }
 
     public void drawCollider(SpriteBatch batch) {

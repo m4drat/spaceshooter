@@ -23,19 +23,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.gameobjects.SpaceShip;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Asteroid;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.PlayerShip;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Enemy;
 import com.madrat.spaceshooter.gameobjects.poolobjects.PowerUp;
 import com.madrat.spaceshooter.gameobjects.Spawner;
+import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
@@ -266,9 +268,6 @@ public class MainGameScreen implements Screen {
             // Update and spawn asteroids
             spawner.updateAsteroids(delta);
 
-            // Update player Bullets (delete old + move them)
-            playerShip.updateBullets(delta);
-
             // Update Explosion (delete old)
             spawner.updateExplosions(delta);
 
@@ -299,8 +298,11 @@ public class MainGameScreen implements Screen {
         scrollingBackground.draw(batch);
 
         // Shooting
-        if (!isPaused)
+        if (!isPaused) {
             playerShip.shoot(delta);
+            // Update player Bullets (delete old + move them)
+            playerShip.updateBullets(delta);
+        }
 
         // Render player bullets
         playerShip.renderBullets(batch);
@@ -314,14 +316,10 @@ public class MainGameScreen implements Screen {
             for (Bullet bullet : playerShip.getActiveBullets()) {
                 for (Enemy enemy : spawner.getActiveEnemies()) {
                     if (bullet.getCollisionRect().collidesWith(enemy.getShipCollisionRect())) {
-
-                        if (bullet.getBulletType() == "bullet") {
-                            playerShip.getBulletPool().free(bullet);
-                        } else if (bullet.getBulletType() == "rocket") {
+                        if (bullet.getType() == Bullet.bulletType.rocket) {
                             spawner.spawnPlayerExplosion(bullet.getX() - bullet.getPreferredWidth() / 2, bullet.getY() - bullet.getPreferredHeight() / 2, 40, 40);
-                            playerShip.getRocketPool().free(bullet);
                         }
-                        playerShip.getActiveBullets().removeValue(bullet, true);
+                        bullet.remove = true;
 
                         enemy.setCurrentHealth(enemy.getCurrentHealth() - playerShip.getDamage());
                         if (enemy.getCurrentAnimation() != animationState.shipUnderAttackAnimation)
@@ -329,10 +327,13 @@ public class MainGameScreen implements Screen {
 
                         if (enemy.getCurrentHealth() <= 0) {
                             enemy.die();
-                            spawner.spawnEnemyExplosion(enemy.getX() - enemy.getPreferredShipWidth() / 2, enemy.getY() - enemy.getPreferredShipHeight() / 2, 96, 96);
+                            spawner.spawnEnemyExplosion(enemy.getX() - enemy.getPreferredShipWidth() / 2, enemy.getY() - enemy.getPreferredShipHeight() / 2, 86, 86);
 
                             // Increase score value
                             playerShip.setScore(playerShip.getScore() + enemy.getReward());
+
+                            // Update Score value
+                            scoreLayout.setText(scoreFont, "" + playerShip.getScore());
 
                             // Spawn Random PowerUp
                             spawner.randomPowerUp(enemy.getX(), enemy.getY());
@@ -346,7 +347,6 @@ public class MainGameScreen implements Screen {
                 for (Bullet enemyBullet : enemy.getActiveBullets()) {
                     if (enemyBullet.getCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
                         enemyBullet.remove = true;
-
                         // Update player health
                         playerShip.updateHealth(enemy.getDamage());
                     }
@@ -358,8 +358,10 @@ public class MainGameScreen implements Screen {
                 if (enemy.getShipCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
                     if (enemy.isAlive) {
                         enemy.die();
-                        spawner.spawnEnemyExplosion(enemy.getX() - enemy.getPreferredShipWidth() / 2, enemy.getY() - enemy.getPreferredShipHeight() / 2, 128, 128);
+                        spawner.spawnEnemyExplosion(enemy.getX() - enemy.getPreferredShipWidth() / 2, enemy.getY() - enemy.getPreferredShipHeight() / 2, 86, 86);
                         playerShip.setScore(playerShip.getScore() + enemy.getReward());
+                        // Update Score value
+                        scoreLayout.setText(scoreFont, "" + playerShip.getScore());
                         playerShip.updateHealth(enemy.getCollisionDamage());
                     }
                 }
@@ -372,23 +374,23 @@ public class MainGameScreen implements Screen {
                     if (bullet.getCollisionRect().collidesWith(asteroid.getCollisionCirlce())) {
 
                         // If bullet collides with asteroid we need to delete them too
-                        if (bullet.getBulletType() == "bullet") {
-                            playerShip.getBulletPool().free(bullet);
-                        } else if (bullet.getBulletType() == "rocket") {
+                        if (bullet.getType() == Bullet.bulletType.rocket) {
                             spawner.spawnPlayerExplosion(bullet.getX() - bullet.getPreferredWidth() / 2, bullet.getY() - bullet.getPreferredHeight() / 2, 40, 40);
-                            playerShip.getRocketPool().free(bullet);
                         }
-                        playerShip.getActiveBullets().removeValue(bullet, true);
+                        bullet.remove = true;
 
                         spawner.getAsteroidPool().free(asteroid);
                         spawner.getActiveAsteroids().removeValue(asteroid, true);
 
                         // Spawn Enemy explosion
-                        spawner.spawnEnemyExplosion(asteroid.getX(), asteroid.getY() - asteroid.getRadius(), 96, 96);
+                        spawner.spawnPlayerExplosion(asteroid.getX() - asteroid.getRadius(), asteroid.getY() - asteroid.getRadius(), 128, 128);
+                        // spawner.spawnEnemyExplosion(asteroid.getX(), asteroid.getY() - asteroid.getRadius(), 96, 96);
                         // explosions.add(new Explosion(asteroid.getX(), asteroid.getY() - asteroid.getRadius(), 0.11f, 96, 96, 96, Assets.manager.get(Assets.explosion2, Texture.class)));
 
                         // Increase score value
                         playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
+                        // Update Score value
+                        scoreLayout.setText(scoreFont, "" + playerShip.getScore());
 
                         // Spawn Random PowerUp
                         spawner.randomPowerUp(asteroid.getX(), asteroid.getY());
@@ -404,11 +406,11 @@ public class MainGameScreen implements Screen {
                     powerUp.remove = true;
 
                     // Heal powerUp
-                    if (powerUp.getPowerUpCollisionRect().getColliderTag() == "healPowerUp") {
+                    if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.healPowerUp && !playerShip.isGoingToDie() && !playerShip.isDestroyed()) {
                         playerShip.healUsingPowerUp();
-                    } else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "ammoPowerUp") {
+                    } else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.ammoPowerUp) {
                         playerShip.setAmmoActive(true, 40);
-                    } else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "shieldPowerUp") {
+                    } else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.shieldPowerUp && !playerShip.isGoingToDie() && !playerShip.isDestroyed()) {
                         // Activate Shield
                         playerShip.setShieldActive(true);
                         // Set shield animation
@@ -434,6 +436,8 @@ public class MainGameScreen implements Screen {
 
                     // Increase score value
                     playerShip.setScore(playerShip.getScore() + Asteroid.REWARD);
+                    // Update Score value
+                    scoreLayout.setText(scoreFont, "" + playerShip.getScore());
                 }
             }
         }
@@ -462,7 +466,8 @@ public class MainGameScreen implements Screen {
         // Draw ship with animations and collisionRectangle
         playerShip.draw(batch, delta);
         playerShip.getShipCollisionRect().drawCollider(batch);
-        playerShip.updateShieldState(delta);
+        if (!isPaused)
+            playerShip.updateShieldState(delta);
 
         // Render all possible explosions
         spawner.renderExplosion(batch);
@@ -476,8 +481,7 @@ public class MainGameScreen implements Screen {
                 scoreFont.setColor(ammoLayoutColor);
                 scoreFont.getData().setScale(SCALE_FACTOR);
             }
-            // Draw and update score
-            scoreLayout.setText(scoreFont, "" + playerShip.getScore());
+            // Draw score
             scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height - 5);
         }
 
@@ -485,6 +489,19 @@ public class MainGameScreen implements Screen {
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
+        if (BuildConfig.DEBUG) {
+/*            if (!isPaused)
+                for (Bullet bullet : playerShip.getActiveBullets()) {
+                    System.out.println("Bullet  y: " + bullet.getY());
+                }*/
+            /* System.out.print("\r[!] Deltatime: " + delta);
+            spawner.checkAsteroidPool();
+            spawner.checkEnemyPool();
+            spawner.checkExplosionPool();
+            spawner.checkPowerUpPool(); */
+        }
+
     }
 
     @Override

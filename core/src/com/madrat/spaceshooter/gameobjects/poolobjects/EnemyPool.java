@@ -1,6 +1,7 @@
 package com.madrat.spaceshooter.gameobjects.poolobjects;
 
 import com.badlogic.gdx.utils.Pool;
+import com.madrat.spaceshooter.gameobjects.SpaceShip;
 
 public class EnemyPool extends Pool<Enemy> {
 
@@ -8,9 +9,10 @@ public class EnemyPool extends Pool<Enemy> {
     private int colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset;
     private float maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed;
 
-    private String handle, enemyAnimationSheetPath;
+    private String enemyAnimationSheetPath;
+    private SpaceShip.shipHandler handle;
 
-    public EnemyPool(int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, String handle, String enemyAnimationSheetPath) {
+    public EnemyPool(int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, SpaceShip.shipHandler handle, String enemyAnimationSheetPath) {
         super();
 
         this.realShipWidth = realShipWidth;

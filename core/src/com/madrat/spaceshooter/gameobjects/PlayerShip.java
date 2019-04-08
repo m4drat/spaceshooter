@@ -59,6 +59,7 @@ public class PlayerShip extends SpaceShip {
     private float rocketSpeed, lastRocketShoot, delayBetweenShootsRockets;
     private int maxRockets, currentRockets;
     private Array<Bullet> activeBullets;
+    private Array<Bullet> bulletsToRemove = new Array<Bullet>();
 
     private Color lightBlue;
     private Texture healthBar;
@@ -96,7 +97,7 @@ public class PlayerShip extends SpaceShip {
 
         try {
             // Init health, real sizes, speed
-            shipData = parser.parse(currentFileHandle.readString()).getAsJsonObject().getAsJsonObject("currentShip");
+            shipData = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject().getAsJsonObject("currentShip");
 
             // System.out.println(shipData.toString());
 
@@ -106,7 +107,7 @@ public class PlayerShip extends SpaceShip {
             this.delayBetweenShootsBullets = shipData.get("delayBetweenShootsBullets").getAsFloat();
             this.bulletsSpeed = (shipData.get("bulletSpeed").getAsFloat()) * SCALE_FACTOR;
             this.speed = (shipData.get("shipSpeed").getAsFloat()) * SCALE_FACTOR;
-            this.handle = shipData.get("handler").getAsString();
+            this.handle = SpaceShip.shipHandler.valueOf(shipData.get("handler").getAsString());
 
             this.realShipWidth = shipData.get("realShipWidth").getAsInt();
             this.realShipHeight = shipData.get("realShipHeight").getAsInt();
@@ -133,7 +134,7 @@ public class PlayerShip extends SpaceShip {
             this.maxRockets = shipData.get("maxRockets").getAsInt();
             this.currentRockets = shipData.get("currentRockets").getAsInt();
             this.lastRocketShoot = shipData.get("lastRocketShoot").getAsFloat();
-            this.delayBetweenShootsRockets = (float) shipData.get("delayBetweenShootsRockets").getAsFloat();
+            this.delayBetweenShootsRockets = shipData.get("delayBetweenShootsRockets").getAsFloat();
             this.isAmmoActive = shipData.get("isAmmoActive").getAsBoolean();
 
             this.isAlive = true;
@@ -152,7 +153,7 @@ public class PlayerShip extends SpaceShip {
             this.y = 25;
 
             // create collision rect
-            this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset, this.colliderWidth, this.colliderHeight, "player");
+            this.shipCollisionRect = new CollisionRect(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredBulletHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset, this.colliderWidth, this.colliderHeight, CollisionRect.colliderTag.player);
 
             this.currentAnimation = animationState.defaultFlyAnimation;
             this.shipAnimations = new Animation[7];
@@ -181,8 +182,8 @@ public class PlayerShip extends SpaceShip {
     private void setup() {
 
         // Initialize bullet/rocket pool
-        this.bulletPool = new BulletPool(bulletTexturePath, 1f, 3, 8, "bullet");
-        this.rocketPool = new BulletPool(rocketTexturePath, 0.1f, 16, 16, "rocket");
+        this.bulletPool = new BulletPool(bulletTexturePath, 1f, 3, 8, Bullet.bulletType.bullet);
+        this.rocketPool = new BulletPool(rocketTexturePath, 0.1f, 16, 16, Bullet.bulletType.rocket);
 
         // Initialize activeBullets list
         this.activeBullets = new Array<Bullet>();
@@ -200,8 +201,9 @@ public class PlayerShip extends SpaceShip {
             this.x = 0;
 
         // Right bounds
-        if (this.x > MainGame.GENERAL_WIDTH - this.preferredShipWidth)
+        if (this.x > MainGame.GENERAL_WIDTH - this.preferredShipWidth) {
             this.x = MainGame.GENERAL_WIDTH - this.preferredShipWidth;
+        }
 
         // Bottom bounds
         if (this.y < 0)
@@ -285,11 +287,11 @@ public class PlayerShip extends SpaceShip {
 
                 // Add first activeBullet
                 Bullet newBullet1 = bulletPool.obtain();
-                newBullet1.setupBullet(this.bulletsSpeed, this.x + (8) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+                newBullet1.setupBullet(this.bulletsSpeed, getShipCollisionRect().getX() + 8 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.player);
 
                 // Add second activeBullet
                 Bullet newBullet2 = bulletPool.obtain();
-                newBullet2.setupBullet(this.bulletsSpeed, this.x + this.preferredShipWidth - (12 * SCALE_FACTOR), this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, "player");
+                newBullet2.setupBullet(this.bulletsSpeed, getShipCollisionRect().getX() + colliderWidth - (16 - preferredBulletWidth) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.player);
 
                 activeBullets.add(newBullet1, newBullet2);
                 // System.out.println("[+] Objects in bulletPool: " + bulletPool.getFree());
@@ -301,9 +303,9 @@ public class PlayerShip extends SpaceShip {
                 this.lastRocketShoot = 0;
                 if (currentRockets > 0 && isAmmoActive) {
                     Bullet newRocket1 = rocketPool.obtain();
-                    newRocket1.setupBullet(this.rocketSpeed, this.x + 11 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
+                    newRocket1.setupBullet(this.rocketSpeed, getShipCollisionRect().getX() + 8 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, CollisionRect.colliderTag.player);
                     Bullet newRocket2 = rocketPool.obtain();
-                    newRocket2.setupBullet(this.rocketSpeed, this.x + this.colliderWidth - 16 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, "player");
+                    newRocket2.setupBullet(this.rocketSpeed, getShipCollisionRect().getX() + colliderWidth - (48 - preferredRocketWidth) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredRocketWidth, preferredRocketHeight, CollisionRect.colliderTag.player);
 
                     activeBullets.add(newRocket1, newRocket2);
 
@@ -322,17 +324,22 @@ public class PlayerShip extends SpaceShip {
     }
 
     public void updateBullets(float delta) {
+        bulletsToRemove.clear();
+
         for (Bullet bullet : activeBullets) {
             bullet.update(delta);
             if (bullet.remove) {
-                if (bullet.getBulletType() == "rocket") {
+                if (bullet.getType() == Bullet.bulletType.rocket) {
+                    bulletsToRemove.add(bullet);
                     rocketPool.free(bullet);
-                } else if (bullet.getBulletType() == "bullet") {
+                } else if (bullet.getType() == Bullet.bulletType.bullet) {
+                    bulletsToRemove.add(bullet);
                     bulletPool.free(bullet);
                 }
-                activeBullets.removeValue(bullet, true);
             }
         }
+
+        activeBullets.removeAll(bulletsToRemove, true);
     }
 
     public void renderBullets(SpriteBatch batch) {
@@ -429,7 +436,8 @@ public class PlayerShip extends SpaceShip {
 
         // decrease player health or shield if its active
         if (isShieldActive) {
-            this.setCurrentAnimation(shieldAttackedAnimation);
+            if (currentAnimation != shieldAttackedAnimation)
+                this.setCurrentAnimation(shieldAttackedAnimation);
             currentShieldHealth -= damage;
         } else {
             currentHealth -= damage;
@@ -440,7 +448,8 @@ public class PlayerShip extends SpaceShip {
                 && currentAnimation != animationState.shieldDestroyedAnimation
                 && currentAnimation != animationState.shieldDefaultAnimation
                 && currentAnimation != animationState.shipDestroyedAnimation
-                && currentAnimation != animationState.shieldAttackedAnimation)
+                && currentAnimation != animationState.shieldAttackedAnimation
+                && currentAnimation != animationState.shipUnderAttackAnimation)
             this.setCurrentAnimation(shipUnderAttackAnimation);
 
     }

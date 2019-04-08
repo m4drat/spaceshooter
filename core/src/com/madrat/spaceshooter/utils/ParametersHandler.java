@@ -62,11 +62,11 @@ public class ParametersHandler implements Serializable {
 
         // Sizes
         this.realShipWidth = 24;
-        this.realShipHeight = 23;
-        this.preferredShipWidth = 60;
-        this.preferredShipHeight = 50;
-        this.colliderWidth = 60;
-        this.colliderHeight = 50;
+        this.realShipHeight = 24;
+        this.preferredShipWidth = 55;
+        this.preferredShipHeight = 45;
+        this.colliderWidth = 55;
+        this.colliderHeight = 45;
         this.colliderXcoordOffset = 0;
         this.colliderYcoordOffset = 0;
 
@@ -114,14 +114,14 @@ public class ParametersHandler implements Serializable {
         this.frameLength = 0.14f;
 
         // Sizes
-        this.realShipWidth = 64;
-        this.realShipHeight = 64;
-        this.preferredShipWidth = 64;
-        this.preferredShipHeight = 64;
-        this.colliderWidth = 64;
-        this.colliderHeight = 64;
+        this.realShipWidth = 32;
+        this.realShipHeight = 32;
+        this.preferredShipWidth = 56;
+        this.preferredShipHeight = 56;
+        this.colliderWidth = 56;
+        this.colliderHeight = 48;
         this.colliderXcoordOffset = 0;
-        this.colliderYcoordOffset = 0;
+        this.colliderYcoordOffset = 2;
 
         // Additional info
         this.enemyReward = 120;
@@ -167,12 +167,12 @@ public class ParametersHandler implements Serializable {
         this.frameLength = 0.14f;
 
         // Sizes
-        this.realShipWidth = 64;
-        this.realShipHeight = 64;
-        this.preferredShipWidth = 64;
-        this.preferredShipHeight = 64;
-        this.colliderWidth = 64;
-        this.colliderHeight = 64;
+        this.realShipWidth = 32;
+        this.realShipHeight = 32;
+        this.preferredShipWidth = 52;
+        this.preferredShipHeight = 52;
+        this.colliderWidth = 52;
+        this.colliderHeight = 52;
         this.colliderXcoordOffset = 0;
         this.colliderYcoordOffset = 0;
 
@@ -233,7 +233,7 @@ public class ParametersHandler implements Serializable {
         this.enemyReward = 180;
         this.shipPrice = 2200;
         this.isBought = false;
-        this.shipSpeed = 500f;
+        this.shipSpeed = 300f;
         this.handler = "turtle";
 
         // Health
@@ -324,15 +324,15 @@ public class ParametersHandler implements Serializable {
     public void setUpStar() {
         // Animation
         this.animationTexture = Assets.ship8Animation;
-        this.frameLength = 0.14f;
+        this.frameLength = 0.18f;
 
         // Sizes
         this.realShipWidth = 32;
         this.realShipHeight = 32;
-        this.preferredShipWidth = 64;
-        this.preferredShipHeight = 64;
-        this.colliderWidth = 64;
-        this.colliderHeight = 64;
+        this.preferredShipWidth = 56;
+        this.preferredShipHeight = 56;
+        this.colliderWidth = 56;
+        this.colliderHeight = 56;
         this.colliderXcoordOffset = 0;
         this.colliderYcoordOffset = 0;
 

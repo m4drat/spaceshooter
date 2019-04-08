@@ -7,9 +7,9 @@ public class BulletPool extends Pool<Bullet> {
     private String bulletTexturePath;
     private float animationSpeed;
     private int realWidth, realHeight;
-    String bulletType;
+    private Bullet.bulletType type;
 
-    public BulletPool(String bulletTexturePath, float animationSpeed, int realWidth, int realHeight, String bulletType) {
+    public BulletPool(String bulletTexturePath, float animationSpeed, int realWidth, int realHeight, Bullet.bulletType type) {
         super();
 
         this.bulletTexturePath = bulletTexturePath;
@@ -17,13 +17,13 @@ public class BulletPool extends Pool<Bullet> {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
 
-        this.bulletType = bulletType;
+        this.type = type;
     }
 
     // method to create a single object
     @Override
     protected Bullet newObject() {
         // System.out.println("[+] Creating new bullet");
-        return new Bullet(this.bulletTexturePath, animationSpeed, realWidth, realHeight, bulletType);
+        return new Bullet(this.bulletTexturePath, animationSpeed, realWidth, realHeight, type);
     }
 }

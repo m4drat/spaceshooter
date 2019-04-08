@@ -27,13 +27,14 @@ public class Initializer {
             MainGame.pathToCurrentState = MainGame.localStoragePath + Assets.currentState;
         }
 
-        System.out.println("[+] Local storage path: " + MainGame.localStoragePath);
-        System.out.println("[+] Path to ship configs: " + MainGame.pathToShipConfigs);
-        System.out.println("[+] Path to default parameters: " + MainGame.pathToDefaultParameters);
-        System.out.println("[+] Path to current state: " + MainGame.pathToCurrentState);
+        if (BuildConfig.DEBUG) {
+            System.out.println("[+] Local storage path: " + MainGame.localStoragePath);
+            System.out.println("[+] Path to ship configs: " + MainGame.pathToShipConfigs);
+            System.out.println("[+] Path to default parameters: " + MainGame.pathToDefaultParameters);
+            System.out.println("[+] Path to current state: " + MainGame.pathToCurrentState);
+        }
 
-        // First run check
-        if (data.getBoolean("firstRun", true)) {
+        if (data.getBoolean("firstRun", true)) { // data.getBoolean("firstRun", true)
             // First run variable
             data.putBoolean("firstRun", false);
 
@@ -119,8 +120,8 @@ public class Initializer {
         }
 
         try {
-            handle.writeString(builder.toJson(ships), false);
-            // handle.writeString(MainGame.cryptor.encrypt(ships.toString(4)), false);
+            // handle.writeString(builder.toJson(ships), false);
+            handle.writeString(MainGame.cryptor.encrypt(builder.toJson(ships)), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -154,8 +155,8 @@ public class Initializer {
         }
 
         try {
-            handle.writeString(builder.toJson(defaultJson), false);
-            // handle.writeString(MainGame.cryptor.encrypt(defaultJson.toString(4)), false);
+            // handle.writeString(builder.toJson(defaultJson), false);
+            handle.writeString(MainGame.cryptor.encrypt(builder.toJson(defaultJson)), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -166,14 +167,13 @@ public class Initializer {
 
         Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
-        // TODO place here zapper instead ufo
-        ParametersHandler ufo = new ParametersHandler();
+        ParametersHandler zapper = new ParametersHandler();
         JsonObject currentStateJson = new JsonObject(); // Whole object
         JsonObject currentShipJson; // Default ship
 
         try {
-            ufo.setUpUfo();
-            currentShipJson = builder.toJsonTree(ufo).getAsJsonObject();
+            zapper.setUpDefaultShip();
+            currentShipJson = builder.toJsonTree(zapper).getAsJsonObject();
             currentStateJson.add("currentShip", currentShipJson);
             currentStateJson.addProperty("money", 1000);
             currentStateJson.addProperty("highscore", 0);
@@ -190,8 +190,8 @@ public class Initializer {
         }
 
         try {
-            // handle.writeString(MainGame.cryptor.encrypt(currentStateJson.toString(4)), false);
-            handle.writeString(builder.toJson(currentStateJson), false);
+            handle.writeString(MainGame.cryptor.encrypt(builder.toJson(currentStateJson)), false);
+            // handle.writeString(builder.toJson(currentStateJson), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

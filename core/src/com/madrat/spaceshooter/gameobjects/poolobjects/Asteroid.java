@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Pool;
 import com.madrat.spaceshooter.physics2d.CollisionCircle;
+import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
@@ -40,7 +41,7 @@ public class Asteroid implements Pool.Poolable {
     public Asteroid(float animationSpeed, int radius, int realWidth, int realHeight) {
         this.radius = (int) (radius * SCALE_FACTOR);
 
-        this.collisionCircle = new CollisionCircle(this.x, this.y, (int) (this.radius - 5 * SCALE_FACTOR), "enemy");
+        this.collisionCircle = new CollisionCircle(this.x, this.y, (int) (this.radius - 5 * SCALE_FACTOR), CollisionRect.colliderTag.enemy);
 
         asteroidTextureAnimations = Assets.manager.get(Assets.asteroid2Animation, Texture.class);
         asteroidAnimation = new Animation(animationSpeed, TextureRegion.split(asteroidTextureAnimations, realWidth, realHeight)[0]);

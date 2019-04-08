@@ -138,9 +138,9 @@ public class SettingsScreen implements Screen {
         }
 
         try {
-            defaultState = parser.parse(defaultValuesHandle.readString()).getAsJsonObject();
+            defaultState = parser.parse(MainGame.cryptor.decrypt(defaultValuesHandle.readString())).getAsJsonObject();
             // currentFileHandle.writeString(MainGame.cryptor.encrypt(currentState.toString(4)), false);
-            currentFileHandle.writeString(builder.toJson(defaultState), false);
+            currentFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(defaultState)), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

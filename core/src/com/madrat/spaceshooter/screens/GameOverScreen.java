@@ -27,8 +27,6 @@ import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
-import org.json.JSONObject;
-
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class GameOverScreen implements Screen {
@@ -172,14 +170,14 @@ public class GameOverScreen implements Screen {
         }
 
         try {
-            currentState = parser.parse(currentFileHandle.readString()).getAsJsonObject();
+            currentState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject();
 
             this.highScore = currentState.get("highscore").getAsInt();
             if (highScore < currentScore) {
                 this.highScore = currentScore;
                 currentState.addProperty("highscore", score);
-                // currentFileHandle.writeString(MainGame.cryptor.encrypt(currentState.toString(4)), false);
-                currentFileHandle.writeString(builder.toJson(currentState), false);
+                currentFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(currentState)), false);
+                // currentFileHandle.writeString(builder.toJson(currentState), false);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

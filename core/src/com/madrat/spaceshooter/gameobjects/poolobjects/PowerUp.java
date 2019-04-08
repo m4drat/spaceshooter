@@ -35,9 +35,9 @@ public class PowerUp implements Pool.Poolable {
         // System.out.println("[+] Resetting powerUp");
     }
 
-    public PowerUp(float frameLength, int tileWidth, int tileHeight, String colliderTag, String pathToAnimationSheet) {
+    public PowerUp(float frameLength, int tileWidth, int tileHeight, CollisionRect.colliderTag tag, String pathToAnimationSheet) {
         // Create collision rect
-        this.powerUpCollisionRect = new CollisionRect(0, 0, 0, 0, colliderTag);
+        this.powerUpCollisionRect = new CollisionRect(0, 0, 0, 0, tag);
 
         // Animation default state time
         this.stateTime = 0;

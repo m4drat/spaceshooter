@@ -11,6 +11,7 @@ import com.madrat.spaceshooter.gameobjects.poolobjects.Explosion;
 import com.madrat.spaceshooter.gameobjects.poolobjects.ExplosionPool;
 import com.madrat.spaceshooter.gameobjects.poolobjects.PowerUp;
 import com.madrat.spaceshooter.gameobjects.poolobjects.PowerUpPool;
+import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 
 import java.util.Random;
@@ -21,16 +22,16 @@ public class Spawner {
 
     // TODO enemies pools
     // New unique pool for every enemy type
-    private EnemyPool pinkyPool = new EnemyPool(32, 32, 64, 64, 54, 56, 0, 0, 1f, 0.05f, 0.6f, 700, 80, "pinky", Assets.ship10Animation);
+    private EnemyPool pinkyPool = new EnemyPool(32, 32, 58, 58, 50, 56, 0, 0, 1f, 0.05f, 0.6f, 700, 80, SpaceShip.shipHandler.pinky, Assets.ship10Animation);
     // private EnemyPool turtlePool = new EnemyPool();
     // private EnemyPool pinkyPool = new EnemyPool();
     private Array<Enemy> activeEnemies;
     private float enemySpawnTimer;
 
     // All powerUps
-    private PowerUpPool healPowerUpPool = new PowerUpPool(0.2f, 30, 25, "healPowerUp", Assets.healPowerUp);
-    private PowerUpPool ammoPowerUpPool = new PowerUpPool(0.2f, 58, 53, "ammoPowerUp", Assets.ammoPowerUp);
-    private PowerUpPool shieldPowerUpPool = new PowerUpPool(0.2f, 32, 32, "shieldPowerUp", Assets.shieldPowerUp);
+    private PowerUpPool healPowerUpPool = new PowerUpPool(0.2f, 30, 25, CollisionRect.colliderTag.healPowerUp, Assets.healPowerUp);
+    private PowerUpPool ammoPowerUpPool = new PowerUpPool(0.2f, 58, 53, CollisionRect.colliderTag.ammoPowerUp, Assets.ammoPowerUp);
+    private PowerUpPool shieldPowerUpPool = new PowerUpPool(0.2f, 32, 32, CollisionRect.colliderTag.shieldPowerUp, Assets.shieldPowerUp);
     private Array<PowerUp> activePowerUps;
 
     // All explosions
@@ -145,21 +146,21 @@ public class Spawner {
     public void randomPowerUp(float x, float y) {
 
         // Heal powerUp
-        if (random.nextInt(22) == 7) {
+        if (random.nextInt(3) == 0) {
             PowerUp newPowerUp = healPowerUpPool.obtain();
             newPowerUp.setupPowerUp(x, y, 30, 25, 10f);
             activePowerUps.add(newPowerUp);
             // System.out.println("[+] Objects in healPowerUpPool: " + healPowerUpPool.getFree());
 
             // Ammo powerUp
-        } else if (random.nextInt(22) == 14) {
+        } else if (random.nextInt(3) == 1) {
             PowerUp newPowerUp = ammoPowerUpPool.obtain();
             newPowerUp.setupPowerUp(x, y, 28, 26, 10f);
             activePowerUps.add(newPowerUp);
             // System.out.println("[+] Objects in ammoPowerUpPool: " + ammoPowerUpPool.getFree());
 
             // Shield powerUp
-        } else if (true) {
+        } else if (random.nextInt(3) == 2) {
             PowerUp newPowerUp = shieldPowerUpPool.obtain();
             newPowerUp.setupPowerUp(x, y, 28, 28, 10f);
             activePowerUps.add(newPowerUp);
@@ -172,11 +173,11 @@ public class Spawner {
         for (PowerUp powerUp : activePowerUps) {
             powerUp.update(delta);
             if (powerUp.remove) {
-                if (powerUp.getPowerUpCollisionRect().getColliderTag() == "healPowerUp")
+                if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.healPowerUp)
                     healPowerUpPool.free(powerUp);
-                else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "ammoPowerUp")
+                else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.ammoPowerUp)
                     ammoPowerUpPool.free(powerUp);
-                else if (powerUp.getPowerUpCollisionRect().getColliderTag() == "shieldPowerUp")
+                else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.shieldPowerUp)
                     shieldPowerUpPool.free(powerUp);
                 activePowerUps.removeValue(powerUp, true);
             }
@@ -213,7 +214,7 @@ public class Spawner {
         for (Enemy enemy : activeEnemies) {
             enemy.update(delta);
             if (enemy.remove) {
-                if (enemy.getHandle() == "pinky") {
+                if (enemy.getHandle() == SpaceShip.shipHandler.pinky) {
                     pinkyPool.free(enemy);
                     // System.out.println("[+] Removed pinky from game\n[+] pinkyPool size: " + pinkyPool.getFree());
                 }
@@ -270,5 +271,27 @@ public class Spawner {
 
     public Array<PowerUp> getActivePowerUps() {
         return activePowerUps;
+    }
+
+    public void checkAsteroidPool() {
+        System.out.println("[+](Asteroids Pool) active: " + activeAsteroids.size + " | free: " + asteroidPool.getFree() + "/" + asteroidPool.max + " | record: " + asteroidPool.peak);
+    }
+
+    public void checkEnemyPool() {
+        System.out.println("[+](Enemies) active: " + activeEnemies.size);
+        System.out.println("\t[Pinky] free: " + pinkyPool.getFree() + "/" + pinkyPool.max + " | record: " + pinkyPool.peak);
+    }
+
+    public void checkExplosionPool() {
+        System.out.println("[+](Explosion) active: " + activeExplosions.size);
+        System.out.println("\t[Enemy explosion] free: " + enemyExplosionPool.getFree() + "/" + enemyExplosionPool.max + " | record: " + enemyExplosionPool.peak);
+        System.out.println("\t[Player explosion] free: " + playerExplosionPool.getFree() + "/" + playerExplosionPool.max + " | record: " + playerExplosionPool.peak);
+    }
+
+    public void checkPowerUpPool() {
+        System.out.println("[+](PowerUP) active: " + activePowerUps.size);
+        System.out.println("\t[Heal PowerUP] free: " + healPowerUpPool.getFree() + "/" + healPowerUpPool.max + " | record: " + healPowerUpPool.peak);
+        System.out.println("\t[Rocket PowerUp] free: " + ammoPowerUpPool.getFree() + "/" + ammoPowerUpPool.max + " | record: " + ammoPowerUpPool.peak);
+        System.out.println("\t[Shield PowerUp] free: " + shieldPowerUpPool.getFree() + "/" + shieldPowerUpPool.max + " | record: " + shieldPowerUpPool.peak);
     }
 }
