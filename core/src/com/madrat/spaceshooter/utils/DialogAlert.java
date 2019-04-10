@@ -14,6 +14,12 @@ import com.badlogic.gdx.utils.Align;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
+/**
+ * Simple alert dialog class with 2 default buttons (yes/no)
+ *
+ * @author madrat
+ */
+
 public class DialogAlert extends Dialog {
 
     private float dialog_padding = 20f;
@@ -64,6 +70,7 @@ public class DialogAlert extends Dialog {
 
     @Override
     public DialogAlert text(String text) {
+        // Create new font and label for text
         BitmapFont font = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         label = new Label(text, new Label.LabelStyle(font, Color.WHITE));
 
@@ -78,9 +85,12 @@ public class DialogAlert extends Dialog {
 
     // Yes button
     public DialogAlert yesButton(String buttonText, InputListener listener) {
+
+        // Create text button and add listener
         buttonYes = new TextButton(buttonText, this.skin);
         buttonYes.addListener(listener);
 
+        // Paddings
         buttonYes.padTop(button_pad_t * SCALE_FACTOR);
         // buttonYes.padLeft(button_pad_l);
         // buttonYes.padRight(button_pad_r);
@@ -93,9 +103,12 @@ public class DialogAlert extends Dialog {
 
     // No button
     public DialogAlert noButton(String buttonText, InputListener listener) {
+
+        // Create text button and add listener
         buttonNo = new TextButton(buttonText, this.skin);
         buttonNo.addListener(listener);
 
+        // Paddings
         buttonNo.padTop(button_pad_t * SCALE_FACTOR);
         buttonNo.padLeft((button_pad_l + 40) * SCALE_FACTOR);
         // buttonNo.padRight(button_pad_r);

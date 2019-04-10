@@ -40,8 +40,8 @@ public class GameOverScreen implements Screen {
     private SpriteBatch batch;
     private ScrollingBackground scrollingBackground;
 
-    private BitmapFont highScoreFont, scoreFont, gameOverFont;
-    private GlyphLayout highScoreLayout, scoreLayout, gameOverLayout;
+    private BitmapFont highScoreFont, scoreFont, coinsFont, gameOverFont;
+    private GlyphLayout highScoreLayout, scoreLayout, coinsLayout, gameOverLayout;
 
     private TextButton restartBtn;
     private TextButton backBtn;
@@ -49,13 +49,14 @@ public class GameOverScreen implements Screen {
 
     private DialogAlert exit;
 
-    private int score, highScore;
+    private int score, highScore, money;
 
     public GameOverScreen(MainGame newgame, ScrollingBackground scrBack, int score) {
         this.game = newgame;
         this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
         this.score = score;
+        this.money = 1231;
 
         Assets.unloadFont();
         Assets.loadFont();
@@ -67,31 +68,44 @@ public class GameOverScreen implements Screen {
         // Get and check highscore from file
         setApprHighscore(MainGame.pathToCurrentState, score);
 
+        // Create gameOver font and textLayout
         gameOverFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         gameOverFont.setColor(new Color(0x30db88ff));
-        gameOverFont.getData().setScale(1.2f * SCALE_FACTOR);
+        gameOverFont.getData().setScale(1.25f * SCALE_FACTOR);
         gameOverLayout = new GlyphLayout(gameOverFont, "GAME OVER");
 
+        // Create Highscore font and textLayout
         highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.setColor(new Color(0x7a9af1ff));
-        highScoreFont.getData().setScale(0.9f * SCALE_FACTOR);
+        highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreLayout = new GlyphLayout(highScoreFont, "Highscore:" + this.highScore);
 
+        // Create score font and textLayout
         scoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         scoreFont.setColor(new Color(0xceb963ff));
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         scoreLayout = new GlyphLayout(scoreFont, "Current score:" + score);
 
+        // Create coins font and textLayout
+        coinsFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
+        coinsFont.setColor(new Color(0xceb963ff));
+        coinsFont.getData().setScale(0.7f * SCALE_FACTOR);
+        coinsLayout = new GlyphLayout(coinsFont, "Earned money:" + money);
+
+
         // Create buttons
         restartBtn = new TextButton("restart", skin);
         restartBtn.getLabel().setFontScale(SCALE_FACTOR);
 
+        // go back button
         backBtn = new TextButton("back", skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
 
+        // exit button
         exitBtn = new TextButton("exit", skin);
         exitBtn.getLabel().setFontScale(SCALE_FACTOR);
 
+        // restart game button listener
         restartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -99,6 +113,7 @@ public class GameOverScreen implements Screen {
                 game.setScreen(new MainGameScreen(game));
             }
         });
+        // go back button listener
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -107,6 +122,7 @@ public class GameOverScreen implements Screen {
             }
         });
 
+        // exit confirm dialog
         exit = new DialogAlert("", skin);
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
@@ -140,7 +156,7 @@ public class GameOverScreen implements Screen {
         menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
 
         // Setup all relative positions
-        menuTable.padTop(310 * SCALE_FACTOR);
+        menuTable.padTop(360 * SCALE_FACTOR);
         menuTable.add(restartBtn).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
         menuTable.add(backBtn).padBottom(48 * SCALE_FACTOR);
@@ -170,8 +186,10 @@ public class GameOverScreen implements Screen {
         }
 
         try {
+            // Extract current state from "encrypted" json
             currentState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject();
 
+            // Update highscore value
             this.highScore = currentState.get("highscore").getAsInt();
             if (highScore < currentScore) {
                 this.highScore = currentScore;
@@ -198,12 +216,13 @@ public class GameOverScreen implements Screen {
         scrollingBackground.draw(batch);
 
         // Display highscore + current score
-        gameOverFont.getData().setScale(1.25f * SCALE_FACTOR);
+        gameOverFont.getData().setScale(1.35f * SCALE_FACTOR);
         gameOverFont.draw(batch, gameOverLayout, Gdx.graphics.getWidth() / 2 - gameOverLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 2);
-        highScoreFont.getData().setScale(0.8f * SCALE_FACTOR);
-        highScoreFont.draw(batch, highScoreLayout, Gdx.graphics.getWidth() / 2 - highScoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 4.5f - 5);
+        highScoreFont.getData().setScale(0.6f * SCALE_FACTOR);
+        highScoreFont.draw(batch, highScoreLayout, Gdx.graphics.getWidth() / 2 - highScoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 3.9f - 5);
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
-        scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 5.5f - 15);
+        scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 5.6f - 15);
+        coinsFont.draw(batch, coinsLayout, Gdx.graphics.getWidth() / 2 - coinsLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 6.6f - 15);
 
         batch.end();
 

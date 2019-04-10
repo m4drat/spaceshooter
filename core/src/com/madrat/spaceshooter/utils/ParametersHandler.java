@@ -1,7 +1,5 @@
 package com.madrat.spaceshooter.utils;
 
-import com.madrat.spaceshooter.utils.Assets;
-
 import java.io.Serializable;
 
 public class ParametersHandler implements Serializable {
@@ -57,7 +55,7 @@ public class ParametersHandler implements Serializable {
     public void setUpDefaultShip() {
 
         // Animation
-        this.animationTexture = Assets.ship1Animation;
+        this.animationTexture = Assets.ship0Animation;
         this.frameLength = 0.14f;
 
         // Sizes
@@ -71,14 +69,14 @@ public class ParametersHandler implements Serializable {
         this.colliderYcoordOffset = 0;
 
         // Additional info
-        this.enemyReward = 0;
+        this.enemyReward = 100;
         this.shipPrice = 0;
         this.isBought = true;
         this.shipSpeed = 300f;
         this.handler = "zapper";
 
         // Health
-        this.maxHealth = 2f;
+        this.maxHealth = 1.4f;
         this.maxHealing = 0.2f;
 
         // Bullets | shooting
@@ -86,7 +84,7 @@ public class ParametersHandler implements Serializable {
         this.preferredBulletWidth = 4;
         this.bulletTexture = Assets.bullet1;
         this.bulletSpeed = 600f;
-        this.damage = 0.1f;
+        this.damage = 0.2f;
         this.delayBetweenShootsBullets = 0.3f;
 
         // Rockets | shooting
@@ -270,7 +268,7 @@ public class ParametersHandler implements Serializable {
     public void setUpUfo() {
 
         // Animation
-        this.animationTexture = Assets.ship11Animation;
+        this.animationTexture = Assets.ship12Animation;
         this.frameLength = 0.14f;
 
         // Sizes
@@ -340,7 +338,7 @@ public class ParametersHandler implements Serializable {
         this.enemyReward = 120;
         this.shipPrice = 1550;
         this.isBought = false;
-        this.shipSpeed = 600f;
+        this.shipSpeed = 660f;
         this.handler = "star";
 
         // Health
@@ -352,7 +350,7 @@ public class ParametersHandler implements Serializable {
         this.preferredBulletWidth = 4;
         this.bulletTexture = Assets.bullet1;
         this.bulletSpeed = 700f;
-        this.damage = 0.1f;
+        this.damage = 0.4f;
         this.delayBetweenShootsBullets = 0.3f;
 
         // Rockets | shooting
@@ -376,7 +374,7 @@ public class ParametersHandler implements Serializable {
     // Pinky space ship
     public void setUpPinky() {
         // Animation
-        this.animationTexture = Assets.ship9Animation;
+        this.animationTexture = Assets.ship10Animation;
         this.frameLength = 0.14f;
 
         // Sizes
@@ -406,7 +404,7 @@ public class ParametersHandler implements Serializable {
         this.bulletTexture = Assets.bullet1;
         this.bulletSpeed = 500f;
         this.damage = 0.1f;
-        this.delayBetweenShootsBullets = 0.1f;
+        this.delayBetweenShootsBullets = 0.4f;
 
         // Rockets | shooting
         this.rocketTexturePath = Assets.rocket1;

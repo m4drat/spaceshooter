@@ -6,13 +6,13 @@ import com.madrat.spaceshooter.gameobjects.SpaceShip;
 public class EnemyPool extends Pool<Enemy> {
 
     private int realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight;
-    private int colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset;
-    private float maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed;
+    private int colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset, reward, difficultyLevel;
+    private float maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed, collisionDamage;
 
     private String enemyAnimationSheetPath;
     private SpaceShip.shipHandler handle;
 
-    public EnemyPool(int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, SpaceShip.shipHandler handle, String enemyAnimationSheetPath) {
+    public EnemyPool(int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, int reward, int difficultyLevel, SpaceShip.shipHandler handle, String enemyAnimationSheetPath) {
         super();
 
         this.realShipWidth = realShipWidth;
@@ -28,6 +28,11 @@ public class EnemyPool extends Pool<Enemy> {
         this.delayBetweenShootsBullets = delayBetweenShootsBullets;
         this.bulletsSpeed = bulletsSpeed;
         this.speed = speed;
+        this.reward = reward;
+        this.difficultyLevel = difficultyLevel;
+
+        this.collisionDamage = this.maxHealth * 2;
+
         this.handle = handle;
         this.enemyAnimationSheetPath = enemyAnimationSheetPath;
     }
@@ -35,6 +40,6 @@ public class EnemyPool extends Pool<Enemy> {
     @Override
     protected Enemy newObject() {
         // System.out.println("[+] Creating new Enemy");
-        return new Enemy(colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset, maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed, handle, realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight, enemyAnimationSheetPath);
+        return new Enemy(colliderWidth, colliderHeight, colliderXcoordOffset, colliderYcoordOffset, maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed, handle, realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight, reward, collisionDamage, difficultyLevel, enemyAnimationSheetPath);
     }
 }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.DebugUtils;
 import com.madrat.spaceshooter.utils.Encryptor;
 import com.madrat.spaceshooter.utils.Initializer;
 
@@ -16,10 +18,11 @@ public class MainGame extends Game {
     public static String pathToDefaultParameters;
     public static String pathToCurrentState;
     public static Encryptor cryptor;
+    public static DebugUtils debugUtils;
 
     public static Application.ApplicationType applicationType;
-    public static int GENERAL_WIDTH = 480;
-    public static int GENERAL_HEIGHT = 720;
+    public static int GENERAL_WIDTH = 480; // 480
+    public static int GENERAL_HEIGHT = 720; // 720
     public static float SCALE_FACTOR;
     public static float SCALE_X;
     public static float SCALE_Y;
@@ -28,6 +31,8 @@ public class MainGame extends Game {
     public void create() {
         // Load Assets
         loadAssets();
+
+        // Create "crypto" object :)
         cryptor = new Encryptor();
 
         // System info
@@ -38,6 +43,9 @@ public class MainGame extends Game {
         SCALE_FACTOR = (100 / (720 * 100 / (float) Math.max(GENERAL_HEIGHT, GENERAL_WIDTH)) + 100 / (480 * 100 / (float) Math.min(GENERAL_HEIGHT, GENERAL_WIDTH))) / 2;
         SCALE_X = 100 / (480 * 100 / (float) GENERAL_WIDTH);
         SCALE_Y = 100 / (720 * 100 / (float) GENERAL_HEIGHT);
+
+        if (BuildConfig.DEBUG)
+            debugUtils = new DebugUtils();
 
         // System.out.println("Scale Factor: " + SCALE_FACTOR);
         // System.out.println("Scale FactorX: " + SCALE_X);

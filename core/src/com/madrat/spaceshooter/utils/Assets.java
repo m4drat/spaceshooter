@@ -39,12 +39,13 @@ public class Assets {
 
     public static final String uiskin = "ui/uiskin.json";
 
-    public static final String ship1Animation = "ships/spaceShips/spaceship_animation.png", ship2Animation = "ships/spaceShips/spaceship2_animation.png";
-    public static final String ship3Animation = "ships/spaceShips/spaceship3_animation.png", ship4Animation = "ships/spaceShips/spaceship4_animation.png";
-    public static final String ship5Animation = "ships/spaceShips/spaceship5_animation.png", ship6Animation = "ships/spaceShips/spaceship6_animation.png";
-    public static final String ship7Animation = "ships/spaceShips/spaceship7_animation.png", ship8Animation = "ships/spaceShips/spaceship8_animation.png";
-    public static final String ship9Animation = "ships/spaceShips/spaceship9_animation.png", ship10Animation = "ships/spaceShips/spaceship10_animation.png";
-    public static final String ship11Animation = "ships/spaceShips/spaceship11_animation.png";
+    public static final String ship0Animation = "ships/spaceShips/spaceship0_animation.png", ship1Animation = "ships/spaceShips/spaceship1_animation.png";
+    public static final String ship2Animation = "ships/spaceShips/spaceship2_animation.png", ship3Animation = "ships/spaceShips/spaceship3_animation.png";
+    public static final String ship4Animation = "ships/spaceShips/spaceship4_animation.png", ship5Animation = "ships/spaceShips/spaceship5_animation.png";
+    public static final String ship6Animation = "ships/spaceShips/spaceship6_animation.png", ship7Animation = "ships/spaceShips/spaceship7_animation.png";
+    public static final String ship8Animation = "ships/spaceShips/spaceship8_animation.png", ship9Animation = "ships/spaceShips/spaceship9_animation.png";
+    public static final String ship10Animation = "ships/spaceShips/spaceship10_animation.png", ship11Animation = "ships/spaceShips/spaceship11_animation.png";
+    public static final String ship12Animation = "ships/spaceShips/spaceship12_animation.png", ship13Animation = "ships/spaceShips/spaceship13_animation.png";
 
     public static final String bullet1 = "ships/bullets/bullet1.png", bullet2 = "ships/bullets/bullet2.png", rocket1 = "ships/bullets/rocket1.png";
 
@@ -92,6 +93,7 @@ public class Assets {
     }
 
     public static void loadShips() {
+        manager.load(ship0Animation, Texture.class);
         manager.load(ship1Animation, Texture.class);
         manager.load(ship2Animation, Texture.class);
         manager.load(ship3Animation, Texture.class);
@@ -103,6 +105,8 @@ public class Assets {
         manager.load(ship9Animation, Texture.class);
         manager.load(ship10Animation, Texture.class);
         manager.load(ship11Animation, Texture.class);
+        manager.load(ship12Animation, Texture.class);
+        manager.load(ship13Animation, Texture.class);
     }
 
     public static void loadBullets() {
@@ -152,6 +156,7 @@ public class Assets {
     }
 
     public static void unloadShips() {
+        manager.unload(ship0Animation);
         manager.unload(ship1Animation);
         manager.unload(ship2Animation);
         manager.unload(ship3Animation);
@@ -163,6 +168,8 @@ public class Assets {
         manager.unload(ship9Animation);
         manager.unload(ship10Animation);
         manager.unload(ship11Animation);
+        manager.unload(ship12Animation);
+        manager.unload(ship13Animation);
     }
 
     public static void unloadBullets() {

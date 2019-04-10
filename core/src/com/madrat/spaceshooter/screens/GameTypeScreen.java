@@ -53,6 +53,7 @@ public class GameTypeScreen implements Screen {
 
         this.highScore = getCurrentHighscore(MainGame.pathToCurrentState);
 
+        // create and setup highscore layout + font
         highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreFont.setColor(new Color(0x7a9af1));
@@ -62,6 +63,7 @@ public class GameTypeScreen implements Screen {
         skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
+        // Create table for handling all buttons, etc
         menuTable = new Table();
         menuTable.setWidth(stage.getWidth());
         menuTable.align(Align.center | Align.top);
@@ -72,6 +74,7 @@ public class GameTypeScreen implements Screen {
         multiplayer = new TextButton("multiplayer", skin);
         back = new TextButton("Back", skin);
 
+        // setUp singlePlayer button
         singleplayer.getLabel().setFontScale(1f * SCALE_FACTOR);
         singleplayer.addListener(new ClickListener() {
             @Override
@@ -81,6 +84,7 @@ public class GameTypeScreen implements Screen {
             }
         });
 
+        // setUp multiPlayer button
         multiplayer.getLabel().setFontScale(1f * SCALE_FACTOR);
         multiplayer.addListener(new ClickListener() {
             @Override
@@ -99,6 +103,7 @@ public class GameTypeScreen implements Screen {
             }
         });
 
+        // setUp go back button
         back.getLabel().setFontScale(1f * SCALE_FACTOR);
         back.addListener(new ClickListener() {
             @Override
@@ -138,9 +143,11 @@ public class GameTypeScreen implements Screen {
         }
 
         try {
+            // create json object from currentState.json
             currentState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject();
 
-            return currentState.get("highscore").getAsInt(); // "highscore"
+            // extract and return highscore
+            return currentState.get("highscore").getAsInt();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

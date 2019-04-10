@@ -26,8 +26,6 @@ import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
-import org.json.JSONObject;
-
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class SettingsScreen implements Screen {
@@ -39,6 +37,7 @@ public class SettingsScreen implements Screen {
 
     private DialogAlert confirmDialog;
 
+    // TODO add stats (killed enemies, earned money, full damage, died times)
     private TextButton resetProgressBtn;
     private TextButton aboutBtn, statsBtn, backBtn;
 
@@ -139,7 +138,6 @@ public class SettingsScreen implements Screen {
 
         try {
             defaultState = parser.parse(MainGame.cryptor.decrypt(defaultValuesHandle.readString())).getAsJsonObject();
-            // currentFileHandle.writeString(MainGame.cryptor.encrypt(currentState.toString(4)), false);
             currentFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(defaultState)), false);
         } catch (Exception ex) {
             ex.printStackTrace();

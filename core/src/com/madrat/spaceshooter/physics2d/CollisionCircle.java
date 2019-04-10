@@ -3,6 +3,7 @@ package com.madrat.spaceshooter.physics2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.madrat.spaceshooter.utils.BuildConfig;
 
 public class CollisionCircle {
 
@@ -11,10 +12,15 @@ public class CollisionCircle {
     private float x, y;
     private int radius;
 
-    private ShapeRenderer shapeRenderer;
+    private static ShapeRenderer shapeRenderer;
 
     public CollisionCircle(float x, float y, int radius, CollisionRect.colliderTag tag) {
-        this.shapeRenderer = new ShapeRenderer();
+        if (BuildConfig.DEBUG) {
+            if (this.shapeRenderer == null) {
+                System.out.println("[+] Creating ShapeRenderer");
+                this.shapeRenderer = new ShapeRenderer();
+            }
+        }
 
         this.x = x;
         this.y = y;

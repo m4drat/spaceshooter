@@ -31,8 +31,6 @@ public class PowerUp implements Pool.Poolable {
         this.currentAnimation = 0;
         this.stateTime = 0f;
         this.remove = false;
-
-        // System.out.println("[+] Resetting powerUp");
     }
 
     public PowerUp(float frameLength, int tileWidth, int tileHeight, CollisionRect.colliderTag tag, String pathToAnimationSheet) {
@@ -51,9 +49,11 @@ public class PowerUp implements Pool.Poolable {
     }
 
     public void setupPowerUp(float x, float y, int preferredWidth, int preferredHeight, float timeToLive) {
+        // setUp width/height
         this.preferredWidth = (int) (preferredWidth * SCALE_FACTOR);
         this.preferredHeight = (int) (preferredHeight * SCALE_FACTOR);
 
+        // setUp collision rect
         powerUpCollisionRect.move(x, y);
         powerUpCollisionRect.resize(this.preferredWidth, this.preferredHeight);
 

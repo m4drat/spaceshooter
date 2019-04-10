@@ -3,6 +3,7 @@ package com.madrat.spaceshooter.physics2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.madrat.spaceshooter.utils.BuildConfig;
 
 public class CollisionRect {
 
@@ -12,7 +13,7 @@ public class CollisionRect {
         healPowerUp,
         ammoPowerUp,
         shieldPowerUp,
-        enemybullet,
+        enemyBullet,
         none
     }
 
@@ -21,10 +22,17 @@ public class CollisionRect {
     private float x, y;
     private int width, height;
 
-    private ShapeRenderer shapeRenderer;
+    private static ShapeRenderer shapeRenderer;
 
     public CollisionRect(float x, float y, int width, int height, colliderTag tag) {
-        this.shapeRenderer = new ShapeRenderer();
+
+        // Some debug output
+        if (BuildConfig.DEBUG) {
+            if (this.shapeRenderer == null) {
+                System.out.println("[+] Creating ShapeRenderer");
+                this.shapeRenderer = new ShapeRenderer();
+            }
+        }
 
         this.x = x;
         this.y = y;
@@ -43,11 +51,13 @@ public class CollisionRect {
         this.height = height;
     }
 
-    public boolean collidesWith(CollisionRect rect) { // rect - rect
+    // Collisions rect - rect
+    public boolean collidesWith(CollisionRect rect) {
         return x < rect.x + rect.width && y < rect.y + rect.height && x + width > rect.x && y + height > rect.y;
     }
 
-    public boolean collidesWith(CollisionCircle circle) { // rect - circle
+    // Collisions rect - circle
+    public boolean collidesWith(CollisionCircle circle) {
         float DeltaX = circle.getX() - Math.max(this.x, Math.min(circle.getX(), this.x + this.width));
         float DeltaY = circle.getY() - Math.max(this.y, Math.min(circle.getY(), this.y + this.height));
         return (DeltaX * DeltaX + DeltaY * DeltaY) < (circle.getRadius() * circle.getRadius());

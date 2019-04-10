@@ -324,8 +324,6 @@ public class PlayerShip extends SpaceShip {
     }
 
     public void updateBullets(float delta) {
-        bulletsToRemove.clear();
-
         for (Bullet bullet : activeBullets) {
             bullet.update(delta);
             if (bullet.remove) {
@@ -340,6 +338,7 @@ public class PlayerShip extends SpaceShip {
         }
 
         activeBullets.removeAll(bulletsToRemove, true);
+        bulletsToRemove.clear();
     }
 
     public void renderBullets(SpriteBatch batch) {
@@ -448,10 +447,8 @@ public class PlayerShip extends SpaceShip {
                 && currentAnimation != animationState.shieldDestroyedAnimation
                 && currentAnimation != animationState.shieldDefaultAnimation
                 && currentAnimation != animationState.shipDestroyedAnimation
-                && currentAnimation != animationState.shieldAttackedAnimation
-                && currentAnimation != animationState.shipUnderAttackAnimation)
+                && currentAnimation != animationState.shieldAttackedAnimation) // && currentAnimation != animationState.shipUnderAttackAnimation)
             this.setCurrentAnimation(shipUnderAttackAnimation);
-
     }
 
     public void healUsingPowerUp() {

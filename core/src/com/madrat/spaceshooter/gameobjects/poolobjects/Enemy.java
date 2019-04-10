@@ -17,6 +17,9 @@ import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState.defa
 
 public class Enemy extends SpaceShip implements Pool.Poolable {
 
+    public static final float MIN_ENEMY_WAVE_SPAWN_TIME = 1f;
+    public static final float MAX_ENEMY_WAVE_SPAWN_TIME = 4f;
+
     private Texture enemyAnimationSheet; // SpriteSheet
     private Animation<TextureRegion>[] shipAnimations; // Animations array
     private animationState currentAnimation; // Current Animation enum
@@ -31,6 +34,7 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
     private int colliderWidth, colliderHeight;
     private float collisionDamage;
 
+    private int difficultyLevel;
     private int reward;
     public boolean remove;
 
@@ -40,9 +44,10 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         this.stateTime = 0f;
         this.remove = false;
         this.isAlive = true;
+        this.currentHealth = 0f;
     }
 
-    public Enemy(int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, SpaceShip.shipHandler handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, String enemyAnimationSheetPath) {
+    public Enemy(int colliderWidth, int colliderHeight, int colliderXcoordOffset, int colliderYcoordOffset, float maxHealth, float damage, float delayBetweenShootsBullets, float bulletsSpeed, float speed, SpaceShip.shipHandler handle, int realShipWidth, int realShipHeight, int preferredShipWidth, int preferredShipHeight, int reward, float collisionDamage, int difficultyLevel, String enemyAnimationSheetPath) {
         super(maxHealth, damage, delayBetweenShootsBullets, bulletsSpeed, speed, handle, realShipWidth, realShipHeight, preferredShipWidth, preferredShipHeight);
 
         this.preferredBulletHeight = 10;
@@ -61,6 +66,10 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         this.remove = false;
         this.isAlive = true;
 
+        this.reward = reward;
+        this.collisionDamage = collisionDamage;
+        this.difficultyLevel = difficultyLevel;
+
         this.shipAnimations = new Animation[3];
         this.currentAnimation = defaultFlyAnimation;
         this.enemyAnimationSheet = Assets.manager.get(enemyAnimationSheetPath, Texture.class);
@@ -73,12 +82,11 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         this.shipAnimations[2] = new Animation<TextureRegion>(0.14f, statesSpriteSheet[2]);
     }
 
-    public void enemySetUp(float x, float y, float collisionDamage, int reward) {
-        this.reward = reward;
-        this.collisionDamage = collisionDamage;
-
+    public void enemySetUp(float x, float y) {
         this.x = x;
         this.y = y;
+
+        this.currentHealth = maxHealth;
 
         this.shipCollisionRect.move(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredShipHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset);
     }
@@ -90,24 +98,6 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
 
         if (y < -preferredShipHeight || !isAlive)
             remove = true;
-
-        if (isAlive) {
-            if (this.lastBulletShoot > delayBetweenShootsBullets) {
-                this.lastBulletShoot = 0;
-
-                // Add first activeBullet
-                Bullet newBullet1 = bulletPool.obtain();
-                newBullet1.setupBullet(-this.bulletsSpeed, getShipCollisionRect().getX() + 8 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.enemybullet);
-                activeBullets.add(newBullet1);
-
-                // Add second activeBullet
-                Bullet newBullet2 = bulletPool.obtain();
-                newBullet2.setupBullet(-this.bulletsSpeed, getShipCollisionRect().getX() + colliderWidth - (16 - preferredBulletWidth) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.enemybullet);
-                activeBullets.add(newBullet2);
-            } else {
-                lastBulletShoot += delta;
-            }
-        }
 
         // Move collision rect
         shipCollisionRect.move(x + ((this.preferredShipWidth - this.colliderWidth)) / 2 + this.colliderXcoordOffset, y + ((this.preferredShipHeight - this.colliderHeight)) / 2 + this.colliderYcoordOffset);
@@ -123,6 +113,24 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
             }
         }
         activeBullets.removeAll(bulletsToRemove, true);
+
+        if (isAlive && !remove && currentHealth > 0) {
+            if (this.lastBulletShoot > delayBetweenShootsBullets) {
+                this.lastBulletShoot = 0;
+
+                // Add first activeBullet
+                Bullet newBullet1 = bulletPool.obtain();
+                newBullet1.setupBullet(-this.bulletsSpeed, getShipCollisionRect().getX() + 8 * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.enemyBullet);
+                activeBullets.add(newBullet1);
+
+                // Add second activeBullet
+                Bullet newBullet2 = bulletPool.obtain();
+                newBullet2.setupBullet(-this.bulletsSpeed, getShipCollisionRect().getX() + colliderWidth - (16 - preferredBulletWidth) * SCALE_FACTOR, this.y + this.preferredShipHeight / 2, preferredBulletWidth, preferredBulletHeight, CollisionRect.colliderTag.enemyBullet);
+                activeBullets.add(newBullet2);
+            } else {
+                lastBulletShoot += delta;
+            }
+        }
     }
 
     public void die() {
@@ -164,9 +172,6 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         for (Bullet bullet : this.activeBullets) {
             bullet.render(batch);
         }
-
-        // draw collider
-        this.shipCollisionRect.drawCollider(batch);
     }
 
     public void setCurrentAnimation(animationState animation) {
@@ -188,5 +193,9 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
 
     public float getCollisionDamage() {
         return collisionDamage;
+    }
+
+    public int getDifficultyLevel() {
+        return difficultyLevel;
     }
 }

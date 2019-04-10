@@ -23,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
-import com.madrat.spaceshooter.gameobjects.SpaceShip;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Asteroid;
 import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.PlayerShip;
@@ -33,6 +32,7 @@ import com.madrat.spaceshooter.gameobjects.Spawner;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.DebugUtils;
 import com.madrat.spaceshooter.utils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -40,12 +40,14 @@ import com.madrat.spaceshooter.utils.ScrollingBackground;
 import java.util.ArrayList;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.MainGame.debugUtils;
 import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
 
 public class MainGameScreen implements Screen {
 
     MainGame game;
     private PlayerShip playerShip;
+    private Spawner spawner;
 
     private boolean isPaused;
     private Sprite background;
@@ -68,10 +70,7 @@ public class MainGameScreen implements Screen {
     private TextButton exitButton;
 
     private DialogAlert confirm;
-
     private MainGameScreen gameScreen;
-
-    private Spawner spawner;
 
     public MainGameScreen(MainGame newGame) {
         this.game = newGame;
@@ -189,7 +188,7 @@ public class MainGameScreen implements Screen {
             }
         });
 
-        // Pause menu table
+        // Pause menu table (with all buttons)
         PauseMenuTable = new Table();
         PauseMenuTable.setWidth(stage.getWidth());
         PauseMenuTable.align(Align.center | Align.top);
@@ -210,6 +209,7 @@ public class MainGameScreen implements Screen {
         scoreFont.getData().setScale(SCALE_FACTOR);
         scoreLayout = new GlyphLayout(scoreFont, "0");
 
+        // Layout to show ammo stats
         ammoLayout = new GlyphLayout(scoreFont, "0");
 
         // Spawn player ship
@@ -274,8 +274,8 @@ public class MainGameScreen implements Screen {
             // Update powerUps
             spawner.updatePowerUps(delta);
 
-            // Update enemies
-            spawner.updateEnemies(delta);
+            // Update enemies + spawn enemy waves based on score value
+            spawner.updateEnemies(delta, playerShip.getScore());
 
             // Player ship moving
             if (MainGame.applicationType == Application.ApplicationType.Android) {
@@ -465,7 +465,8 @@ public class MainGameScreen implements Screen {
 
         // Draw ship with animations and collisionRectangle
         playerShip.draw(batch, delta);
-        playerShip.getShipCollisionRect().drawCollider(batch);
+        if (BuildConfig.DEBUG)
+            playerShip.getShipCollisionRect().drawCollider(batch);
         if (!isPaused)
             playerShip.updateShieldState(delta);
 
@@ -491,17 +492,21 @@ public class MainGameScreen implements Screen {
         stage.draw();
 
         if (BuildConfig.DEBUG) {
-/*            if (!isPaused)
+            debugUtils.update();
+            debugUtils.render();
+
+            /*
+            if (!isPaused)
                 for (Bullet bullet : playerShip.getActiveBullets()) {
                     System.out.println("Bullet  y: " + bullet.getY());
-                }*/
-            /* System.out.print("\r[!] Deltatime: " + delta);
+                }
+            System.out.print("\r[!] Deltatime: " + delta);
             spawner.checkAsteroidPool();
             spawner.checkEnemyPool();
             spawner.checkExplosionPool();
-            spawner.checkPowerUpPool(); */
+            spawner.checkPowerUpPool();
+            */
         }
-
     }
 
     @Override

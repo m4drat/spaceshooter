@@ -159,7 +159,6 @@ public class ShopScreen implements Screen {
         buttonsTable.row();
         buttonsTable.add(backBtn);
 
-
         stage.addActor(buttonsTable);
         Gdx.input.setInputProcessor(stage);
     }

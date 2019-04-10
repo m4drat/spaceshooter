@@ -13,6 +13,7 @@ import com.madrat.spaceshooter.gameobjects.poolobjects.PowerUp;
 import com.madrat.spaceshooter.gameobjects.poolobjects.PowerUpPool;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 
 import java.util.Random;
 
@@ -20,45 +21,59 @@ import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class Spawner {
 
-    // TODO enemies pools
-    // New unique pool for every enemy type
-    private EnemyPool pinkyPool = new EnemyPool(32, 32, 58, 58, 50, 56, 0, 0, 1f, 0.05f, 0.6f, 700, 80, SpaceShip.shipHandler.pinky, Assets.ship10Animation);
-    // private EnemyPool turtlePool = new EnemyPool();
-    // private EnemyPool pinkyPool = new EnemyPool();
+    // All enemy types
+    private EnemyPool zapperPool;
+    private EnemyPool destroyerPool;
+    private EnemyPool ignitorPool;
+    private EnemyPool turtlePool;
+    private EnemyPool ufoPool;
+    private EnemyPool starPool;
+    private EnemyPool pinkyPool;
+
     private Array<Enemy> activeEnemies;
-    private float enemySpawnTimer;
+    private Array<Enemy> enemiesToDelete;
+    private float enemyWaveSpawnTimer;
 
     // All powerUps
-    private PowerUpPool healPowerUpPool = new PowerUpPool(0.2f, 30, 25, CollisionRect.colliderTag.healPowerUp, Assets.healPowerUp);
-    private PowerUpPool ammoPowerUpPool = new PowerUpPool(0.2f, 58, 53, CollisionRect.colliderTag.ammoPowerUp, Assets.ammoPowerUp);
-    private PowerUpPool shieldPowerUpPool = new PowerUpPool(0.2f, 32, 32, CollisionRect.colliderTag.shieldPowerUp, Assets.shieldPowerUp);
+    private PowerUpPool healPowerUpPool;
+    private PowerUpPool ammoPowerUpPool;
+    private PowerUpPool shieldPowerUpPool;
     private Array<PowerUp> activePowerUps;
+    private Array<PowerUp> powerUpsToDelete;
 
     // All explosions
-    private ExplosionPool enemyExplosionPool = new ExplosionPool(0.11f, 96, Assets.explosion2);
-    private ExplosionPool playerExplosionPool = new ExplosionPool(0.1f, 128, Assets.explosion3);
+    private ExplosionPool enemyExplosionPool;
+    private ExplosionPool playerExplosionPool;
     private Array<Explosion> activeExplosions;
+    private Array<Explosion> explosionsToDelete;
 
     // All Asteroids (its different from Enemy.class)
-    private AsteroidPool asteroidPool = new AsteroidPool(0.07f, 32, 64, 64);
+    private AsteroidPool asteroidPool;
     private Array<Asteroid> activeAsteroids;
+    private Array<Asteroid> asteroidsToDelete;
     private float asteroidSpawnTimer;
 
-    // Holy Random
+    // Random object
     private Random random;
 
     public Spawner() {
         this.random = new Random();
     }
 
+    // Simple initializer function
     public void initAsteroids() {
+        // Initialize Asteroid Pool
+        this.asteroidPool = new AsteroidPool(0.07f, 32, 64, 64);
+
         // Create activeAsteroids Array
         this.activeAsteroids = new Array<Asteroid>();
+        this.asteroidsToDelete = new Array<Asteroid>();
 
         // Create first spawnTimer value
         this.asteroidSpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
     }
 
+    // Spawn asteroid at random x which belongs to this range: [0, screen.width - asteroid.width]
     public void spawnAsteroid() {
 
         // Generate new Timer value
@@ -81,27 +96,44 @@ public class Spawner {
         if (asteroidSpawnTimer <= 0)
             spawnAsteroid();
 
-        // Update asteroids (delete old)
+        // Iterate through all active Asteroids, find which must be removed, add them to array, and after loop delete them from active array
         for (Asteroid asteroid : activeAsteroids) {
             asteroid.update(delta);
             if (asteroid.remove) {
+                asteroidsToDelete.add(asteroid);
                 asteroidPool.free(asteroid);
-                activeAsteroids.removeValue(asteroid, true);
             }
         }
+
+        // Deleting 'old' objects, and clearing array with them
+        activeAsteroids.removeAll(asteroidsToDelete, true);
+        asteroidsToDelete.clear();
     }
 
     public void renderAsteroids(SpriteBatch batch) {
+
+        // Render every asteroid in activeAsteroids array
         for (Asteroid asteroid : activeAsteroids) {
+
+            // Draw actual asteroid
             asteroid.render(batch);
-            asteroid.getCollisionCirlce().drawCollider(batch);
+
+            // Draw collider rect onto screen
+            if (BuildConfig.DEBUG)
+                asteroid.getCollisionCirlce().drawCollider(batch);
         }
     }
 
+    // Explosions initializer
     public void initExplosions() {
+        this.enemyExplosionPool = new ExplosionPool(0.11f, 96, Assets.explosion2);
+        this.playerExplosionPool = new ExplosionPool(0.1f, 128, Assets.explosion3);
+
         this.activeExplosions = new Array<Explosion>();
+        this.explosionsToDelete = new Array<Explosion>();
     }
 
+    // Create 'enemy' explosion at gained x, y and with sizes preferredWidth, preferredHeight
     public void spawnEnemyExplosion(float x, float y, int preferredWidth, int preferredHeight) {
         Explosion newExplosion = enemyExplosionPool.obtain();
         newExplosion.setUpExplosion(x, y, preferredWidth, preferredHeight, false);
@@ -110,6 +142,7 @@ public class Spawner {
         // System.out.println("[+] Objects in enemyExplosionPool: " + enemyExplosionPool.getFree());
     }
 
+    // Create 'player' explosion at gained x, y and with sizes preferredWidth, preferredHeight
     public void spawnPlayerExplosion(float x, float y, int preferredWidth, int preferredHeight) {
         Explosion newExplosion = playerExplosionPool.obtain();
         newExplosion.setUpExplosion(x, y, preferredWidth, preferredHeight, true);
@@ -119,50 +152,64 @@ public class Spawner {
     }
 
     public void updateExplosions(float delta) {
+
+        // Iterate through all active Explosions, find which must be removed, add them to array, and after loop delete them from active array
         for (Explosion explosion : activeExplosions) {
             explosion.update(delta);
             if (explosion.remove) {
                 if (explosion.isByPlayer()) {
+                    explosionsToDelete.add(explosion);
                     playerExplosionPool.free(explosion);
-                    activeExplosions.removeValue(explosion, true);
                 } else {
+                    explosionsToDelete.add(explosion);
                     enemyExplosionPool.free(explosion);
-                    activeExplosions.removeValue(explosion, true);
                 }
             }
         }
+
+        // Deleting 'old' objects, and clearing array with them
+        activeExplosions.removeAll(explosionsToDelete, true);
+        explosionsToDelete.clear();
     }
 
+    // Draw explosions from activeExplosions array
     public void renderExplosion(SpriteBatch batch) {
         for (Explosion explosion : activeExplosions) {
             explosion.render(batch);
         }
     }
 
+    // Simple init function
     public void initPowerUps() {
+        this.healPowerUpPool = new PowerUpPool(0.2f, 30, 25, CollisionRect.colliderTag.healPowerUp, Assets.healPowerUp);
+        this.ammoPowerUpPool = new PowerUpPool(0.2f, 58, 53, CollisionRect.colliderTag.ammoPowerUp, Assets.ammoPowerUp);
+        this.shieldPowerUpPool = new PowerUpPool(0.2f, 32, 32, CollisionRect.colliderTag.shieldPowerUp, Assets.shieldPowerUp);
+
         this.activePowerUps = new Array<PowerUp>();
+        this.powerUpsToDelete = new Array<PowerUp>();
     }
 
+    // Spawn random power up at gained x an y
     public void randomPowerUp(float x, float y) {
 
         // Heal powerUp
         if (random.nextInt(3) == 0) {
             PowerUp newPowerUp = healPowerUpPool.obtain();
-            newPowerUp.setupPowerUp(x, y, 30, 25, 10f);
+            newPowerUp.setupPowerUp(x, y, 27, 23, 10f);
             activePowerUps.add(newPowerUp);
             // System.out.println("[+] Objects in healPowerUpPool: " + healPowerUpPool.getFree());
 
             // Ammo powerUp
         } else if (random.nextInt(3) == 1) {
             PowerUp newPowerUp = ammoPowerUpPool.obtain();
-            newPowerUp.setupPowerUp(x, y, 28, 26, 10f);
+            newPowerUp.setupPowerUp(x, y, 25, 23, 10f);
             activePowerUps.add(newPowerUp);
             // System.out.println("[+] Objects in ammoPowerUpPool: " + ammoPowerUpPool.getFree());
 
             // Shield powerUp
         } else if (random.nextInt(3) == 2) {
             PowerUp newPowerUp = shieldPowerUpPool.obtain();
-            newPowerUp.setupPowerUp(x, y, 28, 28, 10f);
+            newPowerUp.setupPowerUp(x, y, 25, 25, 10f);
             activePowerUps.add(newPowerUp);
             // System.out.println("[+] Objects in shieldPowerUpPool: " + shieldPowerUpPool.getFree());
         }
@@ -170,62 +217,129 @@ public class Spawner {
 
     // Update all possible powerups
     public void updatePowerUps(float delta) {
+
+        // Iterate through all active powerUps, find which must be removed, add them to array, and after loop delete them from active array
         for (PowerUp powerUp : activePowerUps) {
             powerUp.update(delta);
             if (powerUp.remove) {
-                if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.healPowerUp)
+                if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.healPowerUp) {
+                    powerUpsToDelete.add(powerUp);
                     healPowerUpPool.free(powerUp);
-                else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.ammoPowerUp)
+                } else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.ammoPowerUp) {
+                    powerUpsToDelete.add(powerUp);
                     ammoPowerUpPool.free(powerUp);
-                else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.shieldPowerUp)
+                } else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.shieldPowerUp) {
+                    powerUpsToDelete.add(powerUp);
                     shieldPowerUpPool.free(powerUp);
-                activePowerUps.removeValue(powerUp, true);
+                }
             }
         }
+
+        // Deleting 'old' objects, and clearing array with them
+        activePowerUps.removeAll(powerUpsToDelete, true);
+        powerUpsToDelete.clear();
     }
 
     // Draw powerups on screen
     public void renderPowerUps(SpriteBatch batch) {
         for (PowerUp powerUp : activePowerUps) {
+
+            // Draw actual powerUp texture
             powerUp.render(batch);
-            powerUp.getPowerUpCollisionRect().drawCollider(batch);
+
+            // Draw collider
+            if (BuildConfig.DEBUG)
+                powerUp.getPowerUpCollisionRect().drawCollider(batch);
         }
     }
 
+    // Simple initializer for enemies
     public void initEnemies() {
+
+        // This objects initialized using constants because they're immutable (unlike player ship)
+        this.zapperPool = new EnemyPool(24, 24, 55, 45, 55, 45, 0, 0, 1, 0.1f, 0.3f, 600, 150, 50, 1, SpaceShip.shipHandler.zapper, Assets.ship1Animation);
+        this.destroyerPool = new EnemyPool(32, 32, 56, 56, 56, 48, 0, -2, 1.4f, 0.15f, 0.4f, 600, 200, 100, 2, SpaceShip.shipHandler.destroyer, Assets.ship3Animation);
+        this.ignitorPool = new EnemyPool(32, 32, 52, 52, 56, 56, 0, 0, 1, 0.1f, 0.2f, 600, 250, 140, 2, SpaceShip.shipHandler.ignitor, Assets.ship5Animation);
+        this.turtlePool = new EnemyPool(32, 32, 64, 64, 46, 64, 0, 0, 3, 0.12f, 0.4f, 500, 50, 200, 3, SpaceShip.shipHandler.turtle, Assets.ship7Animation);
+        this.ufoPool = new EnemyPool(32, 32, 64, 64, 52, 52, 0, 0, 1.8f, 0.25f, 0.3f, 700, 200, 240, 2, SpaceShip.shipHandler.ufo, Assets.ship13Animation);
+        this.starPool = new EnemyPool(32, 32, 56, 56, 56, 56, 0, 0, 0.6f, 0.25f, 0.35f, 700, 300, 280, 3, SpaceShip.shipHandler.star, Assets.ship9Animation);
+        this.pinkyPool = new EnemyPool(32, 32, 58, 58, 50, 56, 0, 0, 1f, 0.07f, 0.25f, 700, 80, 310, 2, SpaceShip.shipHandler.pinky, Assets.ship11Animation);
+
         this.activeEnemies = new Array<Enemy>();
-        this.enemySpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
+        this.enemiesToDelete = new Array<Enemy>();
+        this.enemyWaveSpawnTimer = random.nextFloat() * (Enemy.MAX_ENEMY_WAVE_SPAWN_TIME - Enemy.MIN_ENEMY_WAVE_SPAWN_TIME) + Enemy.MIN_ENEMY_WAVE_SPAWN_TIME;
     }
 
-    public void spawnEnemy() {
-        enemySpawnTimer = random.nextFloat() * (Asteroid.MAX_ASTEROID_SPAWN_TIME - Asteroid.MIN_ASTEROID_SPAWN_TIME) + Asteroid.MIN_ASTEROID_SPAWN_TIME;
+    // Spawn enemy at random x which belongs to this range: [0, screen.width - enemy.width]
+    public void spawnEnemyWave(int currentScore) {
+        enemyWaveSpawnTimer = random.nextFloat() * (Enemy.MAX_ENEMY_WAVE_SPAWN_TIME - Enemy.MIN_ENEMY_WAVE_SPAWN_TIME) + Enemy.MIN_ENEMY_WAVE_SPAWN_TIME;
 
-        Enemy newEnemy = pinkyPool.obtain();
-        newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (64 * SCALE_FACTOR)), Gdx.graphics.getHeight() + 64 * SCALE_FACTOR, 0.2f, 150);
+        // Enemies per wave difficulty
+        if (currentScore <= 2500) { // max difficultyLevel = 4
+
+        } else if (currentScore > 2500 && currentScore <= 7500) {
+
+        } else if (currentScore > 7500) {
+
+        }
+
+        Enemy newEnemy = starPool.obtain();
+        newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (newEnemy.getPreferredShipWidth() * SCALE_FACTOR)), Gdx.graphics.getHeight() + (newEnemy.getPreferredShipHeight() * SCALE_FACTOR));
         activeEnemies.add(newEnemy);
     }
 
-    public void updateEnemies(float delta) {
-        enemySpawnTimer -= delta;
+    // update each enemy state
+    public void updateEnemies(float delta, int currentScore) {
+        enemyWaveSpawnTimer -= delta;
 
-        if (enemySpawnTimer <= 0)
-            spawnEnemy();
+        if (enemyWaveSpawnTimer <= 0)
+            spawnEnemyWave(currentScore);
 
+        // Iterate through all active enemies, find which must be removed, add them to array, and after loop delete them from active array
         for (Enemy enemy : activeEnemies) {
             enemy.update(delta);
             if (enemy.remove) {
-                if (enemy.getHandle() == SpaceShip.shipHandler.pinky) {
+                if (enemy.getHandle() == SpaceShip.shipHandler.zapper) {
+                    enemiesToDelete.add(enemy);
+                    zapperPool.free(enemy);
+                } else if (enemy.getHandle() == SpaceShip.shipHandler.destroyer) {
+                    enemiesToDelete.add(enemy);
+                    destroyerPool.free(enemy);
+                } else if (enemy.getHandle() == SpaceShip.shipHandler.ignitor) {
+                    enemiesToDelete.add(enemy);
+                    ignitorPool.free(enemy);
+                } else if (enemy.getHandle() == SpaceShip.shipHandler.turtle) {
+                    enemiesToDelete.add(enemy);
+                    turtlePool.free(enemy);
+                } else if (enemy.getHandle() == SpaceShip.shipHandler.ufo) {
+                    enemiesToDelete.add(enemy);
+                    ufoPool.free(enemy);
+                } else if (enemy.getHandle() == SpaceShip.shipHandler.star) {
+                    enemiesToDelete.add(enemy);
+                    starPool.free(enemy);
+                } else if (enemy.getHandle() == SpaceShip.shipHandler.pinky) {
+                    enemiesToDelete.add(enemy);
                     pinkyPool.free(enemy);
-                    // System.out.println("[+] Removed pinky from game\n[+] pinkyPool size: " + pinkyPool.getFree());
                 }
-                activeEnemies.removeValue(enemy, true);
             }
         }
+
+        // Clear enemy array
+        activeEnemies.removeAll(enemiesToDelete, true);
+        // Clear array
+        enemiesToDelete.clear();
     }
 
+    // Draw all enemies on screen
     public void renderEnemies(SpriteBatch batch) {
         for (Enemy enemy : activeEnemies) {
+
+            // Call render method for enemy
             enemy.render(batch);
+
+            // Draw collider
+            if (BuildConfig.DEBUG)
+                enemy.getShipCollisionRect().drawCollider(batch);
         }
     }
 

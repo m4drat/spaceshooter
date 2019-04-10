@@ -36,6 +36,7 @@ public class ScrollingBackground {
         stopper = 1;
     }
 
+    // Create array of objects (stars, planets)
     public static ArrayList<ObjectHandler> initStarBackground() {
         Random ran = new Random();
         ArrayList<ObjectHandler> sprites = new ArrayList<ObjectHandler>();
@@ -92,10 +93,12 @@ public class ScrollingBackground {
         }
     }
 
+    // pause scrolling background
     public void pause() {
         stopper = 0;
     }
 
+    // continue scrolling background
     public void _continue() {
         stopper = 1;
     }
