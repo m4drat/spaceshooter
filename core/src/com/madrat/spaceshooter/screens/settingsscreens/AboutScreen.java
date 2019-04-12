@@ -1,6 +1,7 @@
-package com.madrat.spaceshooter.screens.settingssubscreens;
+package com.madrat.spaceshooter.screens.settingsscreens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -16,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
-import com.madrat.spaceshooter.screens.SettingsScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -39,9 +40,9 @@ public class AboutScreen implements Screen {
     private TextButton backBtn;
     private Color nameColor, strColor;
 
-    public AboutScreen(MainGame newgame, ScrollingBackground scrBack) {
+    public AboutScreen(MainGame newGame, ScrollingBackground scrBack) {
 
-        this.game = newgame;
+        this.game = newGame;
         this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
 
@@ -69,8 +70,7 @@ public class AboutScreen implements Screen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                batch.dispose();
-                game.setScreen(new SettingsScreen(game, scrollingBackground));
+                setSettingsScreen();
             }
         });
 
@@ -86,7 +86,25 @@ public class AboutScreen implements Screen {
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    setSettingsScreen();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Set input processor
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public void setSettingsScreen() {
+        batch.dispose();
+        game.setScreen(new SettingsScreen(game, scrollingBackground));
     }
 
     @Override
@@ -117,7 +135,7 @@ public class AboutScreen implements Screen {
 
         batch.end();
 
-        // Display buttons
+        // Display buttons + update UI
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }

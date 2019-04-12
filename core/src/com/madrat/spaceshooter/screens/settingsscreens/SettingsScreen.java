@@ -1,7 +1,8 @@
-package com.madrat.spaceshooter.screens;
+package com.madrat.spaceshooter.screens.settingsscreens;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -21,9 +22,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
-import com.madrat.spaceshooter.screens.settingssubscreens.AboutScreen;
+import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
-import com.madrat.spaceshooter.utils.DialogAlert;
+import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
@@ -37,7 +38,6 @@ public class SettingsScreen implements Screen {
 
     private DialogAlert confirmDialog;
 
-    // TODO add stats (killed enemies, earned money, full damage, died times)
     private TextButton resetProgressBtn;
     private TextButton aboutBtn, statsBtn, backBtn;
 
@@ -64,7 +64,7 @@ public class SettingsScreen implements Screen {
         resetProgressBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                confirmDialog = new DialogAlert("", skin);
+                confirmDialog = new DialogAlert("", skin, stage);
                 confirmDialog.text("Do you really\nwant to reset\nyour progress?");
                 confirmDialog.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -96,24 +96,53 @@ public class SettingsScreen implements Screen {
             }
         });
 
+        statsBtn = new TextButton("Stats", skin);
+        statsBtn.getLabel().setFontScale(SCALE_FACTOR);
+        statsBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                batch.dispose();
+                game.setScreen(new StatsScreen(game, scrollingBackground));
+            }
+        });
+
         backBtn = new TextButton("Back", skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                batch.dispose();
-                game.setScreen(new MainMenuScreen(game, scrollingBackground));
+                setPreviousScreen();
             }
         });
 
-        buttonsTable.add(resetProgressBtn).padBottom(32 * SCALE_FACTOR);
+        buttonsTable.add(resetProgressBtn).padBottom(36 * SCALE_FACTOR);
         buttonsTable.row();
-        buttonsTable.add(aboutBtn).padBottom(70 * SCALE_FACTOR);
+        buttonsTable.add(statsBtn).padBottom(36 * SCALE_FACTOR);
+        buttonsTable.row();
+        buttonsTable.add(aboutBtn).padBottom(78 * SCALE_FACTOR);
         buttonsTable.row();
         buttonsTable.add(backBtn);
 
         stage.addActor(buttonsTable);
+
+        // Add backButtonPressed Listener
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    setPreviousScreen();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public void setPreviousScreen() {
+        batch.dispose();
+        game.setScreen(new MainMenuScreen(game, scrollingBackground));
     }
 
     private void setDefaultValues(String pathToCurrentState, String pathToDefaultValues) {

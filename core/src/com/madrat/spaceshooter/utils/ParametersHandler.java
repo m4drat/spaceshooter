@@ -72,11 +72,11 @@ public class ParametersHandler implements Serializable {
         this.enemyReward = 100;
         this.shipPrice = 0;
         this.isBought = true;
-        this.shipSpeed = 300f;
+        this.shipSpeed = 360f;
         this.handler = "zapper";
 
         // Health
-        this.maxHealth = 1.4f;
+        this.maxHealth = 1.6f;
         this.maxHealing = 0.2f;
 
         // Bullets | shooting
@@ -137,7 +137,7 @@ public class ParametersHandler implements Serializable {
         this.preferredBulletWidth = 4;
         this.bulletTexture = Assets.bullet1;
         this.bulletSpeed = 600f;
-        this.damage = 0.2f;
+        this.damage = 0.35f;
         this.delayBetweenShootsBullets = 0.4f;
 
         // Rockets | shooting
@@ -182,7 +182,7 @@ public class ParametersHandler implements Serializable {
         this.handler = "ignitor";
 
         // Health
-        this.maxHealth = 2f;
+        this.maxHealth = 2.2f;
         this.maxHealing = 0.2f;
 
         // Bullets | shooting
@@ -235,16 +235,16 @@ public class ParametersHandler implements Serializable {
         this.handler = "turtle";
 
         // Health
-        this.maxHealth = 4f;
-        this.maxHealing = 0.6f;
+        this.maxHealth = 5f;
+        this.maxHealing = 0.8f;
 
         // Bullets | shooting
         this.preferredBulletHeight = 10;
         this.preferredBulletWidth = 4;
         this.bulletTexture = Assets.bullet1;
         this.bulletSpeed = 600f;
-        this.damage = 0.1f;
-        this.delayBetweenShootsBullets = 0.4f;
+        this.damage = 0.15f;
+        this.delayBetweenShootsBullets = 0.365f;
 
         // Rockets | shooting
         this.rocketTexturePath = Assets.rocket1;
@@ -285,11 +285,11 @@ public class ParametersHandler implements Serializable {
         this.enemyReward = 200;
         this.shipPrice = 1800;
         this.isBought = false;
-        this.shipSpeed = 400f;
+        this.shipSpeed = 480f;
         this.handler = "ufo";
 
         // Health
-        this.maxHealth = 2f;
+        this.maxHealth = 2.5f;
         this.maxHealing = 0.4f;
 
         // Bullets | shooting
@@ -297,7 +297,7 @@ public class ParametersHandler implements Serializable {
         this.preferredBulletWidth = 4;
         this.bulletTexture = Assets.bullet1;
         this.bulletSpeed = 700f;
-        this.damage = 0.1f;
+        this.damage = 0.25f;
         this.delayBetweenShootsBullets = 0.3f;
 
         // Rockets | shooting
@@ -338,11 +338,11 @@ public class ParametersHandler implements Serializable {
         this.enemyReward = 120;
         this.shipPrice = 1550;
         this.isBought = false;
-        this.shipSpeed = 660f;
+        this.shipSpeed = 700f;
         this.handler = "star";
 
         // Health
-        this.maxHealth = 1f;
+        this.maxHealth = 1.25f;
         this.maxHealing = 0.2f;
 
         // Bullets | shooting
@@ -391,20 +391,20 @@ public class ParametersHandler implements Serializable {
         this.enemyReward = 180;
         this.shipPrice = 1650;
         this.isBought = false;
-        this.shipSpeed = 350f;
+        this.shipSpeed = 380f;
         this.handler = "pinky";
 
         // Health
-        this.maxHealth = 1.8f;
-        this.maxHealing = 0.3f;
+        this.maxHealth = 2f;
+        this.maxHealing = 0.5f;
 
         // Bullets | shooting
         this.preferredBulletHeight = 10;
         this.preferredBulletWidth = 4;
         this.bulletTexture = Assets.bullet1;
-        this.bulletSpeed = 500f;
-        this.damage = 0.1f;
-        this.delayBetweenShootsBullets = 0.4f;
+        this.bulletSpeed = 600f;
+        this.damage = 0.12f;
+        this.delayBetweenShootsBullets = 0.2f;
 
         // Rockets | shooting
         this.rocketTexturePath = Assets.rocket1;

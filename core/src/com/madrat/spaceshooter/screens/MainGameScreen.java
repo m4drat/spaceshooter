@@ -2,6 +2,7 @@ package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,10 +33,10 @@ import com.madrat.spaceshooter.gameobjects.Spawner;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
-import com.madrat.spaceshooter.utils.DebugUtils;
-import com.madrat.spaceshooter.utils.DialogAlert;
+import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+import com.madrat.spaceshooter.utils.Stats;
 
 import java.util.ArrayList;
 
@@ -72,10 +73,15 @@ public class MainGameScreen implements Screen {
     private DialogAlert confirm;
     private MainGameScreen gameScreen;
 
+    private Stats stats;
+    // private int killedEnemies = 0, healPickedUp = 0, ammoPickedUp = 0, shieldPickedUp = 0, destroyedAsteroids = 0;
+
     public MainGameScreen(MainGame newGame) {
         this.game = newGame;
         this.batch = new SpriteBatch();
         this.gameScreen = this;
+
+        stats = new Stats();
 
         stage = new Stage(new ScreenViewport());
         skin = Assets.manager.get(Assets.uiskin, Skin.class);
@@ -97,9 +103,7 @@ public class MainGameScreen implements Screen {
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isPaused = false;
-                // scrollingBackground._continue();
-                PauseMenuTable.setVisible(false);
+                closePauseMenu();
             }
         });
 
@@ -109,7 +113,7 @@ public class MainGameScreen implements Screen {
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                confirm = new DialogAlert("", skin);
+                confirm = new DialogAlert("", skin, stage);
                 confirm.text("Do you really\nwant to restart?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -137,7 +141,7 @@ public class MainGameScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                confirm = new DialogAlert("", skin);
+                confirm = new DialogAlert("", skin, stage);
                 confirm.text("Do you really\nwant to leave?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -165,7 +169,7 @@ public class MainGameScreen implements Screen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                confirm = new DialogAlert("", skin);
+                confirm = new DialogAlert("", skin, stage);
                 confirm.text("Do you really\nwant to exit?");
                 confirm.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -233,9 +237,7 @@ public class MainGameScreen implements Screen {
         pauseBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isPaused = true;
-                // scrollingBackground.pause();
-                PauseMenuTable.setVisible(true);
+                openPauseMenu();
             }
         });
 
@@ -255,6 +257,33 @@ public class MainGameScreen implements Screen {
         // Add actor to stage (pause Button + pause menu)
         stage.addActor(pauseTable);
         stage.addActor(PauseMenuTable);
+
+        // Back Key listener
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if ((keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) && !isPaused) {
+                    openPauseMenu();
+                    return true;
+                } else if (((keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) && isPaused)) {
+                    closePauseMenu();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void openPauseMenu() {
+        isPaused = true;
+        // scrollingBackground.pause();
+        PauseMenuTable.setVisible(true);
+    }
+
+    private void closePauseMenu() {
+        isPaused = false;
+        // scrollingBackground._continue();
+        PauseMenuTable.setVisible(false);
     }
 
     @Override
@@ -326,6 +355,8 @@ public class MainGameScreen implements Screen {
                             enemy.setCurrentAnimation(animationState.shipUnderAttackAnimation);
 
                         if (enemy.getCurrentHealth() <= 0) {
+                            stats.incKilledEnemies(1);
+
                             enemy.die();
                             spawner.spawnEnemyExplosion(enemy.getX() - enemy.getPreferredShipWidth() / 2, enemy.getY() - enemy.getPreferredShipHeight() / 2, 86, 86);
 
@@ -357,6 +388,8 @@ public class MainGameScreen implements Screen {
             for (Enemy enemy : spawner.getActiveEnemies()) {
                 if (enemy.getShipCollisionRect().collidesWith(playerShip.getShipCollisionRect())) {
                     if (enemy.isAlive) {
+                        stats.incKilledEnemies(1);
+
                         enemy.die();
                         spawner.spawnEnemyExplosion(enemy.getX() - enemy.getPreferredShipWidth() / 2, enemy.getY() - enemy.getPreferredShipHeight() / 2, 86, 86);
                         playerShip.setScore(playerShip.getScore() + enemy.getReward());
@@ -379,8 +412,11 @@ public class MainGameScreen implements Screen {
                         }
                         bullet.remove = true;
 
-                        spawner.getAsteroidPool().free(asteroid);
-                        spawner.getActiveAsteroids().removeValue(asteroid, true);
+                        stats.incDestroyedAsteroids(1);
+
+                        asteroid.remove = true;
+                        /*spawner.getAsteroidPool().free(asteroid);
+                        spawner.getActiveAsteroids().removeValue(asteroid, true);*/
 
                         // Spawn Enemy explosion
                         spawner.spawnPlayerExplosion(asteroid.getX() - asteroid.getRadius(), asteroid.getY() - asteroid.getRadius(), 128, 128);
@@ -407,16 +443,16 @@ public class MainGameScreen implements Screen {
 
                     // Heal powerUp
                     if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.healPowerUp && !playerShip.isGoingToDie() && !playerShip.isDestroyed()) {
-                        playerShip.healUsingPowerUp();
+                        stats.incHealPickedUp(1);
+                        playerShip.setHealPowerUpActive();
+                        // Rockets PowerUp
                     } else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.ammoPowerUp) {
-                        playerShip.setAmmoActive(true, 40);
+                        stats.incAmmoPickedUp(1);
+                        playerShip.setAmmoPowerUpActive(true, 40);
+                        // Shield PowerUp
                     } else if (powerUp.getPowerUpCollisionRect().getTag() == CollisionRect.colliderTag.shieldPowerUp && !playerShip.isGoingToDie() && !playerShip.isDestroyed()) {
-                        // Activate Shield
-                        playerShip.setShieldActive(true);
-                        // Set shield animation
-                        playerShip.setCurrentAnimation(animationState.shieldJustActivatedAnimation);
-                        // Increase shield hp
-                        playerShip.setCurrentShieldHealth(playerShip.getShieldHealthMax());
+                        stats.incShieldPickedUp(1);
+                        playerShip.activateShield();
                     }
                 }
             }
@@ -424,6 +460,7 @@ public class MainGameScreen implements Screen {
             // Check for collisions between player and asteroids
             for (Asteroid asteroid : spawner.getActiveAsteroids()) {
                 if (asteroid.getCollisionCirlce().collidesWith(playerShip.getShipCollisionRect())) {
+                    stats.incDestroyedAsteroids(1);
                     // delete asteroid
                     spawner.getAsteroidPool().free(asteroid);
                     spawner.getActiveAsteroids().removeValue(asteroid, true);
@@ -449,8 +486,10 @@ public class MainGameScreen implements Screen {
 
         // Game Over
         if (playerShip.getCurrentHealth() <= 0) {
-            if (playerShip.isDestroyed())
-                game.setScreen(new GameOverScreen(game, scrollingBackground, playerShip.getScore()));
+            if (playerShip.isDestroyed()) {
+                stats.setScore(playerShip.getScore());
+                game.setScreen(new GameOverScreen(game, scrollingBackground, stats));
+            }
             if (!playerShip.isGoingToDie()) {
                 playerShip.setGoingToDie(true);
                 playerShip.setCurrentAnimation(animationState.shipDestroyedAnimation);

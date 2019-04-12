@@ -1,12 +1,14 @@
-package com.madrat.spaceshooter.screens;
+package com.madrat.spaceshooter.screens.shopscreens;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -138,8 +141,7 @@ public class ShopScreen implements Screen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                batch.dispose();
-                game.setScreen(new MainMenuScreen(game, scrollingBackground));
+                setPreviousScreen();
             }
         });
 
@@ -160,7 +162,25 @@ public class ShopScreen implements Screen {
         buttonsTable.add(backBtn);
 
         stage.addActor(buttonsTable);
+
+        // Back Key listener
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    setPreviousScreen();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void setPreviousScreen() {
+        batch.dispose();
+        game.setScreen(new MainMenuScreen(game, scrollingBackground));
     }
 
     private void setDefault() {
@@ -173,22 +193,18 @@ public class ShopScreen implements Screen {
 
     private void setIgnitor() {
         setNewShip("ignitor");
-
     }
 
     private void setTurtle() {
         setNewShip("turtle");
-
     }
 
     private void setUfo() {
         setNewShip("ufo");
-
     }
 
     private void setStar() {
         setNewShip("star");
-
     }
 
     private void setPinky() {

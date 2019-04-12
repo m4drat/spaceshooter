@@ -2,6 +2,8 @@ package com.madrat.spaceshooter.gameobjects;
 
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 
+import java.util.Random;
+
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class SpaceShip {
@@ -13,8 +15,17 @@ public class SpaceShip {
         turtle,
         ufo,
         star,
-        pinky
+        pinky;
+
+        public static shipHandler getRandomShip() {
+            if (random == null) {
+                random = new Random();
+            }
+            return values()[random.nextInt(values().length)];
+        }
     }
+
+    private static Random random;
 
     protected int realShipWidth;
     protected int realShipHeight;

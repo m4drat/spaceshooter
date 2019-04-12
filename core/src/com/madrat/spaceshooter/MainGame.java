@@ -51,7 +51,12 @@ public class MainGame extends Game {
         // System.out.println("Scale FactorX: " + SCALE_X);
         // System.out.println("Scale FactorY: " + SCALE_Y);
 
+        // Initialize initializer to init initFunctions, which will initialize user data :)
         Initializer.init();
+
+        // Catch backKey
+        Gdx.input.setCatchBackKey(true);
+
         this.setScreen(new MainMenuScreen(this));
     }
 

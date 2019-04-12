@@ -2,6 +2,7 @@ package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
-import com.madrat.spaceshooter.utils.DialogAlert;
+import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import com.google.gson.*;
@@ -89,7 +90,7 @@ public class GameTypeScreen implements Screen {
         multiplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                DialogAlert confirm = new DialogAlert("", skin);
+                DialogAlert confirm = new DialogAlert("", skin, stage);
                 confirm.text("Sorry, not\nimplemented");
                 confirm.yesButton("OK", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -108,8 +109,7 @@ public class GameTypeScreen implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                batch.dispose();
-                game.setScreen(new MainMenuScreen(game, scrollingBackground));
+                setPreviousScreen();
             }
         });
 
@@ -123,6 +123,18 @@ public class GameTypeScreen implements Screen {
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);
+
+        // Back Key listener
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    setPreviousScreen();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -147,11 +159,16 @@ public class GameTypeScreen implements Screen {
             currentState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject();
 
             // extract and return highscore
-            return currentState.get("highscore").getAsInt();
+            return currentState.getAsJsonObject("stats").get("highscore").getAsInt();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return -1;
+    }
+
+    public void setPreviousScreen() {
+        batch.dispose();
+        game.setScreen(new MainMenuScreen(game, scrollingBackground));
     }
 
     @Override

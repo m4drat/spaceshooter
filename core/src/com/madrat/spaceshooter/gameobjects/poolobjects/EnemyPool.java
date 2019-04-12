@@ -31,7 +31,7 @@ public class EnemyPool extends Pool<Enemy> {
         this.reward = reward;
         this.difficultyLevel = difficultyLevel;
 
-        this.collisionDamage = this.maxHealth * 2;
+        this.collisionDamage = this.damage * 2;
 
         this.handle = handle;
         this.enemyAnimationSheetPath = enemyAnimationSheetPath;

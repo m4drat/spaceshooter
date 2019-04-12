@@ -191,27 +191,31 @@ public class Spawner {
 
     // Spawn random power up at gained x an y
     public void randomPowerUp(float x, float y) {
-
-        // Heal powerUp
-        if (random.nextInt(3) == 0) {
-            PowerUp newPowerUp = healPowerUpPool.obtain();
-            newPowerUp.setupPowerUp(x, y, 27, 23, 10f);
-            activePowerUps.add(newPowerUp);
-            // System.out.println("[+] Objects in healPowerUpPool: " + healPowerUpPool.getFree());
-
+        switch (random.nextInt(10)) {
+            // Heal powerUp
+            case 3: {
+                PowerUp newPowerUp = healPowerUpPool.obtain();
+                newPowerUp.setupPowerUp(x, y, 27, 23, 10f);
+                activePowerUps.add(newPowerUp);
+                // System.out.println("[+] Objects in healPowerUpPool: " + healPowerUpPool.getFree());
+                break;
+            }
             // Ammo powerUp
-        } else if (random.nextInt(3) == 1) {
-            PowerUp newPowerUp = ammoPowerUpPool.obtain();
-            newPowerUp.setupPowerUp(x, y, 25, 23, 10f);
-            activePowerUps.add(newPowerUp);
-            // System.out.println("[+] Objects in ammoPowerUpPool: " + ammoPowerUpPool.getFree());
-
+            case 6: {
+                PowerUp newPowerUp = ammoPowerUpPool.obtain();
+                newPowerUp.setupPowerUp(x, y, 25, 23, 10f);
+                activePowerUps.add(newPowerUp);
+                // System.out.println("[+] Objects in ammoPowerUpPool: " + ammoPowerUpPool.getFree());
+                break;
+            }
             // Shield powerUp
-        } else if (random.nextInt(3) == 2) {
-            PowerUp newPowerUp = shieldPowerUpPool.obtain();
-            newPowerUp.setupPowerUp(x, y, 25, 25, 10f);
-            activePowerUps.add(newPowerUp);
-            // System.out.println("[+] Objects in shieldPowerUpPool: " + shieldPowerUpPool.getFree());
+            case 9: {
+                PowerUp newPowerUp = shieldPowerUpPool.obtain();
+                newPowerUp.setupPowerUp(x, y, 25, 25, 10f);
+                activePowerUps.add(newPowerUp);
+                // System.out.println("[+] Objects in shieldPowerUpPool: " + shieldPowerUpPool.getFree());
+                break;
+            }
         }
     }
 
@@ -257,35 +261,82 @@ public class Spawner {
     public void initEnemies() {
 
         // This objects initialized using constants because they're immutable (unlike player ship)
-        this.zapperPool = new EnemyPool(24, 24, 55, 45, 55, 45, 0, 0, 1, 0.1f, 0.3f, 600, 150, 50, 1, SpaceShip.shipHandler.zapper, Assets.ship1Animation);
-        this.destroyerPool = new EnemyPool(32, 32, 56, 56, 56, 48, 0, -2, 1.4f, 0.15f, 0.4f, 600, 200, 100, 2, SpaceShip.shipHandler.destroyer, Assets.ship3Animation);
-        this.ignitorPool = new EnemyPool(32, 32, 52, 52, 56, 56, 0, 0, 1, 0.1f, 0.2f, 600, 250, 140, 2, SpaceShip.shipHandler.ignitor, Assets.ship5Animation);
-        this.turtlePool = new EnemyPool(32, 32, 64, 64, 46, 64, 0, 0, 3, 0.12f, 0.4f, 500, 50, 200, 3, SpaceShip.shipHandler.turtle, Assets.ship7Animation);
-        this.ufoPool = new EnemyPool(32, 32, 64, 64, 52, 52, 0, 0, 1.8f, 0.25f, 0.3f, 700, 200, 240, 2, SpaceShip.shipHandler.ufo, Assets.ship13Animation);
-        this.starPool = new EnemyPool(32, 32, 56, 56, 56, 56, 0, 0, 0.6f, 0.25f, 0.35f, 700, 300, 280, 3, SpaceShip.shipHandler.star, Assets.ship9Animation);
-        this.pinkyPool = new EnemyPool(32, 32, 58, 58, 50, 56, 0, 0, 1f, 0.07f, 0.25f, 700, 80, 310, 2, SpaceShip.shipHandler.pinky, Assets.ship11Animation);
+        this.zapperPool = new EnemyPool(24, 24, 55, 45, 55, 45, 0, 0, 1, 0.085f, 0.3f, 600, 150, 50, 1, SpaceShip.shipHandler.zapper, Assets.ship1Animation);
+        this.destroyerPool = new EnemyPool(32, 32, 56, 56, 56, 48, 0, -2, 1.4f, 0.12f, 0.4f, 600, 200, 100, 2, SpaceShip.shipHandler.destroyer, Assets.ship3Animation);
+        this.ignitorPool = new EnemyPool(32, 32, 52, 52, 56, 56, 0, 0, 1, 0.1f, 0.28f, 600, 250, 140, 2, SpaceShip.shipHandler.ignitor, Assets.ship5Animation);
+        this.turtlePool = new EnemyPool(32, 32, 64, 64, 46, 64, 0, 0, 3, 0.18f, 0.4f, 500, 50, 200, 3, SpaceShip.shipHandler.turtle, Assets.ship7Animation);
+        this.ufoPool = new EnemyPool(32, 32, 64, 64, 52, 52, 0, 0, 1.2f, 0.21f, 0.3f, 700, 200, 220, 2, SpaceShip.shipHandler.ufo, Assets.ship13Animation);
+        this.starPool = new EnemyPool(32, 32, 56, 56, 56, 56, 0, 0, 0.75f, 0.25f, 0.42f, 700, 300, 260, 3, SpaceShip.shipHandler.star, Assets.ship9Animation);
+        this.pinkyPool = new EnemyPool(32, 32, 58, 58, 50, 56, 0, 0, 1f, 0.12f, 0.28f, 700, 80, 250, 2, SpaceShip.shipHandler.pinky, Assets.ship11Animation);
 
         this.activeEnemies = new Array<Enemy>();
         this.enemiesToDelete = new Array<Enemy>();
         this.enemyWaveSpawnTimer = random.nextFloat() * (Enemy.MAX_ENEMY_WAVE_SPAWN_TIME - Enemy.MIN_ENEMY_WAVE_SPAWN_TIME) + Enemy.MIN_ENEMY_WAVE_SPAWN_TIME;
     }
 
+    public Enemy createRandomEnemy(SpaceShip.shipHandler shipType) {
+        Enemy newEnemy;
+
+        switch (shipType) {
+            case zapper:
+                newEnemy = zapperPool.obtain();
+                break;
+            case destroyer:
+                newEnemy = destroyerPool.obtain();
+                break;
+            case ignitor:
+                newEnemy = ignitorPool.obtain();
+                break;
+            case turtle:
+                newEnemy = turtlePool.obtain();
+                break;
+            case ufo:
+                newEnemy = ufoPool.obtain();
+                break;
+            case star:
+                newEnemy = starPool.obtain();
+                break;
+            case pinky:
+                newEnemy = pinkyPool.obtain();
+                break;
+            default:
+                newEnemy = zapperPool.obtain();
+                break;
+        }
+        return newEnemy;
+    }
+
     // Spawn enemy at random x which belongs to this range: [0, screen.width - enemy.width]
     public void spawnEnemyWave(int currentScore) {
         enemyWaveSpawnTimer = random.nextFloat() * (Enemy.MAX_ENEMY_WAVE_SPAWN_TIME - Enemy.MIN_ENEMY_WAVE_SPAWN_TIME) + Enemy.MIN_ENEMY_WAVE_SPAWN_TIME;
+        Enemy newEnemy;
 
         // Enemies per wave difficulty
         if (currentScore <= 2500) { // max difficultyLevel = 4
-
+            newEnemy = createRandomEnemy(SpaceShip.shipHandler.getRandomShip());
+            newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (newEnemy.getPreferredShipWidth() * SCALE_FACTOR)), Gdx.graphics.getHeight() + (newEnemy.getPreferredShipHeight() * SCALE_FACTOR), random.nextFloat() * (1.15f - 0.9f) + 0.9f);
+            activeEnemies.add(newEnemy);
         } else if (currentScore > 2500 && currentScore <= 7500) {
-
-        } else if (currentScore > 7500) {
-
+            for (int i = 0; i < 2; ++i) {
+                newEnemy = createRandomEnemy(SpaceShip.shipHandler.getRandomShip());
+                newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (newEnemy.getPreferredShipWidth() * SCALE_FACTOR)), Gdx.graphics.getHeight() + (newEnemy.getPreferredShipHeight() * SCALE_FACTOR), random.nextFloat() * (1.15f - 0.9f) + 0.9f);
+                activeEnemies.add(newEnemy);
+            }
+        } else if (currentScore > 7500 && currentScore <= 11500) {
+            for (int i = 0; i < 3; ++i) {
+                newEnemy = createRandomEnemy(SpaceShip.shipHandler.getRandomShip());
+                newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (newEnemy.getPreferredShipWidth() * SCALE_FACTOR)), Gdx.graphics.getHeight() + (newEnemy.getPreferredShipHeight() * SCALE_FACTOR), random.nextFloat() * (1.15f - 0.9f) + 0.9f);
+                activeEnemies.add(newEnemy);
+            }
+        } else if (currentScore > 11500) {
+            for (int i = 0; i < 4; ++i) {
+                newEnemy = createRandomEnemy(SpaceShip.shipHandler.getRandomShip());
+                newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (newEnemy.getPreferredShipWidth() * SCALE_FACTOR)), Gdx.graphics.getHeight() + (newEnemy.getPreferredShipHeight() * SCALE_FACTOR), random.nextFloat() * (1.15f - 0.9f) + 0.9f);
+                activeEnemies.add(newEnemy);
+            }
+        } else {
+            throw new java.lang.Error("[-] Impossible score state!");
         }
-
-        Enemy newEnemy = starPool.obtain();
-        newEnemy.enemySetUp(random.nextInt(Gdx.graphics.getWidth() - (int) (newEnemy.getPreferredShipWidth() * SCALE_FACTOR)), Gdx.graphics.getHeight() + (newEnemy.getPreferredShipHeight() * SCALE_FACTOR));
-        activeEnemies.add(newEnemy);
     }
 
     // update each enemy state
@@ -298,7 +349,7 @@ public class Spawner {
         // Iterate through all active enemies, find which must be removed, add them to array, and after loop delete them from active array
         for (Enemy enemy : activeEnemies) {
             enemy.update(delta);
-            if (enemy.remove) {
+            if (enemy.remove && enemy.canBeFullyRemoved) {
                 if (enemy.getHandle() == SpaceShip.shipHandler.zapper) {
                     enemiesToDelete.add(enemy);
                     zapperPool.free(enemy);

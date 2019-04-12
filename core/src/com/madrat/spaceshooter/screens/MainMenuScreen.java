@@ -1,8 +1,8 @@
 package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,8 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.screens.settingsscreens.SettingsScreen;
+import com.madrat.spaceshooter.screens.shopscreens.ShopScreen;
 import com.madrat.spaceshooter.utils.Assets;
-import com.madrat.spaceshooter.utils.DialogAlert;
+import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -122,7 +124,7 @@ public class MainMenuScreen implements Screen {
         });
 
         // Exit Confirm Dialog
-        exit = new DialogAlert("", skin);
+        exit = new DialogAlert("", skin, stage);
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -147,7 +149,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // exitDialog.show(stage);
-                exit.show(stage);
+                displayExit();
             }
         });
 
@@ -164,7 +166,23 @@ public class MainMenuScreen implements Screen {
         // Add table to stage (buttons)
         stage.addActor(menuTable);
 
+        // Add backButtonPressed Listener
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    displayExit();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public void displayExit() {
+        exit.show(stage);
     }
 
     @Override

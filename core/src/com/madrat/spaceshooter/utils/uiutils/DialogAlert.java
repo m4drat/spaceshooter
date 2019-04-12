@@ -1,6 +1,10 @@
-package com.madrat.spaceshooter.utils;
+package com.madrat.spaceshooter.utils.uiutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,16 +15,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 /**
  * Simple alert dialog class with 2 default buttons (yes/no)
- *
  * @author madrat
  */
 
 public class DialogAlert extends Dialog {
+
+    private Stage oldStage;
 
     private float dialog_padding = 20f;
     private float button_pad_l = 15f;
@@ -34,16 +41,17 @@ public class DialogAlert extends Dialog {
     public TextButton buttonYes;
     public TextButton buttonNo;
 
-    public DialogAlert(String title, Skin skin) {
+    public DialogAlert(String title, Skin skin, final Stage oldStage) {
         super(title, skin);
         setup();
         this.skin = skin;
+        this.oldStage = oldStage;
 
         // Close dialog if user clicks anywhere outside current dialog
         InputListener inputListener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) {
+                if ((x < 0 || x > getWidth() || y < 0 || y > getHeight())) {
                     hide();
                     event.cancel();
                     return true;
@@ -64,7 +72,29 @@ public class DialogAlert extends Dialog {
     }
 
     @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(oldStage);
+        super.hide();
+    }
+
+    @Override
     public Dialog show(Stage stage) {
+        InputProcessor backProcessor = new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if ((keycode == Input.Keys.ESCAPE) || (keycode == Input.Keys.BACK)) {
+                    if (BuildConfig.DEBUG)
+                        System.out.println("[+] Hide dialog!");
+                    hide();
+                    return true;
+                }
+                return false;
+            }
+        };
+
+        InputMultiplexer multiplexer = new InputMultiplexer(backProcessor, stage);
+        Gdx.input.setInputProcessor(multiplexer);
+
         return super.show(stage);
     }
 

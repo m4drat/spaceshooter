@@ -11,6 +11,7 @@ import com.google.gson.*;
 public class Initializer {
 
     public static void init() {
+
         // Create preferences object
         Preferences data = Gdx.app.getPreferences("spacegame");
 
@@ -34,7 +35,21 @@ public class Initializer {
             System.out.println("[+] Path to current state: " + MainGame.pathToCurrentState);
         }
 
-        if (data.getBoolean("firstRun", true)) { // data.getBoolean("firstRun", true)
+        if (data.getBoolean("firstRun", true)
+                || !(Gdx.files.local(MainGame.pathToShipConfigs).exists() || Gdx.files.absolute(MainGame.pathToShipConfigs).exists())
+                || !(Gdx.files.local(MainGame.pathToDefaultParameters).exists() || Gdx.files.absolute(MainGame.pathToDefaultParameters).exists())
+                || !(Gdx.files.local(MainGame.pathToCurrentState).exists() || Gdx.files.absolute(MainGame.pathToCurrentState).exists())) {
+
+            if (BuildConfig.DEBUG) {
+                System.out.println("[+] Creating new state files...");
+                System.out.println("Gdx.files.local(MainGame.pathToShipConfigs).exists(): " + Gdx.files.local(MainGame.pathToShipConfigs).exists());
+                System.out.println("Gdx.files.absolute(MainGame.pathToShipConfigs).exists(): " + Gdx.files.absolute(MainGame.pathToShipConfigs).exists());
+                System.out.println("Gdx.files.local(MainGame.pathToDefaultParameters).exists(): " + Gdx.files.local(MainGame.pathToDefaultParameters).exists());
+                System.out.println("Gdx.files.absolute(MainGame.pathToDefaultParameters).exists(): " + Gdx.files.absolute(MainGame.pathToDefaultParameters).exists());
+                System.out.println("Gdx.files.local(MainGame.pathToCurrentState).exists(): " + Gdx.files.local(MainGame.pathToCurrentState).exists());
+                System.out.println("Gdx.files.absolute(MainGame.pathToCurrentState).exists(): " + Gdx.files.absolute(MainGame.pathToCurrentState).exists());
+            }
+
             // First run variable
             data.putBoolean("firstRun", false);
 
@@ -121,6 +136,9 @@ public class Initializer {
 
         try {
             // handle.writeString(builder.toJson(ships), false);
+            if (BuildConfig.DEBUG) {
+                System.out.println("initShipConfigsJsonDump:\n" + builder.toJson(ships));
+            }
             handle.writeString(MainGame.cryptor.encrypt(builder.toJson(ships)), false);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -131,17 +149,35 @@ public class Initializer {
         FileHandle handle;
 
         Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        JsonParser parser = new JsonParser();
 
         ParametersHandler zapper = new ParametersHandler();
         JsonObject defaultJson = new JsonObject(); // Whole object
         JsonObject defaultShip; // Default ship
+        JsonObject defaultStats; // Default stats data
 
         try {
+            defaultStats = parser.parse("{\n" +
+                    "    \"totalKilledEnemies\": 0,\n" +
+                    "    \"DestroyedAsteroids\": 0,\n" +
+                    "    \"totalEarnedMoneys\": 0,\n" +
+                    "    \"totalDeaths\": 0,\n" +
+                    "    \"healPickedUp\": 0,\n" +
+                    "    \"ammoPickedUp\": 0,\n" +
+                    "    \"shieldPickedUp\": 0,\n" +
+                    "    \"money\": 750,\n" +
+                    "    \"highscore\": 0\n" +
+                    "}").getAsJsonObject();
+
+            // SetUp default values and create json object
             zapper.setUpDefaultShip();
             defaultShip = builder.toJsonTree(zapper).getAsJsonObject();
+
+            // Add already created object to parent Json object
             defaultJson.add("currentShip", defaultShip);
-            defaultJson.addProperty("money", 1000);
-            defaultJson.addProperty("highscore", 0);
+
+            // Add stats json object to parent
+            defaultJson.add("stats", defaultStats);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -155,6 +191,9 @@ public class Initializer {
         }
 
         try {
+            if (BuildConfig.DEBUG) {
+                System.out.println("DefaultParametersJsonDump:\n" + builder.toJson(defaultJson));
+            }
             // handle.writeString(builder.toJson(defaultJson), false);
             handle.writeString(MainGame.cryptor.encrypt(builder.toJson(defaultJson)), false);
         } catch (Exception ex) {
@@ -166,17 +205,32 @@ public class Initializer {
         FileHandle handle;
 
         Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        JsonParser parser = new JsonParser();
 
         ParametersHandler zapper = new ParametersHandler();
         JsonObject currentStateJson = new JsonObject(); // Whole object
         JsonObject currentShipJson; // Default ship
+        JsonObject defaultStats; // Default stats data
 
         try {
+            defaultStats = parser.parse("{\n" +
+                    "    \"totalKilledEnemies\": 0,\n" +
+                    "    \"DestroyedAsteroids\": 0,\n" +
+                    "    \"totalEarnedMoneys\": 0,\n" +
+                    "    \"totalDeaths\": 0,\n" +
+                    "    \"healPickedUp\": 0,\n" +
+                    "    \"ammoPickedUp\": 0,\n" +
+                    "    \"shieldPickedUp\": 0,\n" +
+                    "    \"money\": 750,\n" +
+                    "    \"highscore\": 0\n" +
+                    "}").getAsJsonObject();
+
             zapper.setUpDefaultShip();
             currentShipJson = builder.toJsonTree(zapper).getAsJsonObject();
             currentStateJson.add("currentShip", currentShipJson);
-            currentStateJson.addProperty("money", 1000);
-            currentStateJson.addProperty("highscore", 0);
+
+            // Add stats json object to parent
+            currentStateJson.add("stats", defaultStats);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -190,6 +244,9 @@ public class Initializer {
         }
 
         try {
+            if (BuildConfig.DEBUG) {
+                System.out.println("initCurrentStateJsonDump:\n" + builder.toJson(currentStateJson));
+            }
             handle.writeString(MainGame.cryptor.encrypt(builder.toJson(currentStateJson)), false);
             // handle.writeString(builder.toJson(currentStateJson), false);
         } catch (Exception ex) {

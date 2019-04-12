@@ -17,8 +17,8 @@ import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState.defa
 
 public class Enemy extends SpaceShip implements Pool.Poolable {
 
-    public static final float MIN_ENEMY_WAVE_SPAWN_TIME = 1f;
-    public static final float MAX_ENEMY_WAVE_SPAWN_TIME = 4f;
+    public static final float MIN_ENEMY_WAVE_SPAWN_TIME = 2f;
+    public static final float MAX_ENEMY_WAVE_SPAWN_TIME = 5f;
 
     private Texture enemyAnimationSheet; // SpriteSheet
     private Animation<TextureRegion>[] shipAnimations; // Animations array
@@ -36,7 +36,7 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
 
     private int difficultyLevel;
     private int reward;
-    public boolean remove;
+    public boolean remove, canBeFullyRemoved;
 
     @Override
     public void reset() {
@@ -65,6 +65,7 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
 
         this.remove = false;
         this.isAlive = true;
+        this.canBeFullyRemoved = false;
 
         this.reward = reward;
         this.collisionDamage = collisionDamage;
@@ -82,11 +83,12 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         this.shipAnimations[2] = new Animation<TextureRegion>(0.14f, statesSpriteSheet[2]);
     }
 
-    public void enemySetUp(float x, float y) {
+    public void enemySetUp(float x, float y, float speedMultiplier) {
         this.x = x;
         this.y = y;
 
         this.currentHealth = maxHealth;
+        this.speed = this.speed * speedMultiplier;
 
         this.shipCollisionRect.move(this.x + ((this.preferredShipWidth - this.colliderWidth) * SCALE_FACTOR) + this.colliderXcoordOffset, this.y + ((this.preferredShipHeight - this.colliderHeight) * SCALE_FACTOR) + this.colliderYcoordOffset);
     }
@@ -96,23 +98,27 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
 
         y -= speed * delta;
 
-        if (y < -preferredShipHeight || !isAlive)
+        if (y < -preferredShipHeight || !isAlive) {
             remove = true;
+            if (activeBullets.size <= 0) {
+                canBeFullyRemoved = true;
+            }
+        }
 
         // Move collision rect
         shipCollisionRect.move(x + ((this.preferredShipWidth - this.colliderWidth)) / 2 + this.colliderXcoordOffset, y + ((this.preferredShipHeight - this.colliderHeight)) / 2 + this.colliderYcoordOffset);
 
         // Update Bullets
-        bulletsToRemove.clear();
         for (Bullet bullet : activeBullets) {
             bullet.update(delta);
             if (bullet.remove) {
                 // System.out.println("[+] Deleting enemy bullet\nEnemyBulletPool size: " + bulletPool.getFree());
-                bulletPool.free(bullet);
                 bulletsToRemove.add(bullet);
+                bulletPool.free(bullet);
             }
         }
         activeBullets.removeAll(bulletsToRemove, true);
+        bulletsToRemove.clear();
 
         if (isAlive && !remove && currentHealth > 0) {
             if (this.lastBulletShoot > delayBetweenShootsBullets) {
@@ -147,25 +153,27 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
     public void render(SpriteBatch batch) {
 
         // Draw enemy in appropriate state
-        switch (this.currentAnimation) {
-            case defaultFlyAnimation:
-                batch.draw(shipAnimations[0].getKeyFrame(stateTime, true), this.x, this.y, preferredShipWidth, preferredShipHeight);
-                break;
-            case shipDestroyedAnimation:
-                batch.draw(shipAnimations[1].getKeyFrame(stateTime, false), this.x, this.y, preferredShipWidth, preferredShipHeight);
-                if (shipAnimations[1].isAnimationFinished(stateTime)) {
-                    remove = true;
-                }
-                break;
-            case shipUnderAttackAnimation:
-                batch.draw(shipAnimations[2].getKeyFrame(stateTime, false), this.x, this.y, preferredShipWidth, preferredShipHeight);
-                if (shipAnimations[2].isAnimationFinished(stateTime)) {
-                    setCurrentAnimation(animationState.defaultFlyAnimation);
-                }
-                break;
-            default:
-                batch.draw(shipAnimations[0].getKeyFrame(stateTime, true), this.x, this.y, preferredShipWidth, preferredShipHeight);
-                break;
+        if (!remove) {
+            switch (this.currentAnimation) {
+                case defaultFlyAnimation:
+                    batch.draw(shipAnimations[0].getKeyFrame(stateTime, true), this.x, this.y, preferredShipWidth, preferredShipHeight);
+                    break;
+                case shipDestroyedAnimation:
+                    batch.draw(shipAnimations[1].getKeyFrame(stateTime, false), this.x, this.y, preferredShipWidth, preferredShipHeight);
+                    if (shipAnimations[1].isAnimationFinished(stateTime)) {
+                        remove = true;
+                    }
+                    break;
+                case shipUnderAttackAnimation:
+                    batch.draw(shipAnimations[2].getKeyFrame(stateTime, false), this.x, this.y, preferredShipWidth, preferredShipHeight);
+                    if (shipAnimations[2].isAnimationFinished(stateTime)) {
+                        setCurrentAnimation(animationState.defaultFlyAnimation);
+                    }
+                    break;
+                default:
+                    batch.draw(shipAnimations[0].getKeyFrame(stateTime, true), this.x, this.y, preferredShipWidth, preferredShipHeight);
+                    break;
+            }
         }
 
         // render enemy bullets

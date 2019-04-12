@@ -2,6 +2,7 @@ package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -24,8 +25,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
-import com.madrat.spaceshooter.utils.DialogAlert;
+import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+import com.madrat.spaceshooter.utils.Stats;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -40,8 +43,8 @@ public class GameOverScreen implements Screen {
     private SpriteBatch batch;
     private ScrollingBackground scrollingBackground;
 
-    private BitmapFont highScoreFont, scoreFont, coinsFont, gameOverFont;
-    private GlyphLayout highScoreLayout, scoreLayout, coinsLayout, gameOverLayout;
+    private BitmapFont highScoreFont, totalMoneyFont, scoreFont, coinsFont, gameOverFont;
+    private GlyphLayout highScoreLayout, totalMoneyLayout, scoreLayout, coinsLayout, gameOverLayout;
 
     private TextButton restartBtn;
     private TextButton backBtn;
@@ -49,14 +52,14 @@ public class GameOverScreen implements Screen {
 
     private DialogAlert exit;
 
-    private int score, highScore, money;
+    private int score, highScore, money, totalMoney;
 
-    public GameOverScreen(MainGame newgame, ScrollingBackground scrBack, int score) {
-        this.game = newgame;
+    public GameOverScreen(MainGame newGame, ScrollingBackground scrBack, Stats stats) {
+        this.game = newGame;
         this.batch = new SpriteBatch();
         this.scrollingBackground = scrBack;
-        this.score = score;
-        this.money = 1231;
+        this.score = stats.getScore();
+        this.money = (int) (((float) score / 100f) * 3.25f);
 
         Assets.unloadFont();
         Assets.loadFont();
@@ -65,8 +68,8 @@ public class GameOverScreen implements Screen {
         skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
-        // Get and check highscore from file
-        setApprHighscore(MainGame.pathToCurrentState, score);
+        // Get and check highscore from file + update money value
+        updateValues(MainGame.pathToCurrentState, stats);
 
         // Create gameOver font and textLayout
         gameOverFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
@@ -80,17 +83,23 @@ public class GameOverScreen implements Screen {
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreLayout = new GlyphLayout(highScoreFont, "Highscore:" + this.highScore);
 
+        // Create total money textLayout
+        totalMoneyFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
+        totalMoneyFont.setColor(new Color(0x7a9af1ff));
+        totalMoneyFont.getData().setScale(0.7f * SCALE_FACTOR);
+        totalMoneyLayout = new GlyphLayout(highScoreFont, "Total Money:" + this.totalMoney);
+
         // Create score font and textLayout
         scoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         scoreFont.setColor(new Color(0xceb963ff));
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
-        scoreLayout = new GlyphLayout(scoreFont, "Current score:" + score);
+        scoreLayout = new GlyphLayout(scoreFont, "score:" + score);
 
         // Create coins font and textLayout
         coinsFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         coinsFont.setColor(new Color(0xceb963ff));
         coinsFont.getData().setScale(0.7f * SCALE_FACTOR);
-        coinsLayout = new GlyphLayout(coinsFont, "Earned money:" + money);
+        coinsLayout = new GlyphLayout(coinsFont, "money:" + money);
 
 
         // Create buttons
@@ -117,13 +126,12 @@ public class GameOverScreen implements Screen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                batch.dispose();
-                game.setScreen(new MainMenuScreen(game, scrollingBackground));
+                setPreviousScreen();
             }
         });
 
         // exit confirm dialog
-        exit = new DialogAlert("", skin);
+        exit = new DialogAlert("", skin, stage);
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -156,7 +164,7 @@ public class GameOverScreen implements Screen {
         menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
 
         // Setup all relative positions
-        menuTable.padTop(360 * SCALE_FACTOR);
+        menuTable.padTop(405 * SCALE_FACTOR);
         menuTable.add(restartBtn).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
         menuTable.add(backBtn).padBottom(48 * SCALE_FACTOR);
@@ -166,10 +174,27 @@ public class GameOverScreen implements Screen {
         // Add table to stage (buttons)
         stage.addActor(menuTable);
 
+        // Back Key listener
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+                    setPreviousScreen();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void setApprHighscore(String path, int currentScore) {
+    private void setPreviousScreen() {
+        batch.dispose();
+        game.setScreen(new MainMenuScreen(game, scrollingBackground));
+    }
+
+    private void updateValues(String path, Stats stats) {
         FileHandle currentFileHandle;
         JsonObject currentState;
 
@@ -190,13 +215,31 @@ public class GameOverScreen implements Screen {
             currentState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject();
 
             // Update highscore value
-            this.highScore = currentState.get("highscore").getAsInt();
-            if (highScore < currentScore) {
-                this.highScore = currentScore;
-                currentState.addProperty("highscore", score);
-                currentFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(currentState)), false);
+            this.highScore = currentState.getAsJsonObject("stats").get("highscore").getAsInt();
+            if (highScore < stats.getScore()) {
+                this.highScore = stats.getScore();
+                currentState.getAsJsonObject("stats").addProperty("highscore", score);
                 // currentFileHandle.writeString(builder.toJson(currentState), false);
             }
+
+            // Update money value
+            this.totalMoney = currentState.getAsJsonObject("stats").get("money").getAsInt() + money;
+            currentState.getAsJsonObject("stats").addProperty("money", totalMoney);
+
+            currentState.getAsJsonObject("stats").addProperty("totalKilledEnemies", currentState.getAsJsonObject("stats").get("totalKilledEnemies").getAsInt() + stats.getKilledEnemies());
+            currentState.getAsJsonObject("stats").addProperty("DestroyedAsteroids", currentState.getAsJsonObject("stats").get("DestroyedAsteroids").getAsInt() + stats.getDestroyedAsteroids());
+            currentState.getAsJsonObject("stats").addProperty("totalEarnedMoneys", currentState.getAsJsonObject("stats").get("totalEarnedMoneys").getAsInt() + money);
+            currentState.getAsJsonObject("stats").addProperty("totalDeaths", currentState.getAsJsonObject("stats").get("totalDeaths").getAsInt() + 1);
+            currentState.getAsJsonObject("stats").addProperty("healPickedUp", currentState.getAsJsonObject("stats").get("healPickedUp").getAsInt() + stats.getHealPickedUp());
+            currentState.getAsJsonObject("stats").addProperty("ammoPickedUp", currentState.getAsJsonObject("stats").get("ammoPickedUp").getAsInt() + stats.getAmmoPickedUp());
+            currentState.getAsJsonObject("stats").addProperty("shieldPickedUp", currentState.getAsJsonObject("stats").get("shieldPickedUp").getAsInt() + stats.getShieldPickedUp());
+
+            if (BuildConfig.DEBUG) {
+                System.out.println("GameOverDump:\n" + builder.toJson(currentState));
+            }
+
+            // Write everything to file + 'encrypt' it
+            currentFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(currentState)), false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -218,11 +261,14 @@ public class GameOverScreen implements Screen {
         // Display highscore + current score
         gameOverFont.getData().setScale(1.35f * SCALE_FACTOR);
         gameOverFont.draw(batch, gameOverLayout, Gdx.graphics.getWidth() / 2 - gameOverLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 2);
+
         highScoreFont.getData().setScale(0.6f * SCALE_FACTOR);
         highScoreFont.draw(batch, highScoreLayout, Gdx.graphics.getWidth() / 2 - highScoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 3.9f - 5);
+        totalMoneyFont.draw(batch, totalMoneyLayout, Gdx.graphics.getWidth() / 2 - totalMoneyLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 4.6f - 5);
+
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
-        scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 5.6f - 15);
-        coinsFont.draw(batch, coinsLayout, Gdx.graphics.getWidth() / 2 - coinsLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 6.6f - 15);
+        scoreFont.draw(batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 6.45f - 15);
+        coinsFont.draw(batch, coinsLayout, Gdx.graphics.getWidth() / 2 - coinsLayout.width / 2, Gdx.graphics.getHeight() - gameOverLayout.height * 7.45f - 15);
 
         batch.end();
 

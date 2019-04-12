@@ -415,11 +415,6 @@ public class PlayerShip extends SpaceShip {
         return isShieldActive;
     }
 
-    public void setShieldActive(boolean shieldActive) {
-        shieldStateTime = 0;
-        isShieldActive = shieldActive;
-    }
-
     public void updateShieldState(float delta) {
         if (isShieldActive) {
             if (shieldStateTime > shieldLifeTime) {
@@ -451,7 +446,9 @@ public class PlayerShip extends SpaceShip {
             this.setCurrentAnimation(shipUnderAttackAnimation);
     }
 
-    public void healUsingPowerUp() {
+    // PowerUps Section
+    // Heal
+    public void setHealPowerUpActive() {
         if (currentAnimation != animationState.shipDestroyedAnimation) {
             if (this.currentHealth + this.maxHealing > this.maxHealth) {
                 this.currentHealth = this.maxHealth;
@@ -461,13 +458,30 @@ public class PlayerShip extends SpaceShip {
         }
     }
 
-    public boolean isAmmoActive() {
-        return isAmmoActive;
-    }
-
-    public void setAmmoActive(boolean ammoActive, int currentRockets) {
+    // Rockets
+    public void setAmmoPowerUpActive(boolean ammoActive, int currentRockets) {
         this.currentRockets = currentRockets;
         this.isAmmoActive = ammoActive;
+    }
+
+    // Shield
+    public void setShieldActive(boolean shieldActive) {
+        shieldStateTime = 0;
+        isShieldActive = shieldActive;
+    }
+
+    public void activateShield() {
+        setShieldActive(true);
+
+        // Set new animation
+        setCurrentAnimation(animationState.shieldJustActivatedAnimation);
+
+        // Set new healt
+        setCurrentShieldHealth(shieldHealthMax);
+    }
+
+    public boolean isAmmoActive() {
+        return isAmmoActive;
     }
 
     public int getCurrentRockets() {
