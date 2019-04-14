@@ -19,8 +19,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.settingsscreens.SettingsScreen;
-import com.madrat.spaceshooter.screens.shopscreens.ShopScreen;
+import com.madrat.spaceshooter.screens.shopscreens.ShopScreenPowerUps;
+import com.madrat.spaceshooter.screens.shopscreens.ShopScreenShips;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -71,7 +73,6 @@ public class MainMenuScreen implements Screen {
         // Create objects for scrolling background and run it
         sprites = ScrollingBackground.initStarBackground();
         scrollingBackground = new ScrollingBackground(background, sprites);
-
         setup();
     }
 
@@ -93,7 +94,6 @@ public class MainMenuScreen implements Screen {
         settButton = new TextButton("Settings", skin);
         exitButton = new TextButton("Exit", skin);
 
-
         // Increase size of play button
         playButton.getLabel().setFontScale(2.2f * SCALE_FACTOR);
         playButton.addListener(new ClickListener() {
@@ -101,6 +101,7 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 batch.dispose();
                 game.setScreen(new GameTypeScreen(game, scrollingBackground));
+
             }
         });
 
@@ -109,7 +110,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 batch.dispose();
-                game.setScreen(new ShopScreen(game, scrollingBackground));
+                game.setScreen(new ShopScreenPowerUps(game, scrollingBackground));
             }
         });
 
@@ -162,6 +163,9 @@ public class MainMenuScreen implements Screen {
         menuTable.add(settButton).padBottom(48 * SCALE_FACTOR);
         menuTable.row();
         menuTable.add(exitButton);
+
+        if (BuildConfig.UIDEBUG)
+            menuTable.debug();
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);

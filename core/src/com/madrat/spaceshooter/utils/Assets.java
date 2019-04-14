@@ -14,6 +14,10 @@ public class Assets {
     public static final String shopBtn = "buttons/shopBtn.png", shopBtnPressed = "buttons/shopBtn_pressed.png";
     public static final String settBtn = "buttons/settBtn.png", settBtnPressed = "buttons/settBtn_pressed.png";
     public static final String exitBtn = "buttons/exitBtn.png", exitBtnPressed = "buttons/exitBtn_pressed.png";
+    public static final String healTileUp = "buttons/shopPlanes/powerUps/healTileUp.png", healTileDown = "buttons/shopPlanes/powerUps/healTileDown.png";
+    public static final String ammoTileUp = "buttons/shopPlanes/powerUps/ammoTileUp.png", ammoTileDown = "buttons/shopPlanes/powerUps/ammoTileDown.png";
+    public static final String shieldTileUp = "buttons/shopPlanes/powerUps/shieldTileUp.png", shieldTileDown = "buttons/shopPlanes/powerUps/shieldTileDown.png";
+    public static final String closeBtnUp = "buttons/closeUp.png", closeBtnDown = "buttons/closeDown.png";
 
     public static final String blank = "objects/anything/blank.png", pauseBtnUp = "objects/anything/pauseBtnUp.png";
     public static final String pauseBtnDown = "objects/anything/pauseBtnDown.png";
@@ -73,6 +77,16 @@ public class Assets {
         manager.load(blank, Texture.class);
         manager.load(pauseBtnUp, Texture.class);
         manager.load(pauseBtnDown, Texture.class);
+
+        manager.load(healTileUp, Texture.class);
+        manager.load(healTileDown, Texture.class);
+        manager.load(ammoTileUp, Texture.class);
+        manager.load(ammoTileDown, Texture.class);
+        manager.load(shieldTileUp, Texture.class);
+        manager.load(shieldTileDown, Texture.class);
+
+        manager.load(closeBtnUp, Texture.class);
+        manager.load(closeBtnDown, Texture.class);
     }
 
     public static void loadBackground() {
@@ -136,6 +150,16 @@ public class Assets {
         manager.unload(blank);
         manager.unload(pauseBtnUp);
         manager.unload(pauseBtnDown);
+
+        manager.unload(healTileUp);
+        manager.unload(healTileDown);
+        manager.unload(ammoTileUp);
+        manager.unload(ammoTileDown);
+        manager.unload(shieldTileUp);
+        manager.unload(shieldTileDown);
+
+        manager.unload(closeBtnUp);
+        manager.unload(closeBtnDown);
     }
 
     public static void unloadBackground() {

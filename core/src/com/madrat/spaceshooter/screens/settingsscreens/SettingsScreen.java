@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -119,9 +120,12 @@ public class SettingsScreen implements Screen {
         buttonsTable.row();
         buttonsTable.add(statsBtn).padBottom(36 * SCALE_FACTOR);
         buttonsTable.row();
-        buttonsTable.add(aboutBtn).padBottom(78 * SCALE_FACTOR);
+        buttonsTable.add(aboutBtn).padBottom(180 * SCALE_FACTOR);
         buttonsTable.row();
         buttonsTable.add(backBtn);
+
+        if (BuildConfig.UIDEBUG)
+            buttonsTable.debug();
 
         stage.addActor(buttonsTable);
 

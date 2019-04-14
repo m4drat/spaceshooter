@@ -171,6 +171,9 @@ public class GameOverScreen implements Screen {
         menuTable.row();
         menuTable.add(exitBtn).padBottom(120 * SCALE_FACTOR);
 
+        if (BuildConfig.UIDEBUG)
+            menuTable.debug();
+
         // Add table to stage (buttons)
         stage.addActor(menuTable);
 

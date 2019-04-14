@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -120,6 +121,9 @@ public class GameTypeScreen implements Screen {
         menuTable.add(multiplayer).padBottom(120 * SCALE_FACTOR);
         menuTable.row();
         menuTable.add(back);
+
+        if (BuildConfig.UIDEBUG)
+            menuTable.debug();
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);

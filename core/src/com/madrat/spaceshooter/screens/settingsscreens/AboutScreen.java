@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
@@ -34,8 +36,7 @@ public class AboutScreen implements Screen {
     private SpriteBatch batch;
     private ScrollingBackground scrollingBackground;
 
-    private BitmapFont devNameFont;
-    private GlyphLayout devNameLayout, infoLayout;
+    private Label devNameLabel, infoLabel;
 
     private TextButton backBtn;
     private Color nameColor, strColor;
@@ -56,13 +57,10 @@ public class AboutScreen implements Screen {
         nameColor = new Color(0x4699E0ff);
         strColor = new Color(0x30db88ff);
 
-        devNameFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
-        devNameFont.setColor(nameColor);
-        devNameFont.getData().setScale(SCALE_FACTOR / 1.5f); // Created By
-        devNameLayout = new GlyphLayout(devNameFont, "madrat");
-        devNameFont.setColor(strColor);
-        devNameFont.getData().setScale(1.2f * SCALE_FACTOR); // Created By
-        infoLayout = new GlyphLayout(devNameFont, "Created By");
+        infoLabel = new Label("Created by", skin, "emulogic", strColor);
+        infoLabel.setFontScale(SCALE_FACTOR);
+        devNameLabel = new Label("madrat", skin, "emulogic", nameColor);
+        devNameLabel.setFontScale(SCALE_FACTOR / 1.5f);
 
         backBtn = new TextButton("back", skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
@@ -81,8 +79,15 @@ public class AboutScreen implements Screen {
         menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
 
         // Setup all relative positions
-        menuTable.padTop(376 * SCALE_FACTOR);
-        menuTable.add(backBtn).padBottom(90 * SCALE_FACTOR);
+        menuTable.padTop(120 * SCALE_FACTOR);
+        menuTable.add(infoLabel).padBottom(10 * SCALE_FACTOR);
+        menuTable.row();
+        menuTable.add(devNameLabel);
+        menuTable.row();
+        menuTable.add(backBtn).padTop(371 * SCALE_FACTOR);
+
+        if (BuildConfig.UIDEBUG)
+            menuTable.debug();
 
         // Add table to stage (buttons)
         stage.addActor(menuTable);
@@ -120,19 +125,6 @@ public class AboutScreen implements Screen {
 
         // Display background
         scrollingBackground.draw(batch);
-
-        // Draw "created by"
-        devNameFont.draw(batch, infoLayout, Gdx.graphics.getWidth() / 2 - infoLayout.width / 2, Gdx.graphics.getHeight() - infoLayout.height * 3 - 5);
-
-        // Draw name
-        devNameFont.setColor(nameColor);
-        devNameFont.getData().setScale(SCALE_FACTOR / 1.5f);
-        devNameFont.draw(batch, devNameLayout, Gdx.graphics.getWidth() / 2 - devNameLayout.width / 2, Gdx.graphics.getHeight() - infoLayout.height * 4 - 54);
-
-        // Revert changes
-        devNameFont.setColor(strColor);
-        devNameFont.getData().setScale(1.2f * SCALE_FACTOR);
-
         batch.end();
 
         // Display buttons + update UI

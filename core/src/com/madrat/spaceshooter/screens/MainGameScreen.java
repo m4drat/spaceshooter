@@ -255,6 +255,12 @@ public class MainGameScreen implements Screen {
         spawner.initEnemies();
 
         // Add actor to stage (pause Button + pause menu)
+
+        if (BuildConfig.UIDEBUG) {
+            pauseTable.debug();
+            PauseMenuTable.debug();
+        }
+
         stage.addActor(pauseTable);
         stage.addActor(PauseMenuTable);
 

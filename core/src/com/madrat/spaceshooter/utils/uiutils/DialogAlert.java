@@ -47,6 +47,9 @@ public class DialogAlert extends Dialog {
         this.skin = skin;
         this.oldStage = oldStage;
 
+        if (BuildConfig.UIDEBUG)
+            this.debug();
+
         // Close dialog if user clicks anywhere outside current dialog
         InputListener inputListener = new InputListener() {
             @Override
@@ -128,6 +131,9 @@ public class DialogAlert extends Dialog {
 
         button(buttonYes);
 
+        if (BuildConfig.UIDEBUG)
+            buttonYes.debug();
+
         return this;
     }
 
@@ -145,6 +151,9 @@ public class DialogAlert extends Dialog {
         buttonNo.padBottom(button_pad_b * SCALE_FACTOR);
 
         button(buttonNo);
+
+        if (BuildConfig.UIDEBUG)
+            buttonNo.debug();
 
         return this;
     }

@@ -216,6 +216,9 @@ public class Spawner {
                 // System.out.println("[+] Objects in shieldPowerUpPool: " + shieldPowerUpPool.getFree());
                 break;
             }
+            default: {
+                break;
+            }
         }
     }
 

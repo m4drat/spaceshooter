@@ -11,6 +11,13 @@ bar-selector
   orig: 14, 14
   offset: 0, 0
   index: -1
+blank
+  rotate: false
+  xy: 1024, 1024
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
 button
   rotate: false
   xy: 571, 776

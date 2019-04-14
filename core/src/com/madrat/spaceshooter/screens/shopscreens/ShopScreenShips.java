@@ -19,13 +19,14 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import com.google.gson.*;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
-public class ShopScreen implements Screen {
+public class ShopScreenShips implements Screen {
 
     MainGame game;
 
@@ -45,7 +46,7 @@ public class ShopScreen implements Screen {
     private Skin skin;
     private Table buttonsTable;
 
-    public ShopScreen(MainGame newGame, ScrollingBackground scrBack) {
+    public ShopScreenShips(MainGame newGame, ScrollingBackground scrBack) {
         this.game = newGame;
         this.scrollingBackground = scrBack;
         this.batch = new SpriteBatch();
@@ -161,6 +162,9 @@ public class ShopScreen implements Screen {
         buttonsTable.row();
         buttonsTable.add(backBtn);
 
+        if (BuildConfig.UIDEBUG)
+            buttonsTable.debug();
+
         stage.addActor(buttonsTable);
 
         // Back Key listener
@@ -184,34 +188,34 @@ public class ShopScreen implements Screen {
     }
 
     private void setDefault() {
-        setNewShip("zapper");
+        setShip("zapper");
     }
 
     private void setDestroyer() {
-        setNewShip("destroyer");
+        setShip("destroyer");
     }
 
     private void setIgnitor() {
-        setNewShip("ignitor");
+        setShip("ignitor");
     }
 
     private void setTurtle() {
-        setNewShip("turtle");
+        setShip("turtle");
     }
 
     private void setUfo() {
-        setNewShip("ufo");
+        setShip("ufo");
     }
 
     private void setStar() {
-        setNewShip("star");
+        setShip("star");
     }
 
     private void setPinky() {
-        setNewShip("pinky");
+        setShip("pinky");
     }
 
-    private void setNewShip(String newShipJsonHandler) {
+    private void setShip(String newShipJsonHandler) {
         FileHandle currentStateFileHandle;
         FileHandle allShipsFileHandle;
 

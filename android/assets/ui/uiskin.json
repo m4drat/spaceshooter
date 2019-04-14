@@ -340,7 +340,7 @@ com.kotcrab.vis.ui.widget.LinkLabel$LinkLabelStyle: {
 	default: {
 		fontColor: link
 		underline: link-underline
-		font: font
+      font: emulogic
 	}
 }
 com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane$TabbedPaneStyle: {
@@ -445,7 +445,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
-		font: font
+      font: emulogic
 	}
 	menuitem-shortcut: {
 		font: font
@@ -459,7 +459,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {
-		font: font
+      font: emulogic
 		fontColorSelected: white
 		fontColorUnselected: light-gray
 		selection: selection
@@ -492,12 +492,12 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
-		font: font
+      font: emulogic
 		fontColor: white
-		background: select-box
+      background: blank
 		scrollStyle: select-box
 		listStyle: default
-		backgroundOpen: select-box-pressed
+      backgroundOpen: blank
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
