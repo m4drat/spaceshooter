@@ -73,31 +73,31 @@ public class GameOverScreen implements Screen {
 
         // Create gameOver font and textLayout
         gameOverFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
-        gameOverFont.setColor(new Color(0x30db88ff));
+        gameOverFont.setColor(Assets.lightGreen_3);
         gameOverFont.getData().setScale(1.25f * SCALE_FACTOR);
         gameOverLayout = new GlyphLayout(gameOverFont, "GAME OVER");
 
         // Create Highscore font and textLayout
         highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
-        highScoreFont.setColor(new Color(0x7a9af1ff));
+        highScoreFont.setColor(Assets.lightBlue_1);
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreLayout = new GlyphLayout(highScoreFont, "Highscore:" + this.highScore);
 
         // Create total money textLayout
         totalMoneyFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
-        totalMoneyFont.setColor(new Color(0x7a9af1ff));
+        totalMoneyFont.setColor(Assets.lightBlue_1);
         totalMoneyFont.getData().setScale(0.7f * SCALE_FACTOR);
         totalMoneyLayout = new GlyphLayout(highScoreFont, "Total Money:" + this.totalMoney);
 
         // Create score font and textLayout
         scoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
-        scoreFont.setColor(new Color(0xceb963ff));
+        scoreFont.setColor(Assets.lightYellow_1);
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         scoreLayout = new GlyphLayout(scoreFont, "score:" + score);
 
         // Create coins font and textLayout
         coinsFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
-        coinsFont.setColor(new Color(0xceb963ff));
+        coinsFont.setColor(Assets.lightYellow_1);
         coinsFont.getData().setScale(0.7f * SCALE_FACTOR);
         coinsLayout = new GlyphLayout(coinsFont, "money:" + money);
 
@@ -145,10 +145,10 @@ public class GameOverScreen implements Screen {
                 return true;
             }
         });
-        exit.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+        exit.buttonYes.getLabel().setColor(Assets.lightPinky);
         exit.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
 
-        exit.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+        exit.buttonNo.getLabel().setColor(Assets.lightGreen_2);
         exit.buttonNo.getLabel().setFontScale(SCALE_FACTOR);
 
         exitBtn.addListener(new ClickListener() {

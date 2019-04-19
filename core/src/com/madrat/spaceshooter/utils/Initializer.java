@@ -20,11 +20,13 @@ public class Initializer {
             MainGame.localStoragePath = Gdx.files.getLocalStoragePath();
             MainGame.pathToShipConfigs = Assets.shipConfigs;
             MainGame.pathToDefaultParameters = Assets.defaultParameters;
+            MainGame.pathToDefaultShipParameters = Assets.shipDefaultParameters;
             MainGame.pathToCurrentState = Assets.currentState;
         } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
             MainGame.localStoragePath = Gdx.files.getExternalStoragePath() + ".prefs\\files\\";
             MainGame.pathToShipConfigs = MainGame.localStoragePath + Assets.shipConfigs;
             MainGame.pathToDefaultParameters = MainGame.localStoragePath + Assets.defaultParameters;
+            MainGame.pathToDefaultShipParameters = MainGame.localStoragePath + Assets.shipDefaultParameters;
             MainGame.pathToCurrentState = MainGame.localStoragePath + Assets.currentState;
         }
 
@@ -38,7 +40,8 @@ public class Initializer {
         if (data.getBoolean("firstRun", true)
                 || !(Gdx.files.local(MainGame.pathToShipConfigs).exists() || Gdx.files.absolute(MainGame.pathToShipConfigs).exists())
                 || !(Gdx.files.local(MainGame.pathToDefaultParameters).exists() || Gdx.files.absolute(MainGame.pathToDefaultParameters).exists())
-                || !(Gdx.files.local(MainGame.pathToCurrentState).exists() || Gdx.files.absolute(MainGame.pathToCurrentState).exists())) {
+                || !(Gdx.files.local(MainGame.pathToCurrentState).exists() || Gdx.files.absolute(MainGame.pathToCurrentState).exists())
+                || !(Gdx.files.local(MainGame.pathToDefaultShipParameters).exists() || Gdx.files.absolute(MainGame.pathToDefaultShipParameters).exists())) {
 
             if (BuildConfig.DEBUG) {
                 System.out.println("[+] Creating new state files...");
@@ -54,9 +57,10 @@ public class Initializer {
             data.putBoolean("firstRun", false);
 
             // References to data files
-            data.putString("shipConfigs", "shipConfigs.json");
-            data.putString("defaultParameters", "defaultParameters.json");
-            data.putString("currentState", "currentState.json");
+            data.putString("shipConfigs", Assets.shipConfigs);
+            data.putString("defaultParameters", Assets.defaultParameters);
+            data.putString("currentState", Assets.currentState);
+            data.putString("pathToDefaultShipParameters", Assets.shipDefaultParameters);
 
             // Write changes to file
             data.flush();
@@ -66,6 +70,9 @@ public class Initializer {
 
             // Set up user default parameters (base highscore, ship, money, etc)
             initDefaultParameters(MainGame.pathToDefaultParameters);
+
+            // Default ship states
+            initDefaultShipParameters(MainGame.pathToDefaultShipParameters);
 
             // Set up current state (right now == defaultParameters)
             initCurrentState(MainGame.pathToCurrentState);
@@ -146,6 +153,8 @@ public class Initializer {
     }
 
     public static void initDefaultParameters(String path) {
+        initShipConfigs(MainGame.pathToShipConfigs);
+
         FileHandle handle;
 
         Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
@@ -155,6 +164,7 @@ public class Initializer {
         JsonObject defaultJson = new JsonObject(); // Whole object
         JsonObject defaultShip; // Default ship
         JsonObject defaultStats; // Default stats data
+        JsonObject powerUpStateJson;
 
         try {
             defaultStats = parser.parse("{\n" +
@@ -165,8 +175,37 @@ public class Initializer {
                     "    \"healPickedUp\": 0,\n" +
                     "    \"ammoPickedUp\": 0,\n" +
                     "    \"shieldPickedUp\": 0,\n" +
-                    "    \"money\": 750,\n" +
+                    "    \"money\": 1000,\n" +
                     "    \"highscore\": 0\n" +
+                    "}").getAsJsonObject();
+
+            powerUpStateJson = parser.parse("{\n" +
+                    "    \"heal\" : {\n" +
+                    "        \"0\" : {\n" +
+                    "            \"desc\": \"HEAL:+25%\",\n" +
+                    "            \"price\": 1200,\n" +
+                    "            \"isBought\": false\n" +
+                    "        }\n" +
+                    "    }, \n" +
+                    "    \"ammo\" : {\n" +
+                    "        // \"0\" : {\n" +
+                    "        //    \"desc\": \"Homing missiles\",\n" +
+                    "        //    \"price\": 10,\n" +
+                    "        //    \"isBought\": false\n" +
+                    "        // }\n" +
+                    "    }, \n" +
+                    "    \"shield\" : {\n" +
+                    "        \"0\" : {\n" +
+                    "            \"desc\": \"SHIELD:+25%\",\n" +
+                    "            \"price\": 1800,\n" +
+                    "            \"isBought\": false\n" +
+                    "        },\n" +
+                    "        \"1\" : {\n" +
+                    "            \"desc\": \"LIFETIME:+50%\",\n" +
+                    "            \"price\": 2350,\n" +
+                    "            \"isBought\": false\n" +
+                    "        }\n" +
+                    "    }\n" +
                     "}").getAsJsonObject();
 
             // SetUp default values and create json object
@@ -178,6 +217,7 @@ public class Initializer {
 
             // Add stats json object to parent
             defaultJson.add("stats", defaultStats);
+            defaultJson.add("powerUpUpgradesState", powerUpStateJson);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -201,6 +241,75 @@ public class Initializer {
         }
     }
 
+    public static void initDefaultShipParameters(String path) {
+        FileHandle handle;
+
+        Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+
+        JsonObject ships = new JsonObject();
+        JsonElement zapperJson; // Default ship
+        JsonElement destroyerJson;
+        JsonElement ignitorJson;
+        JsonElement turtleJson;
+        JsonElement ufoJson;
+        JsonElement starJson;
+        JsonElement pinkyJson;
+
+        ParametersHandler zapper = new ParametersHandler();
+        ParametersHandler destroyer = new ParametersHandler();
+        ParametersHandler ignitor = new ParametersHandler();
+        ParametersHandler turtle = new ParametersHandler();
+        ParametersHandler ufo = new ParametersHandler();
+        ParametersHandler star = new ParametersHandler();
+        ParametersHandler pinky = new ParametersHandler();
+
+        zapper.setUpDefaultShip();
+        destroyer.setUpDestroyer();
+        ignitor.setUpIgnitor();
+        turtle.setUpTurtle();
+        ufo.setUpUfo();
+        star.setUpStar();
+        pinky.setUpPinky();
+
+        zapperJson = builder.toJsonTree(zapper);
+        destroyerJson = builder.toJsonTree(destroyer);
+        ignitorJson = builder.toJsonTree(ignitor);
+        turtleJson = builder.toJsonTree(turtle);
+        ufoJson = builder.toJsonTree(ufo);
+        starJson = builder.toJsonTree(star);
+        pinkyJson = builder.toJsonTree(pinky);
+
+        try {
+            ships.add("zapper", zapperJson);
+            ships.add("destroyer", destroyerJson);
+            ships.add("ignitor", ignitorJson);
+            ships.add("turtle", turtleJson);
+            ships.add("ufo", ufoJson);
+            ships.add("star", starJson);
+            ships.add("pinky", pinkyJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (MainGame.applicationType == Application.ApplicationType.Android) {
+            handle = Gdx.files.local(path);
+        } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
+            handle = Gdx.files.absolute(path);
+        } else {
+            handle = Gdx.files.local(path);
+        }
+
+        try {
+            // handle.writeString(builder.toJson(ships), false);
+            if (BuildConfig.DEBUG) {
+                System.out.println("initShipConfigsDefaultJsonDump:\n" + builder.toJson(ships));
+            }
+            handle.writeString(MainGame.cryptor.encrypt(builder.toJson(ships)), false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void initCurrentState(String path) {
         FileHandle handle;
 
@@ -211,6 +320,7 @@ public class Initializer {
         JsonObject currentStateJson = new JsonObject(); // Whole object
         JsonObject currentShipJson; // Default ship
         JsonObject defaultStats; // Default stats data
+        JsonObject powerUpStateJson;
 
         try {
             defaultStats = parser.parse("{\n" +
@@ -221,8 +331,37 @@ public class Initializer {
                     "    \"healPickedUp\": 0,\n" +
                     "    \"ammoPickedUp\": 0,\n" +
                     "    \"shieldPickedUp\": 0,\n" +
-                    "    \"money\": 750,\n" +
+                    "    \"money\": 10000,\n" +
                     "    \"highscore\": 0\n" +
+                    "}").getAsJsonObject();
+
+            powerUpStateJson = parser.parse("{\n" +
+                    "    \"heal\" : {\n" +
+                    "        \"0\" : {\n" +
+                    "            \"desc\": \"HEAL:+25%\",\n" +
+                    "            \"price\": 1200,\n" +
+                    "            \"isBought\": false\n" +
+                    "        }\n" +
+                    "    }, \n" +
+                    "    \"ammo\" : {\n" +
+                    "        // \"0\" : {\n" +
+                    "        //    \"desc\": \"Homing missiles\",\n" +
+                    "        //    \"price\": 10,\n" +
+                    "        //    \"isBought\": false\n" +
+                    "        // }\n" +
+                    "    }, \n" +
+                    "    \"shield\" : {\n" +
+                    "        \"0\" : {\n" +
+                    "            \"desc\": \"SHIELD:+25%\",\n" +
+                    "            \"price\": 1800,\n" +
+                    "            \"isBought\": false\n" +
+                    "        },\n" +
+                    "        \"1\" : {\n" +
+                    "            \"desc\": \"LIFETIME:+50%\",\n" +
+                    "            \"price\": 2350,\n" +
+                    "            \"isBought\": false\n" +
+                    "        }\n" +
+                    "    }\n" +
                     "}").getAsJsonObject();
 
             zapper.setUpDefaultShip();
@@ -231,6 +370,7 @@ public class Initializer {
 
             // Add stats json object to parent
             currentStateJson.add("stats", defaultStats);
+            currentStateJson.add("powerUpUpgradesState", powerUpStateJson);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

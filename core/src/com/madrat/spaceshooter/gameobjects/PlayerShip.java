@@ -17,6 +17,7 @@ import com.madrat.spaceshooter.gameobjects.poolobjects.Bullet;
 import com.madrat.spaceshooter.gameobjects.poolobjects.BulletPool;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
+import com.madrat.spaceshooter.utils.BuildConfig;
 
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
@@ -83,6 +84,7 @@ public class PlayerShip extends SpaceShip {
     private void initFromFile(String path) {
         FileHandle currentFileHandle;
         JsonObject shipData;
+        JsonObject powerUpsState;
 
         JsonParser parser = new JsonParser();
 
@@ -98,8 +100,9 @@ public class PlayerShip extends SpaceShip {
         try {
             // Init health, real sizes, speed
             shipData = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject().getAsJsonObject("currentShip");
+            powerUpsState = parser.parse(MainGame.cryptor.decrypt(currentFileHandle.readString())).getAsJsonObject().getAsJsonObject("powerUpUpgradesState");
 
-            // System.out.println(shipData.toString());
+            // System.out.println(powerUpsState);
 
             this.maxHealth = shipData.get("maxHealth").getAsFloat();
             this.currentHealth = maxHealth;
@@ -142,12 +145,39 @@ public class PlayerShip extends SpaceShip {
             this.isDestroyed = false;
             this.goingToDie = false;
 
-            this.maxHealing = shipData.get("maxHealing").getAsFloat();
-            this.shieldLifeTime = shipData.get("shieldLifeTime").getAsFloat();
-            this.shieldHealthMax = this.maxHealth / 2; // (float) shipData.getDouble("shieldHealthMax");
+            // Max healing upgrade
+            if (!powerUpsState.getAsJsonObject("heal").getAsJsonObject("0").get("isBought").getAsBoolean()) {
+                this.maxHealing = shipData.get("maxHealing").getAsFloat();
+            } else {
+                this.maxHealing = shipData.get("maxHealing").getAsFloat() * 1.25f;
+            }
+
+            // + health
+            if (!powerUpsState.getAsJsonObject("shield").getAsJsonObject("0").get("isBought").getAsBoolean()) {
+                this.shieldHealthMax = (this.maxHealth / 2);
+            } else {
+                this.shieldHealthMax = (this.maxHealth / 2) * 1.25f;
+            }
+
+            // + lifetime
+            if (!powerUpsState.getAsJsonObject("shield").getAsJsonObject("1").get("isBought").getAsBoolean()) {
+                this.shieldLifeTime = shipData.get("shieldLifeTime").getAsFloat();
+            } else {
+                this.shieldLifeTime = shipData.get("shieldLifeTime").getAsFloat() * 1.5f;
+            }
+
+            if (BuildConfig.DEBUG) {
+                System.out.println("[+] Shield healthMax default health: " + this.maxHealth / 2);
+                System.out.println("[+] Shield healthMax current health: " + this.shieldHealthMax);
+                System.out.println("[+] Default healMax: " + shipData.get("maxHealing").getAsFloat());
+                System.out.println("[+] Current healMax: " + this.maxHealing);
+                System.out.println("[+] Default shield lifeTime: " + shipData.get("shieldLifeTime").getAsFloat());
+                System.out.println("[+] Current shield lifeTime: " + this.shieldLifeTime);
+            }
+
             this.currentShieldHealth = shipData.get("currentShieldHealth").getAsFloat();
             this.isShieldActive = shipData.get("isShieldActive").getAsBoolean();
-            this.lightBlue = new Color(0x1f8be2ff);
+            this.lightBlue = Assets.lightBlue_2;
 
             this.x = Gdx.graphics.getWidth() / 2 - this.preferredShipWidth / 2;
             this.y = 25;

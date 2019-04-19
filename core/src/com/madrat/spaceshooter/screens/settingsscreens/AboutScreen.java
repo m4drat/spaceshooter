@@ -54,8 +54,8 @@ public class AboutScreen implements Screen {
         skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
 
-        nameColor = new Color(0x4699E0ff);
-        strColor = new Color(0x30db88ff);
+        nameColor = Assets.lightBlue_3;
+        strColor = Assets.lightGreen_3;
 
         infoLabel = new Label("Created by", skin, "emulogic", strColor);
         infoLabel.setFontScale(SCALE_FACTOR);

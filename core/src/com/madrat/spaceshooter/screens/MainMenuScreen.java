@@ -3,7 +3,6 @@ package com.madrat.spaceshooter.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -19,8 +18,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.settingsscreens.SettingsScreen;
-import com.madrat.spaceshooter.screens.shopscreens.ShopScreenPowerUps;
-import com.madrat.spaceshooter.screens.shopscreens.ShopScreenShips;
+import com.madrat.spaceshooter.screens.shopscreens.ShopScreenSpaceShips;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
@@ -110,7 +108,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 batch.dispose();
-                game.setScreen(new ShopScreenPowerUps(game, scrollingBackground));
+                game.setScreen(new ShopScreenSpaceShips(game, scrollingBackground));
             }
         });
 
@@ -139,9 +137,9 @@ public class MainMenuScreen implements Screen {
                 return true;
             }
         });
-        exit.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+        exit.buttonYes.getLabel().setColor(Assets.lightPinky);
         exit.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
-        exit.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+        exit.buttonNo.getLabel().setColor(Assets.lightGreen_2);
         exit.buttonNo.getLabel().setFontScale(SCALE_FACTOR);
 
 

@@ -58,7 +58,7 @@ public class GameTypeScreen implements Screen {
         // create and setup highscore layout + font
         highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
-        highScoreFont.setColor(new Color(0x7a9af1));
+        highScoreFont.setColor(Assets.lightAquamarine);
         highScoreLayout = new GlyphLayout(highScoreFont, "" + this.highScore);
         highScoreLayout.setText(highScoreFont, "Highscore:" + this.highScore);
 
@@ -92,14 +92,14 @@ public class GameTypeScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 DialogAlert confirm = new DialogAlert("", skin, stage);
-                confirm.text("Sorry, not\nimplemented");
+                confirm.text("Coming soon...");
                 confirm.yesButton("OK", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         return true;
                     }
                 });
                 confirm.buttonYes.align(Align.center);
-                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setColor(Assets.lightPinky);
                 confirm.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
                 confirm.show(stage);
             }

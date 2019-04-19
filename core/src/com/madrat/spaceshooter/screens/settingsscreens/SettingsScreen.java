@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -69,7 +68,7 @@ public class SettingsScreen implements Screen {
                 confirmDialog.text("Do you really\nwant to reset\nyour progress?");
                 confirmDialog.yesButton("YES", new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        setDefaultValues(MainGame.pathToCurrentState, MainGame.pathToDefaultParameters);
+                        setDefaultValues(MainGame.pathToCurrentState, MainGame.pathToDefaultParameters, MainGame.pathToShipConfigs, MainGame.pathToDefaultShipParameters);
                         return true;
                     }
                 }).noButton("NO", new InputListener() {
@@ -78,9 +77,9 @@ public class SettingsScreen implements Screen {
                         return true;
                     }
                 });
-                confirmDialog.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirmDialog.buttonYes.getLabel().setColor(Assets.lightPinky);
                 confirmDialog.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
-                confirmDialog.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirmDialog.buttonNo.getLabel().setColor(Assets.lightGreen_2);
                 confirmDialog.buttonNo.getLabel().setFontScale(SCALE_FACTOR);
                 confirmDialog.show(stage);
                 // confirmDialog.scaleBy(SCALE_FACTOR);
@@ -149,29 +148,43 @@ public class SettingsScreen implements Screen {
         game.setScreen(new MainMenuScreen(game, scrollingBackground));
     }
 
-    private void setDefaultValues(String pathToCurrentState, String pathToDefaultValues) {
+    private void setDefaultValues(String pathToCurrentState, String pathToDefaultValues, String pathToCurrentShips, String pathToDefaultCurrentShips) {
         FileHandle currentFileHandle;
         FileHandle defaultValuesHandle;
-        JsonObject defaultState;
 
-        JsonParser parser = new JsonParser();
-        Gson builder = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        FileHandle currentShipsFileHandle;
+        FileHandle defaultShipValuesHandle;
+
+        String defaultState;
+        String defaultShipsState;
 
         // Set appropriate path to file
         if (MainGame.applicationType == Application.ApplicationType.Android) {
             currentFileHandle = Gdx.files.local(pathToCurrentState);
             defaultValuesHandle = Gdx.files.local(pathToDefaultValues);
+
+            currentShipsFileHandle = Gdx.files.local(pathToCurrentShips);
+            defaultShipValuesHandle = Gdx.files.local(pathToDefaultCurrentShips);
         } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
             currentFileHandle = Gdx.files.absolute(pathToCurrentState);
             defaultValuesHandle = Gdx.files.absolute(pathToDefaultValues);
+
+            currentShipsFileHandle = Gdx.files.absolute(pathToCurrentShips);
+            defaultShipValuesHandle = Gdx.files.absolute(pathToDefaultCurrentShips);
         } else {
             currentFileHandle = Gdx.files.local(pathToCurrentState);
             defaultValuesHandle = Gdx.files.local(pathToDefaultValues);
+
+            currentShipsFileHandle = Gdx.files.local(pathToCurrentShips);
+            defaultShipValuesHandle = Gdx.files.local(pathToDefaultCurrentShips);
         }
 
         try {
-            defaultState = parser.parse(MainGame.cryptor.decrypt(defaultValuesHandle.readString())).getAsJsonObject();
-            currentFileHandle.writeString(MainGame.cryptor.encrypt(builder.toJson(defaultState)), false);
+            defaultState = defaultValuesHandle.readString();
+            currentFileHandle.writeString(defaultState, false);
+
+            defaultShipsState = defaultShipValuesHandle.readString();
+            currentShipsFileHandle.writeString(defaultShipsState, false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

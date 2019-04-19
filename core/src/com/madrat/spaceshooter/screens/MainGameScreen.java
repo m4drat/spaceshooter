@@ -58,7 +58,7 @@ public class MainGameScreen implements Screen {
 
     private BitmapFont scoreFont;
     private GlyphLayout scoreLayout, ammoLayout;
-    private Color ammoLayoutColor = new Color(0x7a9af1);
+    private Color ammoLayoutColor = Assets.lightAquamarine;
 
     private Stage stage;
     private Skin skin;
@@ -127,9 +127,9 @@ public class MainGameScreen implements Screen {
                         return true;
                     }
                 });
-                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setColor(Assets.lightPinky);
                 confirm.buttonYes.getLabel().setFontScale(1f * SCALE_FACTOR);
-                confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.buttonNo.getLabel().setColor(Assets.lightGreen_2);
                 confirm.buttonNo.getLabel().setFontScale(1f * SCALE_FACTOR);
                 confirm.show(stage);
             }
@@ -155,9 +155,9 @@ public class MainGameScreen implements Screen {
                         return true;
                     }
                 });
-                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setColor(Assets.lightPinky);
                 confirm.buttonYes.getLabel().setFontScale(1f * SCALE_FACTOR);
-                confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.buttonNo.getLabel().setColor(Assets.lightGreen_2);
                 confirm.buttonNo.getLabel().setFontScale(1f * SCALE_FACTOR);
                 confirm.show(stage);
             }
@@ -183,9 +183,9 @@ public class MainGameScreen implements Screen {
                         return true;
                     }
                 });
-                confirm.buttonYes.getLabel().setColor(new Color(0xe57575ff));
+                confirm.buttonYes.getLabel().setColor(Assets.lightPinky);
                 confirm.buttonYes.getLabel().setFontScale(1f * SCALE_FACTOR);
-                confirm.buttonNo.getLabel().setColor(new Color(0x94dd99ff));
+                confirm.buttonNo.getLabel().setColor(Assets.lightGreen_2);
                 confirm.buttonNo.getLabel().setFontScale(1f * SCALE_FACTOR);
                 // confirm.scaleBy(1f * SCALE_FACTOR);
                 confirm.show(stage);
@@ -420,7 +420,6 @@ public class MainGameScreen implements Screen {
 
                         stats.incDestroyedAsteroids(1);
 
-                        asteroid.remove = true;
                         /*spawner.getAsteroidPool().free(asteroid);
                         spawner.getActiveAsteroids().removeValue(asteroid, true);*/
 
@@ -435,7 +434,10 @@ public class MainGameScreen implements Screen {
                         scoreLayout.setText(scoreFont, "" + playerShip.getScore());
 
                         // Spawn Random PowerUp
-                        spawner.randomPowerUp(asteroid.getX(), asteroid.getY());
+                        if (!asteroid.remove)
+                            spawner.randomPowerUp(asteroid.getX(), asteroid.getY());
+
+                        asteroid.remove = true;
                     }
                 }
             }

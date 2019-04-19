@@ -1,12 +1,30 @@
 package com.madrat.spaceshooter.utils;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets {
     public static AssetManager manager;
+
+    public static final Color lightGreen_1 = new Color(0x6ec115ff);
+    public static final Color lightGreen_2 = new Color(0x94dd99ff);
+    public static final Color lightGreen_3 = new Color(0x30db88ff);
+
+    public static final Color lightPinky = new Color(0xe57575ff);
+
+    public static final Color lightAquamarine = new Color(0x7a9af1);
+    public static final Color lightBlue_1 = new Color(0x7a9af1ff);
+    public static final Color lightBlue_2 = new Color(0x1f8be2ff);
+    public static final Color lightBlue_3 = new Color(0x4699E0ff);
+    public static final Color lightBlue_4 = new Color(0x4da9eaff);
+    public static final Color lightBlue_5 = new Color(0x4da9ffff);
+
+    public static final Color lightYellow_1 = new Color(0xceb963ff);
+    public static final Color lightYellow_2 = new Color(0xfce959ff);
+
 
     public static final String settingsXmlFile = "spacegame.xml", settingsFile = "spacegame";
 
@@ -18,9 +36,12 @@ public class Assets {
     public static final String ammoTileUp = "buttons/shopPlanes/powerUps/ammoTileUp.png", ammoTileDown = "buttons/shopPlanes/powerUps/ammoTileDown.png";
     public static final String shieldTileUp = "buttons/shopPlanes/powerUps/shieldTileUp.png", shieldTileDown = "buttons/shopPlanes/powerUps/shieldTileDown.png";
     public static final String closeBtnUp = "buttons/closeUp.png", closeBtnDown = "buttons/closeDown.png";
+    public static final String buyMenuPlane = "planeLayout/planeBuy.png";
 
-    public static final String blank = "objects/anything/blank.png", pauseBtnUp = "objects/anything/pauseBtnUp.png";
-    public static final String pauseBtnDown = "objects/anything/pauseBtnDown.png";
+    public static final String blank = "objects/anything/blank.png", blankBig = "objects/anything/blankBig.png";
+    public static final String pauseBtnUp = "objects/anything/pauseBtnUp.png", pauseBtnDown = "objects/anything/pauseBtnDown.png";
+
+    public static final String arrow = "buttons/arrow.png";
 
     public static final String asteroid1Animation = "objects/asteroids/asteroid1.png", asteroid2Animation = "objects/asteroids/asteroid2.png";
 
@@ -57,7 +78,8 @@ public class Assets {
     public static final String shieldPowerUp = "objects/powerUps/shieldPowerUp.png";
 
     public static final String shipConfigs = "shipConfigs.json", defaultParameters = "defaultParameters.json";
-    public static final String currentState = "currentState.json";
+    public static final String currentState = "currentState.json", powerUpsState = "powerUpStates.json";
+    public static final String shipDefaultParameters = "shipDefaultParameters.json";
 
 
     public static void loadFont() {
@@ -75,8 +97,12 @@ public class Assets {
 
     public static void loadUiButtons() {
         manager.load(blank, Texture.class);
+        manager.load(blankBig, Texture.class);
         manager.load(pauseBtnUp, Texture.class);
         manager.load(pauseBtnDown, Texture.class);
+
+        manager.load(arrow, Texture.class);
+        manager.load(buyMenuPlane, Texture.class);
 
         manager.load(healTileUp, Texture.class);
         manager.load(healTileDown, Texture.class);
@@ -148,8 +174,12 @@ public class Assets {
 
     public static void unloadUiButtons() {
         manager.unload(blank);
+        manager.unload(blankBig);
         manager.unload(pauseBtnUp);
         manager.unload(pauseBtnDown);
+
+        manager.unload(arrow);
+        manager.unload(buyMenuPlane);
 
         manager.unload(healTileUp);
         manager.unload(healTileDown);
