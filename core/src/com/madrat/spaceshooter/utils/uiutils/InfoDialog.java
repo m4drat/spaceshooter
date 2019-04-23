@@ -66,7 +66,7 @@ public class InfoDialog extends Dialog {
         objectLabel = new Label(objectName, skin);
         objectLabel.setColor(Assets.lightBlue_5);
         objectLabel.setFontScale(ObjectLabelFontScale * SCALE_FACTOR);
-        parent.add(objectLabel).padRight(30 * SCALE_FACTOR).padTop(10 * SCALE_FACTOR).padLeft(80);
+        parent.add(objectLabel).padRight(30 * SCALE_FACTOR).padTop(10 * SCALE_FACTOR).padLeft(80 * SCALE_FACTOR);
 
         ImageButton close = new ImageButton(new TextureRegionDrawable(new TextureRegion(Assets.manager.get(Assets.closeBtnUp, Texture.class))), new TextureRegionDrawable(new TextureRegion(Assets.manager.get(Assets.closeBtnDown, Texture.class))));
         close.addListener(new InputListener() {

@@ -41,6 +41,12 @@
       "b": 0.86,
       "a": 1
     },
+    "light-gray2": {
+      "r": 0.1,
+      "g": 0.1,
+      "b": 0.1,
+      "a": 0.7
+    },
     "link": {
       "r": 0.53039217,
       "g": 1,
@@ -265,14 +271,14 @@
       "checkBackgroundOver": "checkbox",
       "checkBackgroundDown": "checkbox-pressed",
       "tick": "check",
-      "font": "font"
+      "font": "emulogic"
     },
     "radio": {
       "checkBackground": "radio",
       "checkBackgroundOver": "radio",
       "checkBackgroundDown": "radio-pressed",
       "tick": "check-radio",
-      "font": "font"
+      "font": "emulogic"
     }
   },
   "com.kotcrab.vis.ui.widget.PopupMenu$PopupMenuStyle": {
@@ -424,7 +430,7 @@
     "default": {
       "checkboxOn": "checkbox-checked",
       "checkboxOff": "checkbox",
-      "font": "font"
+      "font": "emulogic"
     },
     "radio": {
       "checkboxOn": "radio-checked",
@@ -535,9 +541,9 @@
   },
   "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
     "default": {
-      "font": "font",
+      "font": "emulogic",
       "fontColor": "white",
-      "focusedFontColor": "black",
+      "focusedFontColor": "light-gray2",
       "background": "textfield",
       "focusedBackground": "textfield-pressed",
       "cursor": "black",

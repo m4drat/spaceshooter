@@ -2,6 +2,7 @@ package com.madrat.spaceshooter.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,13 +22,19 @@ import com.madrat.spaceshooter.screens.settingsscreens.SettingsScreen;
 import com.madrat.spaceshooter.screens.shopscreens.ShopScreenSpaceShips;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Initializer;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+import com.madrat.spaceshooter.utils.uiutils.TextInputDialog;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
+import static com.madrat.spaceshooter.MainGame.GENERAL_HEIGHT;
+import static com.madrat.spaceshooter.MainGame.GENERAL_WIDTH;
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
 public class MainMenuScreen implements Screen {
 
@@ -48,7 +55,7 @@ public class MainMenuScreen implements Screen {
     private SpriteBatch batch;
     private Sprite background;
 
-    private DialogAlert exit;
+    private DialogAlert exit, error;
 
     // Other runs constructor
     public MainMenuScreen(MainGame newGame, ScrollingBackground scrBack) {
@@ -62,6 +69,9 @@ public class MainMenuScreen implements Screen {
 
     // First run constructor
     public MainMenuScreen(MainGame newGame) {
+        // Initialize initializer to init initFunctions, which will initialize user data :)
+        Initializer.init();
+
         this.game = newGame;
 
         // Create base background for scrolling background
@@ -72,6 +82,54 @@ public class MainMenuScreen implements Screen {
         sprites = ScrollingBackground.initStarBackground();
         scrollingBackground = new ScrollingBackground(background, sprites);
         setup();
+
+        final Preferences data = Gdx.app.getPreferences("spacegame");
+        if (data.getString("username").length() == 0) {
+            final TextInputDialog textInputDialog = new TextInputDialog(skin, stage, "Enter Your name", 0.7f, 300, 200);
+            textInputDialog.setPosition(GENERAL_WIDTH / 2 - textInputDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - textInputDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
+
+            textInputDialog.getActBtn().addListener(new InputListener() {
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    if (textInputDialog.getTextField().getText().length() == 0) {
+                        nameError(stage, "Name cannot\nbe empty!");
+                        error.show(stage);
+                    } else if (!checkName(textInputDialog.getTextField().getText())) {
+                        nameError(stage, "Name Cannot\ncontain special\ncharacters!");
+                        error.show(stage);
+                    } else { // All - ok
+                        data.putString("username", textInputDialog.getTextField().getText());
+                        data.flush();
+                        Gdx.input.setOnscreenKeyboardVisible(false);
+                        textInputDialog.hide();
+                    }
+                    return true;
+                }
+            });
+
+            textInputDialog.show(stage);
+        }
+    }
+
+    private boolean checkName(String name) {
+        Pattern regex = Pattern.compile("[ `$&+,:;=\\\\?@#|/'<>.^*()%!-]");
+        if (regex.matcher(name).find()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void nameError(Stage stage, String text) {
+        DialogAlert successfullySelectedLoc = new DialogAlert("", skin, stage);
+        successfullySelectedLoc.text(text).yesButton("OK", new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+        successfullySelectedLoc.buttonYes.getLabel().setColor(Assets.lightPinky);
+        successfullySelectedLoc.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
+
+        this.error = successfullySelectedLoc;
     }
 
     private void setup() {

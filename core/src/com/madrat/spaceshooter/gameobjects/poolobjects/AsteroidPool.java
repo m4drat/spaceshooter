@@ -21,7 +21,6 @@ public class AsteroidPool extends Pool<Asteroid> {
     // Default object which created in pool
     @Override
     protected Asteroid newObject() {
-        // System.out.println("[+] Creating new asteroid");
         return new Asteroid(animationSpeed, radius, realWidth, realHeight);
     }
 }

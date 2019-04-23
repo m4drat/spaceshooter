@@ -15,8 +15,6 @@ public class MainGame extends Game {
 
     public static String localStoragePath;
     public static String pathToShipConfigs;
-    public static String pathToDefaultParameters;
-    public static String pathToDefaultShipParameters;
     public static String pathToCurrentState;
     public static Encryptor cryptor;
     public static DebugUtils debugUtils;
@@ -51,10 +49,6 @@ public class MainGame extends Game {
             System.out.println("Scale FactorX: " + SCALE_X);
             System.out.println("Scale FactorY: " + SCALE_Y);
         }
-
-
-        // Initialize initializer to init initFunctions, which will initialize user data :)
-        Initializer.init();
 
         // Catch backKey
         Gdx.input.setCatchBackKey(true);

@@ -25,6 +25,9 @@ public class Assets {
     public static final Color lightYellow_1 = new Color(0xceb963ff);
     public static final Color lightYellow_2 = new Color(0xfce959ff);
 
+    public static final String apiServer = "http://192.168.1.68:8080/", apiEndpointScoreboard = "scoreboard";
+    public static final String apiEndpointUpdateScore = "updatescore";
+    public static final int apiServerPort = 8080;
 
     public static final String settingsXmlFile = "spacegame.xml", settingsFile = "spacegame";
 
@@ -37,6 +40,8 @@ public class Assets {
     public static final String shieldTileUp = "buttons/shopPlanes/powerUps/shieldTileUp.png", shieldTileDown = "buttons/shopPlanes/powerUps/shieldTileDown.png";
     public static final String closeBtnUp = "buttons/closeUp.png", closeBtnDown = "buttons/closeDown.png";
     public static final String buyMenuPlane = "planeLayout/planeBuy.png";
+
+    public static final String checkBoxImageUp = "buttons/checkBoxImageUp.png", checkBoxImageDown = "buttons/checkBoxImageDown.png";
 
     public static final String blank = "objects/anything/blank.png", blankBig = "objects/anything/blankBig.png";
     public static final String pauseBtnUp = "objects/anything/pauseBtnUp.png", pauseBtnDown = "objects/anything/pauseBtnDown.png";
@@ -77,9 +82,7 @@ public class Assets {
     public static final String healPowerUp = "objects/powerUps/healPowerUp.png", ammoPowerUp = "objects/powerUps/ammoPowerUp.png";
     public static final String shieldPowerUp = "objects/powerUps/shieldPowerUp.png";
 
-    public static final String shipConfigs = "shipConfigs.json", defaultParameters = "defaultParameters.json";
-    public static final String currentState = "currentState.json", powerUpsState = "powerUpStates.json";
-    public static final String shipDefaultParameters = "shipDefaultParameters.json";
+    public static final String shipConfigs = "shipConfigs.json", currentState = "currentState.json";
 
 
     public static void loadFont() {
@@ -113,6 +116,9 @@ public class Assets {
 
         manager.load(closeBtnUp, Texture.class);
         manager.load(closeBtnDown, Texture.class);
+
+        manager.load(checkBoxImageDown, Texture.class);
+        manager.load(checkBoxImageUp, Texture.class);
     }
 
     public static void loadBackground() {
@@ -123,7 +129,6 @@ public class Assets {
         manager.load(mars1, Texture.class);
         manager.load(earth1, Texture.class);
         manager.load(jupiter1, Texture.class);
-        // manager.load(neptune1, Texture.class);
     }
 
     public static void loadPowerUps() {
@@ -190,6 +195,9 @@ public class Assets {
 
         manager.unload(closeBtnUp);
         manager.unload(closeBtnDown);
+
+        manager.unload(checkBoxImageDown);
+        manager.unload(checkBoxImageUp);
     }
 
     public static void unloadBackground() {

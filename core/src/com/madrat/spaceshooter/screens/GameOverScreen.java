@@ -3,6 +3,7 @@ package com.madrat.spaceshooter.screens;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -26,6 +27,8 @@ import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.api.ApiRequest;
+import com.madrat.spaceshooter.utils.api.resourcereprs.User;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 import com.madrat.spaceshooter.utils.Stats;
@@ -50,7 +53,8 @@ public class GameOverScreen implements Screen {
     private TextButton backBtn;
     private TextButton exitBtn;
 
-    private DialogAlert exit;
+    private DialogAlert exit, error;
+    private Thread sendHighScore;
 
     private int score, highScore, money, totalMoney;
 
@@ -222,7 +226,37 @@ public class GameOverScreen implements Screen {
             if (highScore < stats.getScore()) {
                 this.highScore = stats.getScore();
                 currentState.getAsJsonObject("stats").addProperty("highscore", score);
-                // currentFileHandle.writeString(builder.toJson(currentState), false);
+            }
+
+            // Send highscore to server
+            Preferences data = Gdx.app.getPreferences("spacegame");
+            if (data.getBoolean("sendscore", true)) {
+                final User currentUser = new User(data.getString("serverUUID"), data.getString("clientUUID"), data.getString("username"), this.highScore);
+
+                sendHighScore = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            ApiRequest apiHandler = new ApiRequest();
+                            apiHandler.sendScore(currentUser, Assets.apiServer, Assets.apiEndpointUpdateScore);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            error = new DialogAlert("", skin, stage);
+                            error.text("Cannot send data...");
+                            error.getTextLabel().setFontScale(SCALE_FACTOR / 1.6f);
+                            error.yesButton("OK", new InputListener() {
+                                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                                    error.hide();
+                                    return true;
+                                }
+                            });
+                            error.buttonYes.getLabel().setColor(Assets.lightPinky);
+                            error.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
+                            error.show(stage);
+                        }
+                    }
+                });
+                sendHighScore.start();
             }
 
             // Update money value

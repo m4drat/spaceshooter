@@ -201,4 +201,8 @@ public class DialogAlert extends Dialog {
 
         return this;
     }
+
+    public Label getTextLabel() {
+        return label;
+    }
 }

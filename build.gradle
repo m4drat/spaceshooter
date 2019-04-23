@@ -11,8 +11,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
-
-
     }
 }
 
@@ -93,6 +91,15 @@ project(":core") {
         implementation "com.github.czyzby:gdx-kiwi:1.9.1.9.6"
         implementation "org.apache.commons:commons-lang3:3.8.1"
         implementation 'com.google.code.gson:gson:2.8.5'
+
+        // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
+        compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.19.4'
+
+        // https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson
+        compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.28'
+
+        // https://mvnrepository.com/artifact/com.sun.jersey/jersey-json
+        compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
     }
 }
 
