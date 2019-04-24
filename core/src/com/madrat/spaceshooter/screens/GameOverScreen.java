@@ -201,6 +201,7 @@ public class GameOverScreen implements Screen {
     }
 
     private void setPreviousScreen() {
+        isDisposed = true;
         batch.dispose();
         game.setScreen(new MainMenuScreen(game, scrollingBackground));
     }
