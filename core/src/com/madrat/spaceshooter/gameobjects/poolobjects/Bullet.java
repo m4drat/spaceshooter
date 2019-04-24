@@ -42,7 +42,6 @@ public class Bullet implements Pool.Poolable {
 
         this.x = 0f;
         this.y = 0f;
-        // System.out.println("[+] Resetting bullet");
     }
 
     public Bullet(String bulletTexturePath, float animationSpeed, int realWidth, int realHeight, bulletType bulletType) {

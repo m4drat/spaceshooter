@@ -63,7 +63,7 @@ public class Spawner {
     // Simple initializer function
     public void initAsteroids() {
         // Initialize Asteroid Pool
-        this.asteroidPool = new AsteroidPool(0.07f, 32, 64, 64);
+        this.asteroidPool = new AsteroidPool(0.07f, 34, 64, 64);
 
         // Create activeAsteroids Array
         this.activeAsteroids = new Array<Asteroid>();
@@ -264,13 +264,13 @@ public class Spawner {
     public void initEnemies() {
 
         // This objects initialized using constants because they're immutable (unlike player ship)
-        this.zapperPool = new EnemyPool(24, 24, 55, 45, 55, 45, 0, 0, 1, 0.085f, 0.3f, 600, 150, 50, 1, SpaceShip.shipHandler.zapper, Assets.ship1Animation);
-        this.destroyerPool = new EnemyPool(32, 32, 56, 56, 56, 48, 0, -2, 1.4f, 0.12f, 0.4f, 600, 200, 100, 2, SpaceShip.shipHandler.destroyer, Assets.ship3Animation);
-        this.ignitorPool = new EnemyPool(32, 32, 52, 52, 56, 56, 0, 0, 1, 0.1f, 0.28f, 600, 250, 140, 2, SpaceShip.shipHandler.ignitor, Assets.ship5Animation);
-        this.turtlePool = new EnemyPool(32, 32, 64, 64, 46, 64, 0, 0, 3, 0.18f, 0.4f, 500, 50, 200, 3, SpaceShip.shipHandler.turtle, Assets.ship7Animation);
+        this.zapperPool = new EnemyPool(24, 24, 60, 49, 55, 45, 0, 0, 1, 0.085f, 0.3f, 600, 150, 50, 1, SpaceShip.shipHandler.zapper, Assets.ship1Animation);
+        this.destroyerPool = new EnemyPool(32, 32, 64, 64, 56, 48, 0, -2, 1.4f, 0.12f, 0.4f, 600, 200, 100, 2, SpaceShip.shipHandler.destroyer, Assets.ship3Animation);
+        this.ignitorPool = new EnemyPool(32, 32, 56, 56, 56, 56, 0, 0, 1, 0.1f, 0.28f, 600, 250, 140, 2, SpaceShip.shipHandler.ignitor, Assets.ship5Animation);
+        this.turtlePool = new EnemyPool(32, 32, 64, 64, 46, 64, 0, 0, 3, 0.18f, 0.4f, 500, 90, 200, 3, SpaceShip.shipHandler.turtle, Assets.ship7Animation);
         this.ufoPool = new EnemyPool(32, 32, 64, 64, 52, 52, 0, 0, 1.2f, 0.21f, 0.3f, 700, 200, 220, 2, SpaceShip.shipHandler.ufo, Assets.ship13Animation);
-        this.starPool = new EnemyPool(32, 32, 56, 56, 56, 56, 0, 0, 0.75f, 0.25f, 0.42f, 700, 300, 260, 3, SpaceShip.shipHandler.star, Assets.ship9Animation);
-        this.pinkyPool = new EnemyPool(32, 32, 58, 58, 50, 56, 0, 0, 1f, 0.12f, 0.28f, 700, 80, 250, 2, SpaceShip.shipHandler.pinky, Assets.ship11Animation);
+        this.starPool = new EnemyPool(32, 32, 64, 64, 56, 56, 0, 0, 0.75f, 0.25f, 0.42f, 700, 300, 260, 3, SpaceShip.shipHandler.star, Assets.ship9Animation);
+        this.pinkyPool = new EnemyPool(32, 32, 64, 64, 50, 56, 0, 0, 1f, 0.12f, 0.28f, 700, 80, 250, 2, SpaceShip.shipHandler.pinky, Assets.ship11Animation);
 
         this.activeEnemies = new Array<Enemy>();
         this.enemiesToDelete = new Array<Enemy>();

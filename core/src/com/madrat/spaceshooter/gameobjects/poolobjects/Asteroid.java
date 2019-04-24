@@ -35,7 +35,6 @@ public class Asteroid implements Pool.Poolable {
     public void reset() {
         // Called when asteroid is freed
         this.remove = false;
-        // System.out.println("[+] Resetting asteroid");
     }
 
     public Asteroid(float animationSpeed, int radius, int realWidth, int realHeight) {

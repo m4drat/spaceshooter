@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
-import com.madrat.spaceshooter.utils.DescriptionRow;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;

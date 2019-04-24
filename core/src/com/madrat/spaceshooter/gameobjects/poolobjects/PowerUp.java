@@ -12,7 +12,7 @@ import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
 public class PowerUp implements Pool.Poolable {
 
-    private static final int SPEED = 1;
+    private static final float SPEED = 1.5f;
 
     private Animation<TextureRegion>[] animations;
     private float x, y;

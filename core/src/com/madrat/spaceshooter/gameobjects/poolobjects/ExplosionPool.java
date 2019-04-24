@@ -24,7 +24,6 @@ public class ExplosionPool extends Pool<Explosion> {
     // method to create a single object
     @Override
     protected Explosion newObject() {
-        // System.out.println("[+] Creating new Explosion object");
         return new Explosion(frameLength, tileSize, explosionTexturePath);
     }
 

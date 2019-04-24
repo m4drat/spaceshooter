@@ -23,7 +23,6 @@ public class PowerUpPool extends Pool<PowerUp> {
 
     @Override
     protected PowerUp newObject() {
-        // System.out.println("[+] Creating new powerUp");
         return new PowerUp(frameLength, tileWidth, tileHeight, tag, pathToAnimationSheet);
     }
 }

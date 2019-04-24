@@ -6,6 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Assets class
+ * All resources are here
+ * Every resource must be loaded using asset manager (load -> get -> unload)
+ */
+
 public class Assets {
     public static AssetManager manager;
 

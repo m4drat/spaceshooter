@@ -13,8 +13,6 @@ import com.madrat.spaceshooter.utils.BuildConfig;
 
 /**
  * Simple tile class
- *
- * @author madrat
  */
 
 public class TileObject extends Table {

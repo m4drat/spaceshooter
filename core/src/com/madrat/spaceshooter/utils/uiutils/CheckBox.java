@@ -11,6 +11,10 @@ import com.madrat.spaceshooter.utils.Assets;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
+/**
+ * CheckBox class (created only because libgdx CheckBox doesn't support scaling...)
+ */
+
 public class CheckBox extends Table {
 
     // button properties

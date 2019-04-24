@@ -329,6 +329,7 @@ public class PlayerShip extends SpaceShip {
                 lastBulletShoot += delta;
             }
 
+            // Spawn rockets if need
             if (this.lastRocketShoot > delayBetweenShootsRockets) {
                 this.lastRocketShoot = 0;
                 if (currentRockets > 0 && isAmmoActive) {
@@ -374,7 +375,6 @@ public class PlayerShip extends SpaceShip {
     public void renderBullets(SpriteBatch batch) {
         for (Bullet bullet : this.activeBullets) {
             bullet.render(batch);
-            // bullet.getCollisionRect().drawCollider(batch);
         }
     }
 

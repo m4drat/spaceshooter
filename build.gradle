@@ -1,13 +1,11 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
@@ -32,6 +30,7 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
+        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
@@ -77,7 +76,6 @@ project(":android") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -92,13 +90,7 @@ project(":core") {
         implementation "org.apache.commons:commons-lang3:3.8.1"
         implementation 'com.google.code.gson:gson:2.8.5'
 
-        // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
         compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.19.4'
-
-        // https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson
-        compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.28'
-
-        // https://mvnrepository.com/artifact/com.sun.jersey/jersey-json
         compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
     }
 }

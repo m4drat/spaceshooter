@@ -28,8 +28,6 @@ public class Explosion implements Pool.Poolable {
     public void reset() {
         this.remove = false;
         this.stateTime = 0;
-
-        // System.out.println("[+] Resetting explosion");
     }
 
     public Explosion(float frameLength, int tileSize, String explosionTexturePath) {

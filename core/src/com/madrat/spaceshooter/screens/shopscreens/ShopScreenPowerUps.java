@@ -30,7 +30,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
-import com.madrat.spaceshooter.utils.DescriptionRow;
+import com.madrat.spaceshooter.utils.uiutils.DescriptionRow;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
 import com.google.gson.*;

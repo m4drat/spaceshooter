@@ -44,6 +44,11 @@ import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 import static com.madrat.spaceshooter.MainGame.debugUtils;
 import static com.madrat.spaceshooter.gameobjects.PlayerShip.animationState;
 
+/**
+ * Main game class with game loop
+ * All inGame logic is here
+ */
+
 public class MainGameScreen implements Screen {
 
     MainGame game;

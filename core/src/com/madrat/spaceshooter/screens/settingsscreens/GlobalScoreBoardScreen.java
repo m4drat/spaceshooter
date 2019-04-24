@@ -25,9 +25,6 @@ import com.madrat.spaceshooter.utils.api.resourcereprs.User;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -45,7 +42,7 @@ public class GlobalScoreBoardScreen implements Screen {
     private Label scoreBoardLabel, currentUser;
     private TextButton backBtn;
 
-    private boolean isDataFetched = false;
+    private boolean isDataFetched = false, isDisposed = false;
     private Thread fetchScoreboard;
 
     private List<User> users;
@@ -87,7 +84,9 @@ public class GlobalScoreBoardScreen implements Screen {
                     });
                     error.buttonYes.getLabel().setColor(Assets.lightPinky);
                     error.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
-                    error.show(stage);
+                    if (!isDisposed) {
+                        error.show(stage);
+                    }
                 }
             }
         });
@@ -145,6 +144,7 @@ public class GlobalScoreBoardScreen implements Screen {
     }
 
     public void setSettingsScreen() {
+        isDisposed = true;
         batch.dispose();
         game.setScreen(new SettingsScreen(game, scrollingBackground));
     }

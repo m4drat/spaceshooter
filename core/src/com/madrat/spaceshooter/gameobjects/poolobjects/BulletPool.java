@@ -23,7 +23,6 @@ public class BulletPool extends Pool<Bullet> {
     // method to create a single object
     @Override
     protected Bullet newObject() {
-        // System.out.println("[+] Creating new bullet");
         return new Bullet(this.bulletTexturePath, animationSpeed, realWidth, realHeight, type);
     }
 }

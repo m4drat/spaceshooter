@@ -1,7 +1,6 @@
 package com.madrat.spaceshooter.utils.api.resourcereprs;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+// Simple user entity to work with jackson client (to interact with API server)
 
 public class User implements Comparable<User> {
 
