@@ -58,6 +58,8 @@ public class GameOverScreen implements Screen {
 
     private int score, highScore, money, totalMoney;
 
+    private boolean isDisposed = false;
+
     public GameOverScreen(MainGame newGame, ScrollingBackground scrBack, Stats stats) {
         this.game = newGame;
         this.batch = new SpriteBatch();
@@ -122,6 +124,7 @@ public class GameOverScreen implements Screen {
         restartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                isDisposed = true;
                 batch.dispose();
                 game.setScreen(new MainGameScreen(game));
             }
@@ -139,6 +142,7 @@ public class GameOverScreen implements Screen {
         exit.text("Do you really\nwant to exit?");
         exit.yesButton("YES", new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isDisposed = true;
                 Assets.manager.dispose();
                 Gdx.app.exit();
                 return true;
@@ -252,7 +256,8 @@ public class GameOverScreen implements Screen {
                             });
                             error.buttonYes.getLabel().setColor(Assets.lightPinky);
                             error.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
-                            error.show(stage);
+                            if (!isDisposed)
+                                error.show(stage);
                         }
                     }
                 });

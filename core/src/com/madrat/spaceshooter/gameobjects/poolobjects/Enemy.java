@@ -112,7 +112,6 @@ public class Enemy extends SpaceShip implements Pool.Poolable {
         for (Bullet bullet : activeBullets) {
             bullet.update(delta);
             if (bullet.remove) {
-                // System.out.println("[+] Deleting enemy bullet\nEnemyBulletPool size: " + bulletPool.getFree());
                 bulletsToRemove.add(bullet);
                 bulletPool.free(bullet);
             }
