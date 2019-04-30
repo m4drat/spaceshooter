@@ -1,0 +1,506 @@
+@startuml
+
+title __CORE's Class Diagram__\n
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      package com.madrat.spaceshooter.screens.settingsscreens {
+        class AboutScreen {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.api {
+        class ApiRequest {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class Assets {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class Asteroid {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class AsteroidPool {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class BuildConfig {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class Bullet {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class BulletPool {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.uiutils {
+        class CheckBox {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.physics2d {
+      class CollisionCircle {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.physics2d {
+      class CollisionRect {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class DebugUtils {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.uiutils {
+        class DescriptionRow {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.uiutils {
+        class DialogAlert {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class Encryptor {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class Enemy {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class EnemyPool {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class Explosion {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class ExplosionPool {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      class GameOverScreen {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      class GameTypeScreen {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      package com.madrat.spaceshooter.screens.settingsscreens {
+        class GlobalScoreBoardScreen {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.uiutils {
+        class InfoDialog {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class Initializer {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    class MainGame {
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      class MainGameScreen {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      class MainMenuScreen {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class ObjectHandler {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class ParametersHandler {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      class PlayerShip {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class PowerUp {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      package com.madrat.spaceshooter.gameobjects.poolobjects {
+        class PowerUpPool {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class ScrollingBackground {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      package com.madrat.spaceshooter.screens.settingsscreens {
+        class SettingsScreen {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      package com.madrat.spaceshooter.screens.shopscreens {
+        class ShopScreenPowerUps {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      package com.madrat.spaceshooter.screens.shopscreens {
+        class ShopScreenSpaceShips {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      class SpaceShip {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.gameobjects {
+      class Spawner {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      class Stats {
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.screens {
+      package com.madrat.spaceshooter.screens.settingsscreens {
+        class StatsScreen {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.uiutils {
+        class TextInputDialog {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.uiutils {
+        class TileObject {
+        }
+      }
+    }
+  }
+  
+
+  package com.madrat.spaceshooter {
+    package com.madrat.spaceshooter.utils {
+      package com.madrat.spaceshooter.utils.api {
+        package com.madrat.spaceshooter.utils.api.resourcereprs {
+          class User {
+          }
+        }
+      }
+    }
+  }
+  
+
+  AboutScreen -up-|> Screen
+  AboutScreen o-- MainGame : game
+  AboutScreen o-- ScrollingBackground : scrollingBackground
+  Asteroid -up-|> Poolable
+  Asteroid o-- CollisionCircle : collisionCircle
+  AsteroidPool -up-|> Pool
+  Bullet -up-|> Poolable
+  Bullet o-- bulletType : type
+  Bullet o-- CollisionRect : rect
+  BulletPool -up-|> Pool
+  BulletPool o-- bulletType : type
+  CheckBox -up-|> Table
+  CollisionCircle o-- colliderTag : tag
+  CollisionRect o-- colliderTag : tag
+  DebugUtils -up-|> Disposable
+  DialogAlert -up-|> Dialog
+  Enemy -up-|> Poolable
+  Enemy -up-|> SpaceShip
+  Enemy o-- animationState : currentAnimation
+  Enemy o-- BulletPool : bulletPool
+  EnemyPool -up-|> Pool
+  EnemyPool o-- shipHandler : handle
+  Explosion -up-|> Poolable
+  ExplosionPool -up-|> Pool
+  GameOverScreen -up-|> Screen
+  GameOverScreen o-- MainGame : game
+  GameOverScreen o-- ScrollingBackground : scrollingBackground
+  GameOverScreen o-- DialogAlert : exit
+  GameOverScreen o-- DialogAlert : error
+  GameTypeScreen -up-|> Screen
+  GameTypeScreen o-- MainGame : game
+  GameTypeScreen o-- ScrollingBackground : scrollingBackground
+  GlobalScoreBoardScreen -up-|> Screen
+  GlobalScoreBoardScreen o-- MainGame : game
+  GlobalScoreBoardScreen o-- ScrollingBackground : scrollingBackground
+  GlobalScoreBoardScreen o-- DialogAlert : error
+  InfoDialog -up-|> Dialog
+  MainGame -up-|> Game
+  MainGameScreen -up-|> Screen
+  MainGameScreen o-- MainGame : game
+  MainGameScreen o-- PlayerShip : playerShip
+  MainGameScreen o-- Spawner : spawner
+  MainGameScreen o-- ScrollingBackground : scrollingBackground
+  MainGameScreen o-- DialogAlert : confirm
+  MainGameScreen o-- MainGameScreen : gameScreen
+  MainGameScreen o-- Stats : stats
+  MainMenuScreen -up-|> Screen
+  MainMenuScreen o-- MainGame : game
+  MainMenuScreen o-- ScrollingBackground : scrollingBackground
+  MainMenuScreen o-- DialogAlert : exit
+  MainMenuScreen o-- DialogAlert : error
+  ObjectHandler -up-|> Comparable
+  ParametersHandler -up-|> Serializable
+  PlayerShip -up-|> SpaceShip
+  PlayerShip o-- animationState : currentAnimation
+  PlayerShip o-- BulletPool : bulletPool
+  PlayerShip o-- BulletPool : rocketPool
+  PowerUp -up-|> Poolable
+  PowerUp o-- CollisionRect : powerUpCollisionRect
+  PowerUpPool -up-|> Pool
+  PowerUpPool o-- colliderTag : tag
+  SettingsScreen -up-|> Screen
+  SettingsScreen o-- MainGame : game
+  SettingsScreen o-- ScrollingBackground : scrollingBackground
+  SettingsScreen o-- DialogAlert : confirmDialog
+  SettingsScreen o-- CheckBox : checkBox
+  ShopScreenPowerUps -up-|> Screen
+  ShopScreenPowerUps o-- MainGame : game
+  ShopScreenPowerUps o-- ScrollingBackground : scrollingBackground
+  ShopScreenPowerUps o-- DialogAlert : notEnoughMoneyDialog
+  ShopScreenPowerUps o-- DialogAlert : successfullyBoughtDialog
+  ShopScreenSpaceShips -up-|> Screen
+  ShopScreenSpaceShips o-- MainGame : game
+  ShopScreenSpaceShips o-- ScrollingBackground : scrollingBackground
+  ShopScreenSpaceShips o-- DialogAlert : notEnoughMoneyDialog
+  ShopScreenSpaceShips o-- DialogAlert : successfullyBoughtDialog
+  ShopScreenSpaceShips o-- DialogAlert : successfullySelectedDialog
+  ShopScreenSpaceShips o-- InfoDialog : buyDialog
+  ShopScreenSpaceShips o-- InfoDialog : currentDialog
+  SpaceShip o-- shipHandler : handle
+  SpaceShip o-- CollisionRect : shipCollisionRect
+  Spawner o-- EnemyPool : zapperPool
+  Spawner o-- EnemyPool : destroyerPool
+  Spawner o-- EnemyPool : ignitorPool
+  Spawner o-- EnemyPool : turtlePool
+  Spawner o-- EnemyPool : ufoPool
+  Spawner o-- EnemyPool : starPool
+  Spawner o-- EnemyPool : pinkyPool
+  Spawner o-- PowerUpPool : healPowerUpPool
+  Spawner o-- PowerUpPool : ammoPowerUpPool
+  Spawner o-- PowerUpPool : shieldPowerUpPool
+  Spawner o-- ExplosionPool : enemyExplosionPool
+  Spawner o-- ExplosionPool : playerExplosionPool
+  Spawner o-- AsteroidPool : asteroidPool
+  StatsScreen -up-|> Screen
+  StatsScreen o-- MainGame : game
+  StatsScreen o-- ScrollingBackground : scrollingBackground
+  TextInputDialog -up-|> Dialog
+  TileObject -up-|> Table
+  User -up-|> Comparable
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

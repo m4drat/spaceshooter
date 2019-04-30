@@ -31,7 +31,7 @@ public class Assets {
     public static final Color lightYellow_1 = new Color(0xceb963ff);
     public static final Color lightYellow_2 = new Color(0xfce959ff);
 
-    public static final String apiServer = "http://192.168.1.68:8080/", apiEndpointScoreboard = "scoreboard";
+    public static final String apiServer = "http://10.130.204.171:8080/", apiEndpointScoreboard = "scoreboard";
     public static final String apiEndpointUpdateScore = "updatescore";
     public static final int apiServerPort = 8080;
 
