@@ -27,6 +27,7 @@ import com.google.gson.JsonParser;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.api.ApiRequest;
 import com.madrat.spaceshooter.utils.api.resourcereprs.User;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
@@ -81,43 +82,43 @@ public class GameOverScreen implements Screen {
         gameOverFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         gameOverFont.setColor(Assets.lightGreen_3);
         gameOverFont.getData().setScale(1.25f * SCALE_FACTOR);
-        gameOverLayout = new GlyphLayout(gameOverFont, "GAME OVER");
+        gameOverLayout = new GlyphLayout(gameOverFont, Strings.gameOver);
 
         // Create Highscore font and textLayout
         highScoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         highScoreFont.setColor(Assets.lightBlue_1);
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
-        highScoreLayout = new GlyphLayout(highScoreFont, "Highscore:" + this.highScore);
+        highScoreLayout = new GlyphLayout(highScoreFont, Strings.highscorePlaceHolder + this.highScore);
 
         // Create total money textLayout
         totalMoneyFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         totalMoneyFont.setColor(Assets.lightBlue_1);
         totalMoneyFont.getData().setScale(0.7f * SCALE_FACTOR);
-        totalMoneyLayout = new GlyphLayout(highScoreFont, "Total Money:" + this.totalMoney);
+        totalMoneyLayout = new GlyphLayout(highScoreFont, Strings.totalMoney + this.totalMoney);
 
         // Create score font and textLayout
         scoreFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         scoreFont.setColor(Assets.lightYellow_1);
         scoreFont.getData().setScale(0.7f * SCALE_FACTOR);
-        scoreLayout = new GlyphLayout(scoreFont, "score:" + score);
+        scoreLayout = new GlyphLayout(scoreFont, Strings.scorePlaceholder + score);
 
         // Create coins font and textLayout
         coinsFont = Assets.manager.get(Assets.emulogicfnt, BitmapFont.class);
         coinsFont.setColor(Assets.lightYellow_1);
         coinsFont.getData().setScale(0.7f * SCALE_FACTOR);
-        coinsLayout = new GlyphLayout(coinsFont, "money:" + money);
+        coinsLayout = new GlyphLayout(coinsFont, Strings.moneyPlaceHolder + money);
 
 
         // Create buttons
-        restartBtn = new TextButton("restart", skin);
+        restartBtn = new TextButton(Strings.restartTxt, skin);
         restartBtn.getLabel().setFontScale(SCALE_FACTOR);
 
         // go back button
-        backBtn = new TextButton("back", skin);
+        backBtn = new TextButton(Strings.backTxt, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
 
         // exit button
-        exitBtn = new TextButton("exit", skin);
+        exitBtn = new TextButton(Strings.exitTxt, skin);
         exitBtn.getLabel().setFontScale(SCALE_FACTOR);
 
         // restart game button listener
@@ -139,15 +140,15 @@ public class GameOverScreen implements Screen {
 
         // exit confirm dialog
         exit = new DialogAlert("", skin, stage);
-        exit.text("Do you really\nwant to exit?");
-        exit.yesButton("YES", new InputListener() {
+        exit.text(Strings.confirmExitTxt);
+        exit.yesButton(Strings.yesTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 isDisposed = true;
                 Assets.manager.dispose();
                 Gdx.app.exit();
                 return true;
             }
-        }).noButton("NO", new InputListener() {
+        }).noButton(Strings.noTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 exit.hide();
                 return true;
@@ -247,9 +248,9 @@ public class GameOverScreen implements Screen {
                         } catch (Exception e) {
                             e.printStackTrace();
                             error = new DialogAlert("", skin, stage);
-                            error.text("Cannot send data...");
+                            error.text(Strings.errSend);
                             error.getTextLabel().setFontScale(SCALE_FACTOR / 1.6f);
-                            error.yesButton("OK", new InputListener() {
+                            error.yesButton(Strings.okTxt, new InputListener() {
                                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                                     error.hide();
                                     return true;

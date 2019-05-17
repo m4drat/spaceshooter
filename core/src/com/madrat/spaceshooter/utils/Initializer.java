@@ -116,13 +116,13 @@ public class Initializer {
         pinkyJson = builder.toJsonTree(pinky);
 
         try {
-            ships.add("zapper", zapperJson);
-            ships.add("destroyer", destroyerJson);
-            ships.add("ignitor", ignitorJson);
-            ships.add("turtle", turtleJson);
-            ships.add("ufo", ufoJson);
-            ships.add("star", starJson);
-            ships.add("pinky", pinkyJson);
+            ships.add(Strings.zapperHandler, zapperJson);
+            ships.add(Strings.destroyerHandler, destroyerJson);
+            ships.add(Strings.ignitorHandler, ignitorJson);
+            ships.add(Strings.turtleHandler, turtleJson);
+            ships.add(Strings.ufoHandler, ufoJson);
+            ships.add(Strings.starHandler, starJson);
+            ships.add(Strings.pinkyHandler, pinkyJson);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

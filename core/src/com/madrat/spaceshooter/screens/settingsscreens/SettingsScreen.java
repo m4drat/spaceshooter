@@ -21,6 +21,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.CheckBox;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -58,20 +59,20 @@ public class SettingsScreen implements Screen {
         buttonsTable.setPosition(0, MainGame.GENERAL_HEIGHT);
         buttonsTable.padTop(120 * SCALE_FACTOR);
 
-        resetProgressBtn = new TextButton("Reset", skin);
+        resetProgressBtn = new TextButton(Strings.resetTxt, skin);
         resetProgressBtn.getLabel().setFontScale(SCALE_FACTOR);
         resetProgressBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 confirmDialog = new DialogAlert("", skin, stage);
-                confirmDialog.text("Do you really\nwant to reset\nyour progress?");
-                confirmDialog.yesButton("YES", new InputListener() {
+                confirmDialog.text(Strings.resetProgress);
+                confirmDialog.yesButton(Strings.yesTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         setDefaultValues();
                         game.setScreen(new MainMenuScreen(game));
                         return true;
                     }
-                }).noButton("NO", new InputListener() {
+                }).noButton(Strings.noTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         confirmDialog.hide();
                         return true;
@@ -86,7 +87,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        aboutBtn = new TextButton("About", skin);
+        aboutBtn = new TextButton(Strings.aboutTxt, skin);
         aboutBtn.getLabel().setFontScale(SCALE_FACTOR);
         aboutBtn.addListener(new ClickListener() {
             @Override
@@ -96,7 +97,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        statsBtn = new TextButton("Stats", skin);
+        statsBtn = new TextButton(Strings.statsTxt, skin);
         statsBtn.getLabel().setFontScale(SCALE_FACTOR);
         statsBtn.addListener(new ClickListener() {
             @Override
@@ -106,7 +107,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        globalScoreBoarBtn = new TextButton("scoreboard", skin);
+        globalScoreBoarBtn = new TextButton(Strings.scoreboardL, skin);
         globalScoreBoarBtn.getLabel().setFontScale(SCALE_FACTOR);
         globalScoreBoarBtn.addListener(new ClickListener() {
             @Override
@@ -117,7 +118,7 @@ public class SettingsScreen implements Screen {
         });
 
         Preferences data = Gdx.app.getPreferences("spacegame");
-        checkBox = new CheckBox(skin, "send score", Assets.checkBoxImageUp, Assets.checkBoxImageDown, 32, 32);
+        checkBox = new CheckBox(skin, Strings.sendScoreTxt, Assets.checkBoxImageUp, Assets.checkBoxImageDown, 32, 32);
         checkBox.setChecked(data.getBoolean("sendscore", true));
         checkBox.getCheckBox().addListener(new ChangeListener() {
             @Override
@@ -138,7 +139,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        backBtn = new TextButton("Back", skin);
+        backBtn = new TextButton(Strings.backTxt, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
             @Override

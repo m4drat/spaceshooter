@@ -30,6 +30,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.DescriptionRow;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -92,19 +93,19 @@ public class ShopScreenPowerUps implements Screen {
 
         money = getCurrentMoney(currentPlayerState);
 
-        balance = new Label("Balance:" + money, skin, "emulogic", Assets.lightYellow_2);
+        balance = new Label(Strings.balancePlaceHolder + money, skin, Strings.fontName, Assets.lightYellow_2);
         balance.setFontScale(SCALE_FACTOR / 1.6f, SCALE_FACTOR / 1.5f);
         container.add(balance).align(Align.right).padTop(8 * SCALE_FACTOR).padRight(25 * SCALE_FACTOR).row();
 
         Table nestedContainer = new Table();
 
-        Label calc = new Label(" powerups ", skin);
+        Label calc = new Label(Strings.labelPowerUps, skin);
         calc.setFontScale(SCALE_FACTOR / 1.2f);
 
         final SelectBox selectBox = new SelectBox(skin);
         selectBox.getStyle().font.getData().setScale(SCALE_FACTOR / 1.2f);
         selectBox.getStyle().listStyle.selection.setTopHeight(15 * SCALE_FACTOR);
-        selectBox.setItems(" powerups ", "spaceships");
+        selectBox.setItems(Strings.labelPowerUps, Strings.spaceshipsTxt);
         selectBox.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -142,7 +143,7 @@ public class ShopScreenPowerUps implements Screen {
         }
 
         final InfoDialog upgradeHeal = setUpHeal();
-        TileObject healPowerUp = new TileObject("medkit", skin, Assets.healPowerUp, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 30, 25);
+        TileObject healPowerUp = new TileObject(Strings.medkitTxt, skin, Assets.healPowerUp, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 30, 25);
         healPowerUp.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.7f);
         healPowerUp.getLabel().getActor().setColor(Assets.lightGreen_1);
         healPowerUp.getIcon().size(95 * SCALE_FACTOR, 80 * SCALE_FACTOR);
@@ -156,7 +157,7 @@ public class ShopScreenPowerUps implements Screen {
         });
 
         final InfoDialog upgradeAmmo = setUpAmmo();
-        TileObject ammoPowerUp = new TileObject("rockets", skin, Assets.ammoPowerUp, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 58, 53);
+        TileObject ammoPowerUp = new TileObject(Strings.rocketsTxt, skin, Assets.ammoPowerUp, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 58, 53);
         ammoPowerUp.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.7f);
         ammoPowerUp.getLabel().getActor().setColor(Assets.lightGreen_1);
         ammoPowerUp.getIcon().size(95 * SCALE_FACTOR, 86 * SCALE_FACTOR);
@@ -170,7 +171,7 @@ public class ShopScreenPowerUps implements Screen {
         tileTable.add(ammoPowerUp).row();
 
         final InfoDialog upgradeShield = setUpShield();
-        TileObject shieldPowerUp = new TileObject("shield", skin, Assets.shieldPowerUp, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject shieldPowerUp = new TileObject(Strings.shieldTxt, skin, Assets.shieldPowerUp, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         shieldPowerUp.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.7f);
         shieldPowerUp.getLabel().getActor().setColor(Assets.lightGreen_1);
         shieldPowerUp.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -187,7 +188,7 @@ public class ShopScreenPowerUps implements Screen {
         container.add(scrollPane).size(GENERAL_WIDTH, 400 * SCALE_FACTOR);
         container.row();
 
-        backBtn = new TextButton("Back", skin);
+        backBtn = new TextButton(Strings.backTxtU, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
             @Override
@@ -217,14 +218,14 @@ public class ShopScreenPowerUps implements Screen {
             descRow1.description.setColor(Assets.lightYellow_1);
 
             priceRow = new DescriptionRow(30, 0, 25, 0);
-            priceRow.description = new Label("PRICE:" + heal.get("price").getAsString(), skin);
+            priceRow.description = new Label(Strings.pricePlaceholder + heal.get("price").getAsString(), skin);
             priceRow.description.setFontScale(SCALE_FACTOR / 1.5f);
             priceRow.description.setColor(Assets.lightPinky);
 
             descriptionRows.add(descRow1);
         } else {
             descRow1 = new DescriptionRow(15, 0, 25, 0);
-            descRow1.description = new Label("PowerUp Fully\nUpgraded!", skin);
+            descRow1.description = new Label(Strings.powerUpFullUpgrade, skin);
             descRow1.description.setFontScale(SCALE_FACTOR / 1.5f);
             descRow1.description.setColor(Assets.lightYellow_1);
 
@@ -233,11 +234,11 @@ public class ShopScreenPowerUps implements Screen {
             descriptionRows.add(descRow1);
         }
 
-        final InfoDialog buyDialog = new InfoDialog(skin, stage, "medkit", 1.15f, Assets.healPowerUp, 30, 25, 220, 183, descriptionRows, priceRow, "UPGRADE", 360 * SCALE_X, 480 * SCALE_Y); // 360 * SCALE_X, 480 * SCALE_Y
+        final InfoDialog buyDialog = new InfoDialog(skin, stage, Strings.medkitTxt, 1.15f, Assets.healPowerUp, 30, 25, 220, 183, descriptionRows, priceRow, "UPGRADE", 360 * SCALE_X, 480 * SCALE_Y); // 360 * SCALE_X, 480 * SCALE_Y
         buyDialog.setPosition(GENERAL_WIDTH / 2 - buyDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - buyDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
 
         final DialogAlert confirmBuy = new DialogAlert("", skin, buyDialog.getMultiplexer());
-        confirmBuy.text("Buy Upgrade?").yesButton("YES", new InputListener() {
+        confirmBuy.text(Strings.buyUpgrade).yesButton(Strings.yesTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (getCurrentMoney(currentPlayerState) >= heal.get("price").getAsInt()) {
                     // Decrease money in object
@@ -246,7 +247,7 @@ public class ShopScreenPowerUps implements Screen {
                     money -= heal.get("price").getAsInt();
 
                     // Set label value
-                    balance.setText("balance:" + money);
+                    balance.setText(Strings.balancePlaceHolderL + money);
 
                     // SetBought state
                     currentPowerUpsState.getAsJsonObject("heal").getAsJsonObject(Integer.toString(healUpgradeStage)).addProperty("isBought", true);
@@ -257,7 +258,7 @@ public class ShopScreenPowerUps implements Screen {
                     setUpIsHealFullyUpgraded();
 
                     if (isHealFullyUpgraded) {
-                        descRow1.description.setText("PowerUp Fully\nUpgraded!");
+                        descRow1.description.setText(Strings.powerUpFullUpgrade);
                         priceRow.description.setText("");
 
                         buyDialog.getDescriptionRowCells().get(0).padBottom(-28 * SCALE_FACTOR);
@@ -276,7 +277,7 @@ public class ShopScreenPowerUps implements Screen {
                 }
                 return true;
             }
-        }).noButton("NO", new InputListener() {
+        }).noButton(Strings.noTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -316,14 +317,14 @@ public class ShopScreenPowerUps implements Screen {
             descRow1.description.setColor(Assets.lightYellow_1);
 
             priceRow = new DescriptionRow(30, 0, 25, 0);
-            priceRow.description = new Label("PRICE:" + ammo.get("price").getAsString(), skin);
+            priceRow.description = new Label(Strings.pricePlaceholder + ammo.get("price").getAsString(), skin);
             priceRow.description.setFontScale(SCALE_FACTOR / 1.5f);
             priceRow.description.setColor(Assets.lightPinky);
 
             descriptionRows.add(descRow1);
         } else {
             descRow1 = new DescriptionRow(15, 0, 25, 0);
-            descRow1.description = new Label("PowerUp Fully\nUpgraded!", skin);
+            descRow1.description = new Label(Strings.powerUpFullUpgrade, skin);
             descRow1.description.setFontScale(SCALE_FACTOR / 1.5f);
             descRow1.description.setColor(Assets.lightYellow_1);
 
@@ -332,11 +333,11 @@ public class ShopScreenPowerUps implements Screen {
             descriptionRows.add(descRow1);
         }
 
-        final InfoDialog buyDialog = new InfoDialog(skin, stage, "ammo", 1.15f, Assets.ammoPowerUp, 58, 54, 180, 167, descriptionRows, priceRow, "UPGRADE", 360 * SCALE_X, 480 * SCALE_Y); // 360 * SCALE_X, 480 * SCALE_Y
+        final InfoDialog buyDialog = new InfoDialog(skin, stage, Strings.ammoTxt, 1.15f, Assets.ammoPowerUp, 58, 54, 180, 167, descriptionRows, priceRow, "UPGRADE", 360 * SCALE_X, 480 * SCALE_Y); // 360 * SCALE_X, 480 * SCALE_Y
         buyDialog.setPosition(GENERAL_WIDTH / 2 - buyDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - buyDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
 
         final DialogAlert confirmBuy = new DialogAlert("", skin, buyDialog.getMultiplexer());
-        confirmBuy.text("Buy Upgrade?").yesButton("YES", new InputListener() {
+        confirmBuy.text(Strings.buyUpgrade).yesButton(Strings.yesTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (getCurrentMoney(currentPlayerState) >= ammo.get("price").getAsInt()) {
                     // Decrease money in object
@@ -345,7 +346,7 @@ public class ShopScreenPowerUps implements Screen {
                     money -= ammo.get("price").getAsInt();
 
                     // Set label value
-                    balance.setText("balance:" + money);
+                    balance.setText(Strings.balancePlaceHolderL + money);
 
                     // SetBought state
                     currentPowerUpsState.getAsJsonObject("ammo").getAsJsonObject(Integer.toString(ammoUpgradeStage)).addProperty("isBought", true);
@@ -356,7 +357,7 @@ public class ShopScreenPowerUps implements Screen {
                     setUpIsAmmoFullyUpgraded();
 
                     if (isHealFullyUpgraded) {
-                        descRow1.description.setText("PowerUp Fully\nUpgraded!");
+                        descRow1.description.setText(Strings.powerUpFullUpgrade);
                         priceRow.description.setText("");
 
                         buyDialog.getDescriptionRowCells().get(0).padBottom(-28 * SCALE_FACTOR);
@@ -375,7 +376,7 @@ public class ShopScreenPowerUps implements Screen {
                 }
                 return true;
             }
-        }).noButton("NO", new InputListener() {
+        }).noButton(Strings.noTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -415,14 +416,14 @@ public class ShopScreenPowerUps implements Screen {
             descRow1.description.setColor(Assets.lightYellow_1);
 
             priceRow = new DescriptionRow(30, 0, 25, 0);
-            priceRow.description = new Label("PRICE:" + shield.get("price").getAsString(), skin);
+            priceRow.description = new Label(Strings.pricePlaceholder + shield.get("price").getAsString(), skin);
             priceRow.description.setFontScale(SCALE_FACTOR / 1.5f);
             priceRow.description.setColor(Assets.lightPinky);
 
             descriptionRows.add(descRow1);
         } else {
             descRow1 = new DescriptionRow(15, 0, 25, 0);
-            descRow1.description = new Label("PowerUp Fully\nUpgraded!", skin);
+            descRow1.description = new Label(Strings.powerUpFullUpgrade, skin);
             descRow1.description.setFontScale(SCALE_FACTOR / 1.5f);
             descRow1.description.setColor(Assets.lightYellow_1);
 
@@ -431,11 +432,11 @@ public class ShopScreenPowerUps implements Screen {
             descriptionRows.add(descRow1);
         }
 
-        final InfoDialog buyDialog = new InfoDialog(skin, stage, "shield", 1.15f, Assets.shieldPowerUp, 32, 32, 200, 200, descriptionRows, priceRow, "UPGRADE", 360 * SCALE_X, 480 * SCALE_Y); // 360 * SCALE_X, 480 * SCALE_Y
+        final InfoDialog buyDialog = new InfoDialog(skin, stage, Strings.shieldTxt, 1.15f, Assets.shieldPowerUp, 32, 32, 200, 200, descriptionRows, priceRow, "UPGRADE", 360 * SCALE_X, 480 * SCALE_Y); // 360 * SCALE_X, 480 * SCALE_Y
         buyDialog.setPosition(GENERAL_WIDTH / 2 - buyDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - buyDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
 
         final DialogAlert confirmBuy = new DialogAlert("", skin, buyDialog.getMultiplexer());
-        confirmBuy.text("Buy Upgrade?").yesButton("YES", new InputListener() {
+        confirmBuy.text(Strings.buyUpgrade).yesButton(Strings.yesTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (getCurrentMoney(currentPlayerState) >= shield.get("price").getAsInt()) {
                     // Decrease money in object
@@ -444,7 +445,7 @@ public class ShopScreenPowerUps implements Screen {
                     money -= shield.get("price").getAsInt();
 
                     // Set label value
-                    balance.setText("balance:" + money);
+                    balance.setText(Strings.balancePlaceHolderL + money);
 
                     // SetBought state
                     currentPowerUpsState.getAsJsonObject("shield").getAsJsonObject(Integer.toString(shieldUpgradeStage)).addProperty("isBought", true);
@@ -455,7 +456,7 @@ public class ShopScreenPowerUps implements Screen {
                     setUpIsShieldFullyUpgraded();
 
                     if (isShieldFullyUpgraded) {
-                        descRow1.description.setText("PowerUp Fully\nUpgraded!");
+                        descRow1.description.setText(Strings.powerUpFullUpgrade);
                         priceRow.description.setText("");
 
                         buyDialog.getDescriptionRowCells().get(0).padBottom(-28 * SCALE_FACTOR);
@@ -464,7 +465,7 @@ public class ShopScreenPowerUps implements Screen {
                         buyDialog.getActBtn().setDisabled(true);
                     } else {
                         descRow1.description.setText(currentPowerUpsState.getAsJsonObject("shield").getAsJsonObject(Integer.toString(shieldUpgradeStage)).get("desc").getAsString());
-                        priceRow.description.setText("PRICE:" + currentPowerUpsState.getAsJsonObject("shield").getAsJsonObject(Integer.toString(shieldUpgradeStage)).get("price").getAsString());
+                        priceRow.description.setText(Strings.pricePlaceholder + currentPowerUpsState.getAsJsonObject("shield").getAsJsonObject(Integer.toString(shieldUpgradeStage)).get("price").getAsString());
                     }
 
                     confirmBuy.hide();
@@ -477,7 +478,7 @@ public class ShopScreenPowerUps implements Screen {
                 }
                 return true;
             }
-        }).noButton("NO", new InputListener() {
+        }).noButton(Strings.noTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -504,7 +505,7 @@ public class ShopScreenPowerUps implements Screen {
 
     private void notEnoughMoneySetUp(InputMultiplexer multiplexer) {
         DialogAlert notEnoughMoneyDialogLoc = new DialogAlert("", skin, multiplexer);
-        notEnoughMoneyDialogLoc.text("You don't have\nenough money...").yesButton("OK", new InputListener() {
+        notEnoughMoneyDialogLoc.text(Strings.notEnoughMoney).yesButton(Strings.okTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -517,7 +518,7 @@ public class ShopScreenPowerUps implements Screen {
 
     private void successfullyBoughtSetUp(InputMultiplexer multiplexer) {
         DialogAlert successfullyBoughtDialogLoc = new DialogAlert("", skin, multiplexer);
-        successfullyBoughtDialogLoc.text("Successfully\nbought!").yesButton("OK", new InputListener() {
+        successfullyBoughtDialogLoc.text(Strings.succesfullyBought).yesButton(Strings.okTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }

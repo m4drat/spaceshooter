@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 
@@ -60,7 +61,7 @@ public class GameTypeScreen implements Screen {
         highScoreFont.getData().setScale(0.7f * SCALE_FACTOR);
         highScoreFont.setColor(Assets.lightAquamarine);
         highScoreLayout = new GlyphLayout(highScoreFont, "" + this.highScore);
-        highScoreLayout.setText(highScoreFont, "Highscore:" + this.highScore);
+        highScoreLayout.setText(highScoreFont, Strings.highscorePlaceHolder + this.highScore);
 
         skin = Assets.manager.get(Assets.uiskin, Skin.class);
         stage = new Stage(new ScreenViewport());
@@ -72,9 +73,9 @@ public class GameTypeScreen implements Screen {
         menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
 
         // Create buttons
-        singleplayer = new TextButton("singleplayer", skin);
-        multiplayer = new TextButton("multiplayer", skin);
-        back = new TextButton("Back", skin);
+        singleplayer = new TextButton(Strings.singlePlayer, skin);
+        multiplayer = new TextButton(Strings.multiPlayer, skin);
+        back = new TextButton(Strings.backTxtU, skin);
 
         // setUp singlePlayer button
         singleplayer.getLabel().setFontScale(1f * SCALE_FACTOR);
@@ -92,8 +93,8 @@ public class GameTypeScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 DialogAlert confirm = new DialogAlert("", skin, stage);
-                confirm.text("Coming soon...");
-                confirm.yesButton("OK", new InputListener() {
+                confirm.text(Strings.comingSoon);
+                confirm.yesButton(Strings.okTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         return true;
                     }

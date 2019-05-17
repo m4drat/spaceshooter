@@ -74,8 +74,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 0;
         this.isBought = true;
         this.shipSpeed = 360f;
-        this.handler = "zapper";
-        this.desc = "Default ship.\nNothing special.";
+        this.handler = Strings.zapperHandler;
+        this.desc = Strings.zapperDesc;
 
         // Health
         this.maxHealth = 1.6f;
@@ -128,8 +128,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 1150;
         this.isBought = false;
         this.shipSpeed = 400f;
-        this.handler = "destroyer";
-        this.desc = "The name speaks\nfor itself.\nIt's Destroyer";
+        this.handler = Strings.destroyerHandler;
+        this.desc = Strings.destroyerDesc;
 
         // Health
         this.maxHealth = 2f;
@@ -182,8 +182,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 1380;
         this.isBought = false;
         this.shipSpeed = 500f;
-        this.handler = "ignitor";
-        this.desc = "Burn everything\non your way.\nPerfect mobility\nand firing rate.";
+        this.handler = Strings.ignitorHandler;
+        this.desc = Strings.ignitorDesc;
 
         // Health
         this.maxHealth = 2.2f;
@@ -236,8 +236,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 2200;
         this.isBought = false;
         this.shipSpeed = 300f;
-        this.handler = "turtle";
-        this.desc = "For those who love\nstronger ships...";
+        this.handler = Strings.turtleHandler;
+        this.desc = Strings.turtleDesc;
 
         // Health
         this.maxHealth = 5f;
@@ -291,8 +291,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 1800;
         this.isBought = false;
         this.shipSpeed = 480f;
-        this.handler = "ufo";
-        this.desc = "Perfect mobility and\ndamage, but low HP.";
+        this.handler = Strings.ufoHandler;
+        this.desc = Strings.ufoDesc;
 
         // Health
         this.maxHealth = 2.5f;
@@ -345,8 +345,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 1550;
         this.isBought = false;
         this.shipSpeed = 700f;
-        this.handler = "star";
-        this.desc = "The damage of this\nship is the same\nas that of the\ndeath star.";
+        this.handler = Strings.starHandler;
+        this.desc = Strings.starDesc;
 
         // Health
         this.maxHealth = 1.25f;
@@ -399,8 +399,8 @@ public class ParametersHandler implements Serializable {
         this.shipPrice = 1650;
         this.isBought = false;
         this.shipSpeed = 380f;
-        this.handler = "pinky";
-        this.desc = "High rate of fire,\ngood damage, but\nlow speed";
+        this.handler = Strings.pinkyHandler;
+        this.desc = Strings.pinkyDesc;
 
         // Health
         this.maxHealth = 2f;

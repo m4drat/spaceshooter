@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.madrat.spaceshooter.MainGame;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.api.ApiRequest;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
@@ -74,9 +75,9 @@ public class GlobalScoreBoardScreen implements Screen {
                     isDataFetched = true;
                 } catch (Exception e) {
                     error = new DialogAlert("", skin, stage);
-                    error.text("Cannot fetch data...");
+                    error.text(Strings.errFetch);
                     error.getTextLabel().setFontScale(SCALE_FACTOR / 1.6f);
-                    error.yesButton("OK", new InputListener() {
+                    error.yesButton(Strings.okTxt, new InputListener() {
                         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                             error.hide();
                             return true;
@@ -92,10 +93,10 @@ public class GlobalScoreBoardScreen implements Screen {
         });
         fetchScoreboard.start();
 
-        scoreBoardLabel = new Label("Scoreboard", skin, "emulogic", Assets.lightGreen_3);
+        scoreBoardLabel = new Label(Strings.scoreboard, skin, Strings.fontName, Assets.lightGreen_3);
         scoreBoardLabel.setFontScale(SCALE_FACTOR);
 
-        backBtn = new TextButton("back", skin);
+        backBtn = new TextButton(Strings.backTxt, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
 
         backBtn.addListener(new ClickListener() {
@@ -169,9 +170,9 @@ public class GlobalScoreBoardScreen implements Screen {
             for (User user : users) {
                 System.out.println(user.getClientuuid());
                 if (clientLocalUUID.equals(user.getClientuuid())) {
-                    currentUser = new Label(user.getUsername() + ":" + user.getScore(), skin, "emulogic", Assets.lightPinky);
+                    currentUser = new Label(user.getUsername() + ":" + user.getScore(), skin, Strings.fontName, Assets.lightPinky);
                 } else {
-                    currentUser = new Label(user.getUsername() + ":" + user.getScore(), skin, "emulogic", Assets.lightYellow_1);
+                    currentUser = new Label(user.getUsername() + ":" + user.getScore(), skin, Strings.fontName, Assets.lightYellow_1);
                 }
                 currentUser.setFontScale(SCALE_FACTOR / 1.65f);
                 menuTable.add(currentUser).padBottom(9 * SCALE_FACTOR).row();

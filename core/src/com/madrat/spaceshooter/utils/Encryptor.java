@@ -106,7 +106,7 @@ public class Encryptor {
     }
 
     // Simple xor and bit shifting (nothing special, can be reversed really easy)
-    // FIXME create normal key generation for all platforms
+    // create normal key generation for all platforms
     private void initKey() {
         String del = ":";
         byte[] key;

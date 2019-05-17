@@ -26,6 +26,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+import com.madrat.spaceshooter.utils.Strings;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 import static com.madrat.spaceshooter.MainGame.SCALE_Y;
@@ -61,23 +62,23 @@ public class StatsScreen implements Screen {
 
         JsonObject stats = getStatsDataJson(MainGame.pathToCurrentState);
 
-        killedEnemiesLabel = new Label("Destroyed Enemies:" + stats.get("totalKilledEnemies").getAsString(), skin);
+        killedEnemiesLabel = new Label(Strings.destroyedEnemies + stats.get("totalKilledEnemies").getAsString(), skin);
         killedEnemiesLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
 
-        destroyedAsteroidsLabel = new Label("Destroyed Asteroids:" + stats.get("DestroyedAsteroids").getAsString(), skin);
+        destroyedAsteroidsLabel = new Label(Strings.destroyedAsteroids + stats.get("DestroyedAsteroids").getAsString(), skin);
         destroyedAsteroidsLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
 
-        totalEarnedMoneysLabel = new Label("Total earned:" + stats.get("totalEarnedMoneys").getAsString(), skin);
+        totalEarnedMoneysLabel = new Label(Strings.totalEarned + stats.get("totalEarnedMoneys").getAsString(), skin);
         totalEarnedMoneysLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
 
-        totalDeathsLabel = new Label("Total Deaths:" + stats.get("totalDeaths").getAsString(), skin);
+        totalDeathsLabel = new Label(Strings.totalDeaths + stats.get("totalDeaths").getAsString(), skin);
         totalDeathsLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
 
-        healPickedUpLabel = new Label("Heal picked:" + stats.get("healPickedUp").getAsString(), skin);
+        healPickedUpLabel = new Label(Strings.healPicked + stats.get("healPickedUp").getAsString(), skin);
         healPickedUpLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
-        ammoPickedUpLabel = new Label("Ammo picked:" + stats.get("ammoPickedUp").getAsString(), skin);
+        ammoPickedUpLabel = new Label(Strings.ammoPicked + stats.get("ammoPickedUp").getAsString(), skin);
         ammoPickedUpLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
-        shieldPickedUpLabel = new Label("Shield picked:" + stats.get("shieldPickedUp").getAsString(), skin);
+        shieldPickedUpLabel = new Label(Strings.shieldPicked + stats.get("shieldPickedUp").getAsString(), skin);
         shieldPickedUpLabel.setFontScale(SCALE_FACTOR / 1.8f, SCALE_FACTOR / 1.6f);
 
         buttonsTable = new Table();
@@ -101,7 +102,7 @@ public class StatsScreen implements Screen {
         buttonsTable.add(shieldPickedUpLabel).padBottom(221 * SCALE_FACTOR);
         buttonsTable.row();
 
-        backBtn = new TextButton("Back", skin);
+        backBtn = new TextButton(Strings.backTxtU, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
             @Override

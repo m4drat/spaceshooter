@@ -34,6 +34,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.screens.MainMenuScreen;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.DescriptionRow;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
@@ -92,7 +93,7 @@ public class ShopScreenSpaceShips implements Screen {
         container.setPosition(0, MainGame.GENERAL_HEIGHT);
         container.padTop(15 * SCALE_FACTOR);
 
-        balance = new Label("Balance:" + money, skin, "emulogic", Assets.lightYellow_2);
+        balance = new Label(Strings.balancePlaceHolder + money, skin, Strings.fontName, Assets.lightYellow_2);
         balance.setFontScale(SCALE_FACTOR / 1.6f, SCALE_FACTOR / 1.5f);
         container.add(balance).align(Align.right).padTop(8 * SCALE_FACTOR).padRight(25 * SCALE_FACTOR).row();
 
@@ -101,7 +102,7 @@ public class ShopScreenSpaceShips implements Screen {
         final SelectBox selectBox = new SelectBox(skin);
         selectBox.getStyle().font.getData().setScale(SCALE_FACTOR / 1.2f);
         selectBox.getStyle().listStyle.selection.setTopHeight(15 * SCALE_FACTOR);
-        selectBox.setItems("spaceships", " powerups ");
+        selectBox.setItems(Strings.spaceshipsTxt, Strings.labelPowerUps);
         selectBox.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -138,7 +139,7 @@ public class ShopScreenSpaceShips implements Screen {
             container.debug();
         }
 
-        TileObject zapper = new TileObject("zapper", skin, Assets.ship0Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 24, 24);
+        TileObject zapper = new TileObject(Strings.zapperHandler, skin, Assets.ship0Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 24, 24);
         zapper.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.7f);
         zapper.getLabel().getActor().setColor(Assets.lightGreen_1);
         zapper.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -146,13 +147,13 @@ public class ShopScreenSpaceShips implements Screen {
         zapper.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("zapper", 0.86f);
+                currentDialog = displayShip(Strings.zapperHandler, 0.86f);
                 currentDialog.show(stage);
             }
         });
         tileTable.add(zapper).padRight(30 * SCALE_FACTOR);
 
-        TileObject destroyer = new TileObject("destroyer", skin, Assets.ship2Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject destroyer = new TileObject(Strings.destroyerHandler, skin, Assets.ship2Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         destroyer.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.88f);
         destroyer.getLabel().getActor().setColor(Assets.lightGreen_1);
         destroyer.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -160,13 +161,13 @@ public class ShopScreenSpaceShips implements Screen {
         destroyer.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("destroyer", 0.75f);
+                currentDialog = displayShip(Strings.destroyerHandler, 0.75f);
                 currentDialog.show(stage);
             }
         });
         tileTable.add(destroyer).padRight(30 * SCALE_FACTOR);
 
-        TileObject ignitor = new TileObject("ignitor", skin, Assets.ship4Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject ignitor = new TileObject(Strings.ignitorHandler, skin, Assets.ship4Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         ignitor.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.8f);
         ignitor.getLabel().getActor().setColor(Assets.lightGreen_1);
         ignitor.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -174,13 +175,13 @@ public class ShopScreenSpaceShips implements Screen {
         ignitor.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("ignitor", 0.75f);
+                currentDialog = displayShip(Strings.ignitorHandler, 0.75f);
                 currentDialog.show(stage);
             }
         });
         tileTable.add(ignitor).padRight(30 * SCALE_FACTOR); // .padRight(30 * SCALE_FACTOR).padTop(30 * SCALE_FACTOR)
 
-        TileObject turtle = new TileObject("turtle", skin, Assets.ship6Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject turtle = new TileObject(Strings.turtleHandler, skin, Assets.ship6Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         turtle.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.86f);
         turtle.getLabel().getActor().setColor(Assets.lightGreen_1);
         turtle.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -188,13 +189,13 @@ public class ShopScreenSpaceShips implements Screen {
         turtle.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("turtle", 0.86f);
+                currentDialog = displayShip(Strings.turtleHandler, 0.86f);
                 currentDialog.show(stage);
             }
         });
         tileTable.add(turtle).row(); // .padRight(30 * SCALE_FACTOR).padTop(30 * SCALE_FACTOR)
 
-        TileObject star = new TileObject("star", skin, Assets.ship8Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject star = new TileObject(Strings.starHandler, skin, Assets.ship8Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         star.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.86f);
         star.getLabel().getActor().setColor(Assets.lightGreen_1);
         star.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -202,13 +203,13 @@ public class ShopScreenSpaceShips implements Screen {
         star.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("star", 0.86f);
+                currentDialog = displayShip(Strings.starHandler, 0.86f);
                 currentDialog.show(stage);
             }
         });
         tileTable.add(star).padRight(30 * SCALE_FACTOR).padTop(30 * SCALE_FACTOR);
 
-        TileObject pinky = new TileObject("pinky", skin, Assets.ship10Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject pinky = new TileObject(Strings.pinkyHandler, skin, Assets.ship10Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         pinky.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.86f);
         pinky.getLabel().getActor().setColor(Assets.lightGreen_1);
         pinky.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -216,13 +217,13 @@ public class ShopScreenSpaceShips implements Screen {
         pinky.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("pinky", 0.86f);
+                currentDialog = displayShip(Strings.pinkyHandler, 0.86f);
                 currentDialog.show(stage);
             }
         });
         tileTable.add(pinky).padRight(30 * SCALE_FACTOR).padTop(30 * SCALE_FACTOR);
 
-        TileObject ufo = new TileObject("ufo", skin, Assets.ship12Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
+        TileObject ufo = new TileObject(Strings.ufoHandler, skin, Assets.ship12Animation, 160 * SCALE_FACTOR, 160 * SCALE_FACTOR, 32, 32);
         ufo.getLabel().getActor().setFontScale(SCALE_FACTOR / 1.86f);
         ufo.getLabel().getActor().setColor(Assets.lightGreen_1);
         ufo.getIcon().size(95 * SCALE_FACTOR, 95 * SCALE_FACTOR);
@@ -230,7 +231,7 @@ public class ShopScreenSpaceShips implements Screen {
         ufo.getButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                currentDialog = displayShip("ufo", 0.86f);
+                currentDialog = displayShip(Strings.ufoHandler, 0.86f);
                 currentDialog.show(stage);
             }
         });
@@ -240,7 +241,7 @@ public class ShopScreenSpaceShips implements Screen {
         container.add(scrollPane).size(GENERAL_WIDTH, 400 * SCALE_FACTOR);
         container.row();
 
-        backBtn = new TextButton("Back", skin);
+        backBtn = new TextButton(Strings.backTxt, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
         backBtn.addListener(new ClickListener() {
             @Override
@@ -285,25 +286,25 @@ public class ShopScreenSpaceShips implements Screen {
 
         // Ship Health
         descRow2 = new DescriptionRow(15, 0, 25, 0);
-        descRow2.description = new Label("health:" + currentShipJson.get("maxHealth").getAsString(), skin);
+        descRow2.description = new Label(Strings.healthLabel + currentShipJson.get("maxHealth").getAsString(), skin);
         descRow2.description.setFontScale(SCALE_FACTOR / 2f);
         descRow2.description.setColor(Assets.lightPinky);
 
         // Ship Speed
         descRow3 = new DescriptionRow(5, 0, 25, 0);
-        descRow3.description = new Label("speed:" + currentShipJson.get("shipSpeed").getAsString(), skin);
+        descRow3.description = new Label(Strings.speedLabel + currentShipJson.get("shipSpeed").getAsString(), skin);
         descRow3.description.setFontScale(SCALE_FACTOR / 2f);
         descRow3.description.setColor(Assets.lightGreen_2);
 
         // Ship damage
         descRow4 = new DescriptionRow(5, 0, 25, 0);
-        descRow4.description = new Label("damage:" + currentShipJson.get("damage").getAsString(), skin);
+        descRow4.description = new Label(Strings.damageLabel + currentShipJson.get("damage").getAsString(), skin);
         descRow4.description.setFontScale(SCALE_FACTOR / 2f);
         descRow4.description.setColor(Assets.lightYellow_2);
 
         // Ship firerate
         descRow5 = new DescriptionRow(5, 0, 25, 0);
-        descRow5.description = new Label("firerate:" + currentShipJson.get("delayBetweenShootsBullets").getAsString(), skin);
+        descRow5.description = new Label(Strings.firerateLabel + currentShipJson.get("delayBetweenShootsBullets").getAsString(), skin);
         descRow5.description.setFontScale(SCALE_FACTOR / 2f);
         descRow5.description.setColor(Assets.lightBlue_1);
 
@@ -311,17 +312,17 @@ public class ShopScreenSpaceShips implements Screen {
             priceRow = null;
 
             if (currentPlayerState.getAsJsonObject("currentShip").get("handler").getAsString().equals(currentShipJson.get("handler").getAsString()))
-                btnText = "selected";
+                btnText = Strings.selectedTxt;
             else
-                btnText = "select";
+                btnText = Strings.selectTxt;
 
         } else {
             priceRow = new DescriptionRow(8, 0, 25, 0);
-            priceRow.description = new Label("PRICE:" + currentShipJson.get("shipPrice").getAsString(), skin);
+            priceRow.description = new Label(Strings.pricePlaceholder + currentShipJson.get("shipPrice").getAsString(), skin);
             priceRow.description.setFontScale(SCALE_FACTOR / 2f);
             priceRow.description.setColor(Assets.lightPinky);
 
-            btnText = "BUY";
+            btnText = Strings.buyPlaceholder;
         }
 
         descriptionRows.add(descRow1);
@@ -334,7 +335,7 @@ public class ShopScreenSpaceShips implements Screen {
         buyDialog.setPosition(GENERAL_WIDTH / 2 - buyDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - buyDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
 
         final DialogAlert confirmBuy = new DialogAlert("", skin, buyDialog.getMultiplexer());
-        confirmBuy.text("Buy Ship?").yesButton("YES", new InputListener() {
+        confirmBuy.text(Strings.buyShipTxt).yesButton(Strings.yesTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (getCurrentMoney(currentPlayerState) >= currentShipJson.get("shipPrice").getAsInt()) {
                     // Decrease money in object
@@ -343,7 +344,7 @@ public class ShopScreenSpaceShips implements Screen {
                     money -= currentShipJson.get("shipPrice").getAsInt();
 
                     // Set label value
-                    balance.setText("balance:" + money);
+                    balance.setText(Strings.balancePlaceHolderL + money);
 
                     // SetBought state
                     currentShipJson.addProperty("isBought", true);
@@ -373,7 +374,7 @@ public class ShopScreenSpaceShips implements Screen {
                 }
                 return true;
             }
-        }).noButton("NO", new InputListener() {
+        }).noButton(Strings.noTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -510,7 +511,7 @@ public class ShopScreenSpaceShips implements Screen {
 
     private void notEnoughMoneySetUp(InputMultiplexer multiplexer) {
         DialogAlert notEnoughMoneyDialogLoc = new DialogAlert("", skin, multiplexer);
-        notEnoughMoneyDialogLoc.text("You don't have\nenough money...").yesButton("OK", new InputListener() {
+        notEnoughMoneyDialogLoc.text(Strings.notEnoughMoney).yesButton(Strings.okTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -523,7 +524,7 @@ public class ShopScreenSpaceShips implements Screen {
 
     private void successfullyBoughtSetUp(InputMultiplexer multiplexer) {
         DialogAlert successfullyBoughtDialogLoc = new DialogAlert("", skin, multiplexer);
-        successfullyBoughtDialogLoc.text("Successfully\nbought!").yesButton("OK", new InputListener() {
+        successfullyBoughtDialogLoc.text(Strings.succesfullyBought).yesButton(Strings.okTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -536,7 +537,7 @@ public class ShopScreenSpaceShips implements Screen {
 
     private void successfullySelectedSetUp(InputMultiplexer multiplexer) {
         DialogAlert successfullySelectedLoc = new DialogAlert("", skin, multiplexer);
-        successfullySelectedLoc.text("Successfully\nselected!").yesButton("OK", new InputListener() {
+        successfullySelectedLoc.text(Strings.successfullySelected).yesButton(Strings.okTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }

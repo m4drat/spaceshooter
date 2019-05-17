@@ -22,6 +22,7 @@ import com.madrat.spaceshooter.MainGame;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+import com.madrat.spaceshooter.utils.Strings;
 
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
 
@@ -57,12 +58,12 @@ public class AboutScreen implements Screen {
         nameColor = Assets.lightBlue_3;
         strColor = Assets.lightGreen_3;
 
-        infoLabel = new Label("Created by", skin, "emulogic", strColor);
+        infoLabel = new Label(Strings.createdBy, skin, Strings.fontName, strColor);
         infoLabel.setFontScale(SCALE_FACTOR);
-        devNameLabel = new Label("madrat", skin, "emulogic", nameColor);
+        devNameLabel = new Label(Strings.creator, skin, Strings.fontName, nameColor);
         devNameLabel.setFontScale(SCALE_FACTOR / 1.5f);
 
-        backBtn = new TextButton("back", skin);
+        backBtn = new TextButton(Strings.backTxt, skin);
         backBtn.getLabel().setFontScale(SCALE_FACTOR);
 
         backBtn.addListener(new ClickListener() {

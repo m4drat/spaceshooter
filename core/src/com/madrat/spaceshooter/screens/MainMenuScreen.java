@@ -23,6 +23,7 @@ import com.madrat.spaceshooter.screens.shopscreens.ShopScreenSpaceShips;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
 import com.madrat.spaceshooter.utils.Initializer;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -85,16 +86,16 @@ public class MainMenuScreen implements Screen {
 
         final Preferences data = Gdx.app.getPreferences("spacegame");
         if (data.getString("username").length() == 0) {
-            final TextInputDialog textInputDialog = new TextInputDialog(skin, stage, "Enter Your name", 0.7f, 300, 200);
+            final TextInputDialog textInputDialog = new TextInputDialog(skin, stage, Strings.enterNameTxt, 0.7f, 300, 200);
             textInputDialog.setPosition(GENERAL_WIDTH / 2 - textInputDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - textInputDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
 
             textInputDialog.getActBtn().addListener(new InputListener() {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     if (textInputDialog.getTextField().getText().length() == 0) {
-                        nameError(stage, "Name cannot\nbe empty!");
+                        nameError(stage, Strings.errEmptyName);
                         error.show(stage);
                     } else if (!checkName(textInputDialog.getTextField().getText())) {
-                        nameError(stage, "Name Cannot\ncontain special\ncharacters!");
+                        nameError(stage, Strings.errIllegalName);
                         error.show(stage);
                     } else { // All - ok
                         data.putString("username", textInputDialog.getTextField().getText());
@@ -121,7 +122,7 @@ public class MainMenuScreen implements Screen {
 
     private void nameError(Stage stage, String text) {
         DialogAlert successfullySelectedLoc = new DialogAlert("", skin, stage);
-        successfullySelectedLoc.text(text).yesButton("OK", new InputListener() {
+        successfullySelectedLoc.text(text).yesButton(Strings.okTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
@@ -145,10 +146,10 @@ public class MainMenuScreen implements Screen {
         menuTable.setPosition(0, MainGame.GENERAL_HEIGHT);
 
         // Create buttons
-        playButton = new TextButton("Play", skin);
-        shopButton = new TextButton("Shop", skin);
-        settButton = new TextButton("Settings", skin);
-        exitButton = new TextButton("Exit", skin);
+        playButton = new TextButton(Strings.playTxt, skin);
+        shopButton = new TextButton(Strings.shopTxt, skin);
+        settButton = new TextButton(Strings.settingsTxt, skin);
+        exitButton = new TextButton(Strings.exitTxt, skin);
 
         // Increase size of play button
         playButton.getLabel().setFontScale(2.2f * SCALE_FACTOR);
@@ -182,14 +183,14 @@ public class MainMenuScreen implements Screen {
 
         // Exit Confirm Dialog
         exit = new DialogAlert("", skin, stage);
-        exit.text("Do you really\nwant to exit?");
-        exit.yesButton("YES", new InputListener() {
+        exit.text(Strings.confirmExitTxt);
+        exit.yesButton(Strings.yesTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Assets.manager.dispose();
                 Gdx.app.exit();
                 return true;
             }
-        }).noButton("NO", new InputListener() {
+        }).noButton(Strings.noTxt, new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 exit.hide();
                 return true;

@@ -33,6 +33,7 @@ import com.madrat.spaceshooter.gameobjects.Spawner;
 import com.madrat.spaceshooter.physics2d.CollisionRect;
 import com.madrat.spaceshooter.utils.Assets;
 import com.madrat.spaceshooter.utils.BuildConfig;
+import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ObjectHandler;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
@@ -103,7 +104,7 @@ public class MainGameScreen implements Screen {
         pauseTable.add(pauseBtn);
 
         // Continue game button
-        continueButton = new TextButton("continue", skin);
+        continueButton = new TextButton(Strings.continueTxt, skin);
         continueButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         continueButton.addListener(new ClickListener() {
             @Override
@@ -113,20 +114,20 @@ public class MainGameScreen implements Screen {
         });
 
         // Restart game button
-        restartButton = new TextButton("restart", skin);
+        restartButton = new TextButton(Strings.restartTxt, skin);
         restartButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 confirm = new DialogAlert("", skin, stage);
-                confirm.text("Do you really\nwant to restart?");
-                confirm.yesButton("YES", new InputListener() {
+                confirm.text(Strings.restartConfirmTxt);
+                confirm.yesButton(Strings.yesTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         batch.dispose();
                         game.setScreen(new MainGameScreen(game));
                         return true;
                     }
-                }).noButton("NO", new InputListener() {
+                }).noButton(Strings.noTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         confirm.hide();
                         return true;
@@ -141,20 +142,20 @@ public class MainGameScreen implements Screen {
         });
 
         // Back to main menu button
-        backButton = new TextButton("back", skin);
+        backButton = new TextButton(Strings.backTxt, skin);
         backButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 confirm = new DialogAlert("", skin, stage);
-                confirm.text("Do you really\nwant to leave?");
-                confirm.yesButton("YES", new InputListener() {
+                confirm.text(Strings.confirmLeave);
+                confirm.yesButton(Strings.yesTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         batch.dispose();
                         game.setScreen(new MainMenuScreen(game));
                         return true;
                     }
-                }).noButton("NO", new InputListener() {
+                }).noButton(Strings.noTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         confirm.hide();
                         return true;
@@ -169,20 +170,20 @@ public class MainGameScreen implements Screen {
         });
 
         // Close game button
-        exitButton = new TextButton("exit", skin);
+        exitButton = new TextButton(Strings.exitTxt, skin);
         exitButton.getLabel().setFontScale(1f * SCALE_FACTOR);
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 confirm = new DialogAlert("", skin, stage);
-                confirm.text("Do you really\nwant to exit?");
-                confirm.yesButton("YES", new InputListener() {
+                confirm.text(Strings.confirmExitTxt);
+                confirm.yesButton(Strings.yesTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         Assets.manager.dispose();
                         Gdx.app.exit();
                         return true;
                     }
-                }).noButton("NO", new InputListener() {
+                }).noButton(Strings.noTxt, new InputListener() {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         confirm.hide();
                         return true;
