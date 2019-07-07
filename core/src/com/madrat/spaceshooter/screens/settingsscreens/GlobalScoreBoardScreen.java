@@ -71,7 +71,7 @@ public class GlobalScoreBoardScreen implements Screen {
             public void run() {
                 try {
                     ApiRequest apiHandler = new ApiRequest();
-                    users = apiHandler.getScoreBoard(Assets.apiServer, Assets.apiEndpointScoreboard, 10);
+                    users = apiHandler.getScoreBoard(Assets.protocol + Gdx.app.getPreferences("spacegame").getString("apiAddress") + Assets.apiServerPort, Assets.apiEndpointScoreboard, 10);
                     isDataFetched = true;
                 } catch (Exception e) {
                     error = new DialogAlert("", skin, stage);
@@ -168,7 +168,8 @@ public class GlobalScoreBoardScreen implements Screen {
         if (!fetchScoreboard.isAlive() && isDataFetched) {
             isDataFetched = false;
             for (User user : users) {
-                System.out.println(user.getClientuuid());
+                if (BuildConfig.DEBUG)
+                    System.out.println(user.getClientuuid());
                 if (clientLocalUUID.equals(user.getClientuuid())) {
                     currentUser = new Label(user.getUsername() + ":" + user.getScore(), skin, Strings.fontName, Assets.lightPinky);
                 } else {

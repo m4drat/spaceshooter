@@ -31,9 +31,10 @@ public class Assets {
     public static final Color lightYellow_1 = new Color(0xceb963ff);
     public static final Color lightYellow_2 = new Color(0xfce959ff);
 
-    public static final String apiServer = "http://10.130.204.171:8080/", apiEndpointScoreboard = "scoreboard";
-    public static final String apiEndpointUpdateScore = "updatescore";
-    public static final int apiServerPort = 8080;
+    // public static String apiAddress = "";
+    public static final String protocol = "http://";
+    public static final String apiEndpointUpdateScore = "/updatescore", apiEndpointScoreboard = "/scoreboard";
+    public static final String apiServerPort = ":8080";
 
     public static final String settingsXmlFile = "spacegame.xml", settingsFile = "spacegame";
 

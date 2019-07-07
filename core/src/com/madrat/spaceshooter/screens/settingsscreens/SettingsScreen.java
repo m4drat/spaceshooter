@@ -25,8 +25,14 @@ import com.madrat.spaceshooter.utils.Strings;
 import com.madrat.spaceshooter.utils.uiutils.CheckBox;
 import com.madrat.spaceshooter.utils.uiutils.DialogAlert;
 import com.madrat.spaceshooter.utils.ScrollingBackground;
+import com.madrat.spaceshooter.utils.uiutils.TextInputDialog;
 
+import java.util.regex.Pattern;
+
+import static com.madrat.spaceshooter.MainGame.GENERAL_HEIGHT;
+import static com.madrat.spaceshooter.MainGame.GENERAL_WIDTH;
 import static com.madrat.spaceshooter.MainGame.SCALE_FACTOR;
+import static com.madrat.spaceshooter.MainGame.SCALE_Y;
 
 public class SettingsScreen implements Screen {
 
@@ -38,12 +44,14 @@ public class SettingsScreen implements Screen {
     private DialogAlert confirmDialog;
 
     private TextButton resetProgressBtn;
-    private TextButton aboutBtn, statsBtn, globalScoreBoarBtn, backBtn;
+    private TextButton aboutBtn, statsBtn, globalScoreBoarBtn, changeIpBtn, backBtn;
     private CheckBox checkBox;
 
     private Stage stage;
     private Skin skin;
     private Table buttonsTable;
+
+    private DialogAlert error;
 
     public SettingsScreen(MainGame newGame, ScrollingBackground scrBack) {
         this.game = newGame;
@@ -56,7 +64,7 @@ public class SettingsScreen implements Screen {
         buttonsTable = new Table();
         buttonsTable.setWidth(stage.getWidth());
         buttonsTable.align(Align.center | Align.top);
-        buttonsTable.setPosition(0, MainGame.GENERAL_HEIGHT);
+        buttonsTable.setPosition(0, GENERAL_HEIGHT);
         buttonsTable.padTop(120 * SCALE_FACTOR);
 
         resetProgressBtn = new TextButton(Strings.resetTxt, skin);
@@ -117,6 +125,36 @@ public class SettingsScreen implements Screen {
             }
         });
 
+        changeIpBtn = new TextButton(Strings.changeIpL, skin);
+        changeIpBtn.getLabel().setFontScale(SCALE_FACTOR / 1.5f);
+        changeIpBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                final TextInputDialog textInputDialog = new TextInputDialog(skin, stage, Strings.enterIp, 0.7f, 300, 200);
+                textInputDialog.setPosition(GENERAL_WIDTH / 2 - textInputDialog.getPrefWidth() / 2, (GENERAL_HEIGHT - textInputDialog.getPrefHeight()) / 2 + 40 * SCALE_Y);
+
+                textInputDialog.getActBtn().addListener(new InputListener() {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        if (textInputDialog.getTextField().getText().length() == 0) {
+                            apiAddressErr(stage, Strings.errEmptyIp);
+                            error.show(stage);
+                        }  else if (!checkIp(textInputDialog.getTextField().getText())) {
+                            apiAddressErr(stage, Strings.errIllegalIp);
+                            error.show(stage);
+                        } else { // All - ok
+                            Preferences prefs = Gdx.app.getPreferences("spacegame");
+                            prefs.putString("apiAddress", textInputDialog.getTextField().getText());
+                            prefs.flush();
+                            Gdx.input.setOnscreenKeyboardVisible(false);
+                            textInputDialog.hide();
+                        }
+                        return true;
+                    }
+                });
+                textInputDialog.show(stage);
+            }
+        });
+
         Preferences data = Gdx.app.getPreferences("spacegame");
         checkBox = new CheckBox(skin, Strings.sendScoreTxt, Assets.checkBoxImageUp, Assets.checkBoxImageDown, 32, 32);
         checkBox.setChecked(data.getBoolean("sendscore", true));
@@ -127,13 +165,13 @@ public class SettingsScreen implements Screen {
                 if (checkBox.isChecked()) {
                     if (BuildConfig.DEBUG)
                         System.out.println("[+] UnChecked");
-                    data.putBoolean("sendscore", false);
                     checkBox.setChecked(false);
+                    data.putBoolean("sendscore", false);
                 } else {
                     if (BuildConfig.DEBUG)
                         System.out.println("[+] Checked");
-                    data.putBoolean("sendscore", true);
                     checkBox.setChecked(true);
+                    data.putBoolean("sendscore", true);
                 }
                 data.flush();
             }
@@ -148,8 +186,9 @@ public class SettingsScreen implements Screen {
             }
         });
 
-
-        buttonsTable.add(globalScoreBoarBtn).padBottom(36 * SCALE_FACTOR);
+        buttonsTable.add(globalScoreBoarBtn).padBottom(22 * SCALE_FACTOR);
+        buttonsTable.row();
+        buttonsTable.add(changeIpBtn).padBottom(36 * SCALE_FACTOR);
         buttonsTable.row();
         buttonsTable.add(statsBtn).padBottom(36 * SCALE_FACTOR);
         buttonsTable.row();
@@ -179,6 +218,27 @@ public class SettingsScreen implements Screen {
         });
 
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void apiAddressErr(Stage stage, String text) {
+        DialogAlert successfullySelectedLoc = new DialogAlert("", skin, stage);
+        successfullySelectedLoc.text(text).yesButton(Strings.okTxt, new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+        successfullySelectedLoc.buttonYes.getLabel().setColor(Assets.lightPinky);
+        successfullySelectedLoc.buttonYes.getLabel().setFontScale(SCALE_FACTOR);
+
+        this.error = successfullySelectedLoc;
+    }
+
+    private boolean checkIp(String name) {
+        if (name.matches("([0-9.]+)")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void setPreviousScreen() {

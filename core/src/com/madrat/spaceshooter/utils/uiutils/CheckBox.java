@@ -33,7 +33,7 @@ public class CheckBox extends Table {
         imageUp = new TextureRegionDrawable(Assets.manager.get(checkBoxImageUp, Texture.class));
         imageDown = new TextureRegionDrawable(Assets.manager.get(checkBoxImageDown, Texture.class));
 
-        checkBox = new ImageButton(new TextureRegionDrawable(new TextureRegion(Assets.manager.get(checkBoxImageUp, Texture.class))), new TextureRegionDrawable(new TextureRegion(Assets.manager.get(checkBoxImageDown, Texture.class))));
+        checkBox = new ImageButton(imageUp);
         checkBox.getImageCell().size(checkBoxWidth * SCALE_FACTOR, checkBoxHeight * SCALE_FACTOR);
 
         this.checkBoxText = new Label(checkBoxText, skin);
@@ -58,15 +58,9 @@ public class CheckBox extends Table {
     public void setChecked(boolean checked) {
         isChecked = checked;
         if (isChecked) { // button checked
-            ImageButton.ImageButtonStyle _oldStyle = checkBox.getStyle();
-            _oldStyle.imageUp = imageDown;
-            _oldStyle.imageDown = imageUp;
-            checkBox.setStyle(_oldStyle);
+            checkBox.getStyle().imageUp = imageDown;
         } else {
-            ImageButton.ImageButtonStyle _oldStyle = checkBox.getStyle();
-            _oldStyle.imageUp = imageUp;
-            _oldStyle.imageDown = imageDown;
-            checkBox.setStyle(_oldStyle);
+            checkBox.getStyle().imageUp = imageUp;
         }
     }
 }

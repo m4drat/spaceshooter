@@ -17,7 +17,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 // The main rule of cryptography
-// Never invent your own ciphers
+// Never invent your own cryptography
 //  ¯\_(ツ)_/¯
 
 public class Encryptor {
@@ -110,8 +110,8 @@ public class Encryptor {
     private void initKey() {
         String del = ":";
         byte[] key;
-        if (MainGame.applicationType == Application.ApplicationType.Android) { // due to conflict with org.json i deleted android from project (Build.SERIAL + del + Build.ID + del)
-            key = StringUtils.rightPad(Build.SERIAL + del + Build.ID + del, 32, "~").getBytes(); // new byte[]{0x5f, 0x5e, 0x74, 0x35, 0x2a, 0x65, 0x24, 0x7a, 0x9, 0x78, 0x31, 0x36, 0x1c, 0x2e, 0x34, 0x68, 0x16, 0x52, 0x14, 0x41, 0x67, 0x62, 0x37, 0x28, 0x11, 0x1, 0x1, 0x39, 0x3d, 0xd, 0x66, 0x20};
+        if (MainGame.applicationType == Application.ApplicationType.Android) {
+            key = StringUtils.rightPad(Build.SERIAL + del + Build.ID + del, 32, "~").getBytes();
         } else if (MainGame.applicationType == Application.ApplicationType.Desktop) {
             key = new byte[]{0x12, 0x2d, 0x2f, 0x6c, 0x1f, 0x7a, 0x4f, 0x10, 0x48, 0x56, 0x17, 0x4b, 0x4f, 0x48, 0x3c, 0x17, 0x04, 0x06, 0x4b, 0x6d, 0x1d, 0x68, 0x4b, 0x52, 0x50, 0x50, 0x1f, 0x06, 0x29, 0x68, 0x5c, 0x65};
         } else {

@@ -244,7 +244,7 @@ public class GameOverScreen implements Screen {
                     public void run() {
                         try {
                             ApiRequest apiHandler = new ApiRequest();
-                            apiHandler.sendScore(currentUser, Assets.apiServer, Assets.apiEndpointUpdateScore);
+                            apiHandler.sendScore(currentUser, Assets.protocol + Gdx.app.getPreferences("spacegame").getString("apiAddress") + Assets.apiServerPort, Assets.apiEndpointUpdateScore);
                         } catch (Exception e) {
                             e.printStackTrace();
                             error = new DialogAlert("", skin, stage);

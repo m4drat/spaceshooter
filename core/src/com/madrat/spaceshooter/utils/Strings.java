@@ -16,7 +16,7 @@ public class Strings {
     public static final String sendScoreTxt = "send score", destroyedEnemies = "Destroyed Enemies:", destroyedAsteroids = "Destroyed Asteroids:";
     public static final String totalEarned = "Total earned:", totalDeaths = "Total Deaths:", healPicked = "Heal picked:", ammoPicked = "Ammo picked:";
     public static final String shieldPicked = "Shield picked:", balancePlaceHolder = "Balance:", fontName = "emulogic", labelPowerUps = " powerups ";
-    public static final String spaceshipsTxt = "spaceships", medkitTxt = "medkit", rocketsTxt = "rockets", shieldTxt = "shield";
+    public static final String spaceshipsTxt = "spaceships", medkitTxt = "medkit", rocketsTxt = "rockets", shieldTxt = "shield", changeIpL = "change api";
     public static final String pricePlaceholder = "PRICE:", powerUpFullUpgrade = "PowerUp Fully\nUpgraded!", buyUpgrade = "Buy Upgrade?";
     public static final String balancePlaceHolderL = "balance:", notEnoughMoney = "You don't have\nenough money...", succesfullyBought = "Successfully\nbought!";
     public static final String gameOver = "GAME OVER", highscorePlaceHolder = "Highscore:", totalMoney = "Total Money:", scorePlaceholder = "score:";
@@ -24,7 +24,8 @@ public class Strings {
     public static final String errSend = "Cannot send data...", singlePlayer = "singleplayer", multiPlayer = "multiplayer", comingSoon = "Coming soon...";
     public static final String continueTxt = "continue", restartConfirmTxt = "Do you really\nwant to restart?", confirmLeave = "Do you really\nwant to leave?";
     public static final String enterNameTxt = "Enter Your name", errEmptyName = "Name cannot\nbe empty!", errIllegalName = "Name Cannot\ncontain special\ncharacters!";
-    public static final String playTxt = "Play", shopTxt = "Shop", settingsTxt = "Settings";
+    public static final String playTxt = "Play", shopTxt = "Shop", settingsTxt = "Settings", enterIp = "Enter api address\nExample: 127.0.0.1", errEmptyIp = "Ip address cannot\nbe empty!";
+    public static final String errIllegalIp = "Illegal address!";
 
     public static final String healthLabel = "health:", speedLabel = "speed:", damageLabel = "damage:", firerateLabel = "firerate:", selectedTxt = "selected";
     public static final String selectTxt = "select", buyPlaceholder = "BUY", buyShipTxt = "Buy Ship?", successfullySelected = "Successfully\nselected!", ammoTxt = "ammo";

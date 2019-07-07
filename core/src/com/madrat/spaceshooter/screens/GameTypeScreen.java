@@ -39,7 +39,7 @@ public class GameTypeScreen implements Screen {
     private Table menuTable;
 
     private TextButton singleplayer;
-    private TextButton multiplayer;
+    // private TextButton multiplayer;
     private TextButton back;
 
     private ScrollingBackground scrollingBackground;
@@ -74,7 +74,7 @@ public class GameTypeScreen implements Screen {
 
         // Create buttons
         singleplayer = new TextButton(Strings.singlePlayer, skin);
-        multiplayer = new TextButton(Strings.multiPlayer, skin);
+        // multiplayer = new TextButton(Strings.multiPlayer, skin);
         back = new TextButton(Strings.backTxtU, skin);
 
         // setUp singlePlayer button
@@ -88,6 +88,7 @@ public class GameTypeScreen implements Screen {
         });
 
         // setUp multiPlayer button
+/*
         multiplayer.getLabel().setFontScale(1f * SCALE_FACTOR);
         multiplayer.addListener(new ClickListener() {
             @Override
@@ -105,6 +106,7 @@ public class GameTypeScreen implements Screen {
                 confirm.show(stage);
             }
         });
+*/
 
         // setUp go back button
         back.getLabel().setFontScale(1f * SCALE_FACTOR);
@@ -117,10 +119,10 @@ public class GameTypeScreen implements Screen {
 
         // Setup all relative positions
         menuTable.padTop(120 * SCALE_FACTOR);
-        menuTable.add(singleplayer).padBottom(48 * SCALE_FACTOR);
+        menuTable.add(singleplayer).padBottom(120 * SCALE_FACTOR);
         menuTable.row();
-        menuTable.add(multiplayer).padBottom(120 * SCALE_FACTOR);
-        menuTable.row();
+        // menuTable.add(multiplayer).padBottom(120 * SCALE_FACTOR);
+        // menuTable.row();
         menuTable.add(back);
 
         if (BuildConfig.UIDEBUG)
