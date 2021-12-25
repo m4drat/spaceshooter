@@ -11,8 +11,8 @@ As in any game of this genre, the main goal here is as follows: to score as many
 
 In-game screenshots:
 
-<img src="./additional-data/images/battle-1.png" style="width:15%;border-radius: 5px; border: 3px solid #12477a;"/>  
-<img src="./additional-data/images/battle-2.png" style="width:15%;border-radius: 5px; border: 3px solid #12477a;"/>
+<img src="./additional-data/images/battle-1.png" style="width:35%;border-radius: 5px; border: 3px solid #12477a;"/>
+<img src="./additional-data/images/battle-2.png" style="width:35%;border-radius: 5px; border: 3px solid #12477a;"/>
 
 ## Building for Android
 
